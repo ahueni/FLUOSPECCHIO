@@ -1,13 +1,29 @@
-function FLoX_Level_1(hierarchy_id)
+%
+%   FLoX_Level_1 - SPECCHIO Database Centric Processing
+%
+%   Code to process all data within a DN hierarchy to Radiances.
+%
+%   hierarchy_id: hierarchy_id of the SPECCHIO DN hierarchy
+%   specchio_pathname: path to local SPECCHIO Java installation
+%
+%   (c) 2018 ahueni, RSL, University of Zurich
+%
+%
 
-hierarchy_id = 826 %747 [826]
+function FLoX_Level_1(hierarchy_id, specchio_pathname)
+
+    % debugging settings: used if no arguments are supplied to function
+    if nargin() == 0
+        hierarchy_id = 832 %747 [826]
+        specchio_pathname = '/Applications/SPECCHIO_G4/SPECCHIO.app/Contents/Java/';
+    end
+
 
     user_data.switch_channels_for_flox = true; % set to true if up and downwelling channels were switched during construction
     user_data.switch_channels_for_rox = true; % set to true if up and downwelling channels were switched during construction
 
     user_data.settings.radiance_hierarchy_level = 1; % controls the level where the radiance folder is created
 
-    specchio_pathname = '/Applications/SPECCHIO_G4/SPECCHIO.app/Contents/Java/';
 
     % this path setting is sufficient on MacOS with Matlab2017b
      javaaddpath ({
@@ -21,8 +37,6 @@ hierarchy_id = 826 %747 [826]
      import ch.specchio.gui.*;
      import ch.specchio.types.*;
 
-
-     
      % connect to SPECCHIO 
      user_data.cf = SPECCHIOClientFactory.getInstance();
      user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();

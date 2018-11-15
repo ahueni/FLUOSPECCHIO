@@ -5,15 +5,15 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_
 %
 %   INPUT:
 %   wvl - wavelength vector (nX1) in nanometer (nm)
-%   L0 - downwelling radiance (can be a column or a matrix where each column is a measurement) [W.m-2.sr-1.nm-1]
-%   L - upwelling radiance (can be a column or a matrix where each column is a measurement) [W.m-2.sr-1.nm-1]
+%   L0 - downwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
+%   L - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
 %
 %   OUTPUT:
-%   out_arr_all 
-%   outF_SFM_all
-%   outR_SFM_all
-%   outF_SpecFit_all
-%   outR_SpecFit_all
+%   out_arr_all - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
+%   outF_SFM_all - nxm array with spectral fluorescence retrieved in the oxygen bands by SFM
+%   outR_SFM_all - nxm array with spectral true reflectance retrieved in the oxygen bands by SFM
+%   outF_SpecFit_all - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
+%   outR_SpecFit_all nxm array with spectral true reflectance retrieved in the full fitting window by SpecFit
 
 %   Sergio Cogliati, Ph.D
 %   Remote Sensing of Environmental Dynamics Lab.
@@ -44,18 +44,12 @@ weights = 1;                    % 1) w=1; 2) w=1/Lup^2; 3) w=Lup^2
 do_plot = 0;
 stio = 'off';                 %'off';'iter';'final'
 
-%%
-
 %% DEFINITION OF GLOBAL VARIABLES
 global wvl_def
 wvl_definition(rng); % with enlarged dx range for SFM A up to 780
 
-
 %% Selects imput files
 n_files = size(L0,2);
-
-%% OUTPUT FILE
-% [~, lb] = min(abs(wvl-wvlRet(1))); [~, ub] = min(abs(wvl-wvlRet(2)));
 
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
@@ -76,7 +70,7 @@ owvl = wvl;
 [~,iowvl_760] = min(abs(owvl-760));
 [~,iowvl_687] = min(abs(owvl-687));
 
-%creates the output variables
+% create the output arrays
 out_hdr = {'f_FLD_A' 'r_FLD_A' 'f_SFM_A' 'r_SFM_A' 'resnorm' 'exitflag' 'n_it_SFM_A' ...
     'f_FLD_B' 'r_FLD_B' 'f_SFM_B' 'r_SFM_B' 'resnorm' 'exitflag' 'n_it_SFM_B' ...
     'f_SpecFit_A' 'r_SpecFit_A' 'f_SpecFit_B' 'r_SpecFit_B' 'resnorm' 'exitflag' 'n_it_SpecFit' ...
@@ -108,6 +102,7 @@ switch weights
     otherwise
 end
 
+% errorbar inside the parfor loop
 hbar = parfor_progressbar(n_files-1,'Please wait...');
 
 parfor i = 1:n_files
@@ -154,4 +149,4 @@ outR_SFM_B = interp1(wvl_B,outR_SFM_B,wvl);
 outF_SFM = outF_SFM_A; outF_SFM(sub_ind_B(1):sub_ind_B(2),:) = outF_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
 outR_SFM = outR_SFM_A; outR_SFM(sub_ind_B(1):sub_ind_B(2),:) = outR_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
 
-
+end

@@ -14,7 +14,7 @@ function FLoX_Level_1(hierarchy_id, specchio_pathname)
 
     % debugging settings: used if no arguments are supplied to function
     if nargin() == 0
-        hierarchy_id = 832 %747 [826]
+        hierarchy_id = 832 %747 [826] 
         specchio_pathname = '/Applications/SPECCHIO_G4/SPECCHIO.app/Contents/Java/';
     end
 

@@ -14,7 +14,7 @@ function FLoX_Level_2(hierarchy_id, specchio_pathname)
 
     % debugging settings: used if no arguments are supplied to function
     if nargin() == 0
-        hierarchy_id = 827 % 
+        hierarchy_id = 9166 % 
         specchio_pathname = '/Applications/SPECCHIO_G4/SPECCHIO.app/Contents/Java/';
     end
 
@@ -24,12 +24,12 @@ function FLoX_Level_2(hierarchy_id, specchio_pathname)
     user_data.switch_channels_for_rox = true; % set to true if up and downwelling channels were switched during construction
 
     % this path setting is sufficient on MacOS with Matlab2017b
-     javaaddpath ({
-         [specchio_pathname 'rome-0.8.jar'],...
-         [specchio_pathname 'jettison-1.3.8.jar'],...
-         [specchio_pathname 'specchio-client.jar'], ...   
-         [specchio_pathname 'specchio-types.jar']});
-
+%      javaaddpath ({
+%          [specchio_pathname 'rome-0.8.jar'],...
+%          [specchio_pathname 'jettison-1.3.8.jar'],...
+%          [specchio_pathname 'specchio-client.jar'], ...   
+%          [specchio_pathname 'specchio-types.jar']});
+% 
      import ch.specchio.client.*;
      import ch.specchio.queries.*;
      import ch.specchio.gui.*;
@@ -71,7 +71,7 @@ function FLoX_Level_2(hierarchy_id, specchio_pathname)
      % order data by spectrum number (this should only ever be a single
      % space ...)
      spaces = user_data.specchio_client.getSpaces(ids, 'Spectrum Number');
-     ids = spaces(1).getSpectrumIds();
+     ids = spaces(1).getSpectrumIds(); % get ids sorted by  'Spectrum Number'
      space = spaces(1);
      
      % load space

@@ -14,7 +14,7 @@ function FLoX_Level_1(hierarchy_id, specchio_pathname)
 
     % debugging settings: used if no arguments are supplied to function
     if nargin() == 0
-        hierarchy_id = 832 %747 [826]
+        hierarchy_id = 9136 %747 [826]
         specchio_pathname = '/Applications/SPECCHIO_G4/SPECCHIO.app/Contents/Java/';
     end
 
@@ -26,11 +26,11 @@ function FLoX_Level_1(hierarchy_id, specchio_pathname)
 
 
     % this path setting is sufficient on MacOS with Matlab2017b
-     javaaddpath ({
-         [specchio_pathname 'rome-0.8.jar'],...
-         [specchio_pathname 'jettison-1.3.8.jar'],...
-         [specchio_pathname 'specchio-client.jar'], ...   
-         [specchio_pathname 'specchio-types.jar']});
+%      javaaddpath ({
+%          [specchio_pathname 'rome-0.8.jar'],...
+%          [specchio_pathname 'jettison-1.3.8.jar'],...
+%          [specchio_pathname 'specchio-client.jar'], ...   
+%          [specchio_pathname 'specchio-types.jar']});
 
      import ch.specchio.client.*;
      import ch.specchio.queries.*;
@@ -41,6 +41,8 @@ function FLoX_Level_1(hierarchy_id, specchio_pathname)
      user_data.cf = SPECCHIOClientFactory.getInstance();
      user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();
      index = 0; % index into the list of known database connection, identical to the one seen in the SPECCHIO client app
+     index = 13; % specchio RSL prod
+     index = 14; % specchio RSL prod AHueni
      user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(index));
      
      % get spectra ids for this hierarchy
@@ -106,8 +108,17 @@ function calibrate_space(user_data, space)
    
     
 
-    % load space into memory
-    user_data.space =  user_data.specchio_client.loadSpace(space);
+    % load space into memory    
+    try
+        user_data.space =  user_data.specchio_client.loadSpace(space);
+    catch e
+        e.message
+        if(isa(e,'matlab.exception.JavaException'))
+            ex = e.ExceptionObject;
+            assert(isjava(ex));
+            ex.printStackTrace;
+        end
+    end    
     
     % group spectra by spectral number: but as the spectral number can be
     % repeated within a day, it is better to group by UTC or Acquisition time 

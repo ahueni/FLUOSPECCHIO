@@ -41,7 +41,7 @@ rng = 4;
 opt_alg = 'tr';                 %optimization algorithm 'lm'= Levemberg-Marquard; 'tr'=trust region reflective
 weights = 1;                    % 1) w=1; 2) w=1/Lup^2; 3) w=Lup^2
 
-do_plot = 0;
+do_plot = 1;
 stio = 'off';                 %'off';'iter';'final'
 
 %% DEFINITION OF GLOBAL VARIABLES

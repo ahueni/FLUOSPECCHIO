@@ -8,16 +8,18 @@ function insertVIs(user_data, ids, VIs)
         new_spectrum_ids.clear();
         new_spectrum_ids.add(java.lang.Integer(ids.get(k-1)));
         for j=1:width(VIs)
-%             attribute = user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j});
+            attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Level');
+            user_data.specchio_client.removeEavMetadata(attribute, new_spectrum_ids, 0);
+
+            mp_old = user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j})
             mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j}));
-            user_data.specchio_client.removeEavMetadata(mp);
             val = VIs{k,j};
             mp.setValue(val);
-            user_data.specchio_client.updateEavMetadata(mp, new_spectrum_ids);
+            user_data.specchio_client.updateEavMetadata(mp, new_spectrum_ids, mp);
             %         smd.addEntry(mp);
         end
         %     disp(smd.get_all_metadata_as_text())
     end
 
-     user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'SR680800');
+    % user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
 end

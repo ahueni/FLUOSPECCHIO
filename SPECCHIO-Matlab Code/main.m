@@ -84,8 +84,9 @@ plot(t_QEpro, spectra_QEpro(:,118:236))
 title('SIF Timeseries @ 670 nm - 690 nm')
 
 VIs = compute_VIs(wvl_FLAME, spectra_FLAME');
-VIsArray = table2array(VIs);
+insertVIs(user_data, ids_FLAME, VIs)
 
+VIsArray = table2array(VIs);
 figure(2) 
 clf
 for i=1:10

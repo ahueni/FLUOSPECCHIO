@@ -10,7 +10,11 @@ function insertVIs(user_data, ids, VIs)
         for j=1:width(VIs)
             mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j}));
             val = VIs{k,j};
-            mp.setValue(val);
+            if(isfinite(VIs{k,j}))
+                mp.setValue(val);
+            else
+                break
+            end
             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])
             user_data.specchio_client.updateOrInsertEavMetadata(mp, new_spectrum_ids);           
         end

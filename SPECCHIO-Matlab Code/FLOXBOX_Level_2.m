@@ -45,7 +45,7 @@ index = db_connector_id;
 
 user_data.settings.reflectance_hierarchy_level = 1; % controls the level where the radiance folder is created
 
-user_data.switch_channels_for_flame = channelswitched; % set to true if up and downwelling channels were switched during construction
+user_data.switch_channels_for_rox = channelswitched; % set to true if up and downwelling channels were switched during construction
 
 import ch.specchio.client.*;
 import ch.specchio.queries.*;

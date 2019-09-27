@@ -28,7 +28,7 @@
 
 %% Define Hierarchy Levels:
 rawDataID           = 81;
-radianceDataID      = 85;
+radianceDataID      = 129;
 reflectanceDataID   = 130;
 connectionID        = 2;
 switchedChannels    = true;

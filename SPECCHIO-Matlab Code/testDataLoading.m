@@ -77,6 +77,7 @@ FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
 
 %% VIs for L2
 VIs = compute_VIs(wvl, spectra); % spectra : mxn, where each column is one measurement
+inserVIs(user_data, ids, VIs)
 
 %% PRCOESS L2 --> 3
 reflectanceDataID   = 83;

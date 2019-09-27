@@ -29,7 +29,7 @@
 %% Define Hierarchy Levels:
 rawDataID           = 81;
 radianceDataID      = 85;
-reflectanceDataID   = 83;
+reflectanceDataID   = 130;
 connectionID        = 2;
 switchedChannels    = true;
 % tic;
@@ -47,7 +47,7 @@ import ch.specchio.types.*;
 % connect to SPECCHIO
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
-user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(2));
+user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
 hierarchy_id                                                = reflectanceDataID;
 node                                                        = hierarchy_node(hierarchy_id, "", "");
 all_ids                                                     = user_data.specchio_client.getSpectrumIdsForNode(node);

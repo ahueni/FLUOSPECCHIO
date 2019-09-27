@@ -6,6 +6,7 @@ function [R, provenance_spectrum_ids] = processFLAME(user_data, ids, space, spec
      R = ones(no_of_bands, group_no);
      provenance_spectrum_ids = java.util.ArrayList();
      
+     
      for i=0:group_no-1
          
          group_start = i*3;
@@ -73,7 +74,7 @@ function [R, provenance_spectrum_ids] = processFLAME(user_data, ids, space, spec
          
          % calculate R
          
-         if user_data.switch_channels_for_rox == false
+         if user_data.switch_channels_for_flame == false
              R(:,i+1) = (TGT_avg ./ WR_avg);
          else
              R(:,i+1) = (WR_avg ./ TGT_avg);

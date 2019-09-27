@@ -79,7 +79,8 @@ FLOXBOX_Level_1(rawDataID, connectionID, switchedChannels);
 % Statistics, Machine Learning, Expert Knowledge
 
 %% PROCESS L1 --> L2
-radianceDataID      = 85;
+radianceDataID      = 129;
+connectionID        = 2;
 FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
 
 %% QIs for L2

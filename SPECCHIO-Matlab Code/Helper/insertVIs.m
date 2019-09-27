@@ -4,7 +4,6 @@ function insertVIs(user_data, ids, VIs)
 
     new_spectrum_ids = java.util.ArrayList();
     for k=1:height(VIs)
-        %      smd = ch.specchio.types.Metadata();^
         new_spectrum_ids.clear();
         new_spectrum_ids.add(java.lang.Integer(ids.get(k-1)));
         for j=1:width(VIs)
@@ -15,11 +14,8 @@ function insertVIs(user_data, ids, VIs)
             else
                 break
             end
-            disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])
+%             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])
             user_data.specchio_client.updateOrInsertEavMetadata(mp, new_spectrum_ids);           
         end
-        %     disp(smd.get_all_metadata_as_text())
     end
-
-     user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
 end

@@ -54,7 +54,7 @@ CH_LAE      = camps(1);
 
 %% QIs for L0
 % TBD
-% Statistics, Machine Learning, Expert Knowledge
+% Histogram, Distribution, ANOVA, Machine Learning, Expert Knowledge
 
 %% PROCESS L0 --> L1
 rawDataID           = 81;
@@ -65,15 +65,13 @@ FLOXBOX_Level_1(rawDataID, connectionID, switchedChannels);
 
 %% QIs for L1
 % TBD
-% Statistics, Machine Learning, Expert Knowledge
-
+% Histogram, Distribution, ANOVA, Machine Learning, Expert Knowledge
 %% PROCESS L1 --> L2
 radianceDataID      = 85;
 FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
 
 %% QIs for L2
 % TBD
-% Statistics, Machine Learning, Expert Knowledge
 
 %% VIs for L2
 VIs = compute_VIs(wvl, spectra); % spectra : mxn, where each column is one measurement
@@ -84,5 +82,4 @@ FLOXBOX_Level_3(reflectanceDataID, connectionID) % TBD
 
 %% QIs for L3
 % TBD
-% Statistics, Machine Learning, Expert Knowledge
 

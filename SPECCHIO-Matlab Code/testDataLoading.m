@@ -31,6 +31,7 @@ import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.gui.*;
 import ch.specchio.types.*;
+import ch.specchio.*;
 
 %% Connect to DB 
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
@@ -39,16 +40,27 @@ user_data.specchio_client                                   = user_data.cf.creat
 
 %% Look for unprocessed data
 % TBD auotmatic checks and file handlers
-cPath       = 'C:\Users\bbuman\Downloads\CH-LAE_Laegeren\2018\';
-listing     = dir(cPath);
-unpr        = listing(3).name;
-fPath       = [cPath unpr '\'];
-fileList    = dir(fPath);
-calFile     = [fPath fileList(4).name];
-QEpro       = [fPath fileList(3).name];
-FLAME       = [fPath fileList(5).name];
-camps       = user_data.specchio_client.getCampaigns();
-CH_LAE      = camps(1);
+% cPath       = 'C:\Users\bbuman\Downloads\CH-LAE_Laegeren\2018\';
+% listing     = dir(cPath);
+% unpr        = listing(3).name;
+% fPath       = [cPath unpr '\'];
+% fileList    = dir(fPath);
+% calFile     = [fPath fileList(4).name];
+% QEpro       = [fPath fileList(3).name];
+% FLAME       = [fPath fileList(5).name];
+% camps       = user_data.specchio_client.getCampaigns();
+% thisCamp    = camps(1);
+% thisCamp.setPath(fPath);
+% inner = LoadCampaignDataHandler();
+% outer = SpecchioCampaignDataLoader(inner, user_data.specchio_client);
+% SpecchioCampaignDataLoader cdl = new SpecchioCampaignDataLoader(new LoadCampaignDataHandler(), specchioClient);
+% loadhandler = user_data.specchio_client new LoadCampaignDataHandler();
+% cdl = user_data.specchio_client.SpecchioCampaignDataLoader(LoadCampaignDataHandler(), user_data.specchio_client);
+% cdl.setSimple_delta_loading(this.simple_loading_checkbox.isSelected());
+% 
+% user_data.specchio_client.campaignLoader = this
+
+
 %% LOAD data to campaign
 % TBD
 
@@ -57,8 +69,7 @@ CH_LAE      = camps(1);
 % Statistics, Machine Learning, Expert Knowledge
 
 %% PROCESS L0 --> L1
-rawDataID           = 81;
-connectionID        = 2;
+rawDataID           = 128;
 switchedChannels    = true;
 
 FLOXBOX_Level_1(rawDataID, connectionID, switchedChannels);

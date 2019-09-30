@@ -12,7 +12,7 @@ function insertVIs(user_data, ids, VIs)
             if(isfinite(VIs{k,j}))
                 mp.setValue(val);
             else
-                user_data.specchio_client.getSpectrum(ids.get(k-1), false).
+%                 user_data.specchio_client.getSpectrum(ids.get(k-1), false)
                 break
             end
 %             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])

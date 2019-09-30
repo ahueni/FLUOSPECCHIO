@@ -1,22 +1,28 @@
 function [ids_rstr, space_rstr, spectra_rstr, filenames_rstr] = restrictToSensorAndDaylight(user_data, sensorType, startTime, endTime, all_ids)
+% Import queries:
 import ch.specchio.queries.*; 
+
+% Create a new query for spectrum ids ('spectrum'):
 query = Query('spectrum');
-query.setQueryType(Query.SELECT_QUERY);
+query.setQueryType(Query.SELECT_QUERY); %public static final String SELECT_QUERY = "select";
 
 query.addColumn('spectrum_id')
 
-
+% Create the condition: SELECT * FROM specchio WHERE CONDITION (e.g
+% SPECTRUM IS IN SENSOR OR TIME FRAME)
 cond = ch.specchio.queries.QueryConditionObject('spectrum', 'spectrum_id');
 cond.setValue(all_ids);
 cond.setOperator('in');
 query.add_condition(cond);
 
-
+% Condition for sensor type (e.g. QEpro or FLAME):
 cond = SpectrumQueryCondition('spectrum', 'Acquisition Time');
-file_format_id = user_data.specchio_client.getFileFormatId();
+file_format_id = user_data.specchio_client.getFileFormatId(sensorType);
 cond.setValue(num2str(file_format_id));
 cond.setOperator('=');
 query.add_condition(cond);
+
+% Condition for time sta
 
 ids = user_data.specchio_client.getSpectrumIdsMatchingQuery(query);
 

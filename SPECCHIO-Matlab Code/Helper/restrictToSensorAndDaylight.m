@@ -10,9 +10,9 @@ query.addColumn('spectrum_id')
 
 % Create the condition: SELECT * FROM specchio WHERE CONDITION (e.g
 % SPECTRUM IS IN SENSOR OR TIME FRAME)
-cond = ch.specchio.queries.QueryConditionObject('spectrum', 'spectrum_id');
-cond.setValue(all_ids);
-cond.setOperator('in');
+cond = SpectrumQueryCondition('spectrum', 'measurement_unit_id');
+cond.setValue('0');
+cond.setOperator('=');
 query.add_condition(cond);
 
 % Condition for sensor type (e.g. QEpro or FLAME):
@@ -21,15 +21,20 @@ file_format_id = user_data.specchio_client.getFileFormatId(sensorType);
 cond.setValue(num2str(file_format_id));
 cond.setOperator('=');
 query.add_condition(cond);
+cond = SpectrumQueryCondition('spectrum', 'instrument_id');
+cond.setValue('7');
+cond.setOperator('=');
+query.add_condition(cond);
+
 
 % Condition for startTime:
-cond = SpectrumQueryCondition('spectrum', 'Acquisition Time');
+cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', 'Acquisition Time', 'datetime_val');
 cond.setValue(startTime);
-cond.setoperator('>=')
+cond.setOperator('>=');
 query.add_condition(cond);
 
 % Condition for endTime:
-cond = SpectrumQueryCondition('spectrum', 'Acquisition Time');
+cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', 'Acquisition Time', 'datetime_val');
 cond.setValue(endTime);
 cond.setOperator('<=');
 query.add_condition(cond);

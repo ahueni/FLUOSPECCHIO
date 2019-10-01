@@ -15,7 +15,7 @@ function insertVIs(user_data, ids, VIs)
             else
                 mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get('Garbage Flag'));
                 val = 1;
-                mp. setValue(val);
+                mp.setValue(val);
             end
 %             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])
             disp('.');

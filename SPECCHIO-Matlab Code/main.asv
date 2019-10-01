@@ -55,8 +55,11 @@ all_ids                                                     = user_data.specchio
 [ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', all_ids);
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
 wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
+VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
+insertVIs(user_data, ids_FLAME, VIs);
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time');
 NDVI_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
+EVI_FLAME                                                   = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'EVI');
 Garb_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Garbage Flag');
 
 
@@ -71,6 +74,12 @@ for i=0:size(ndvi_fl)-1
     ndvi_fl(i+1,1) = NDVI_FLAME.get(i);
 end
 
+evi_fl = nan(size(EVI_FLAME),1);
+for i=0:size(evi_fl)-1
+    evi_fl(i+1,1) = EVI_FLAME.get(i);
+end
+
+
 figure(1) 
 clf
 subplot(2,3,1)
@@ -82,6 +91,10 @@ subplot(2,3,2)
 plot(wvl_QEpro, spectra_QEpro)
 title('SIF')
 
+% subplot(2,3,3)
+% plot(t_QEpro, spectra_QEpro(:,417:670))
+% title('SIF Timeseries @ 720 nm - 760 nm')
+
 subplot(2,3,3)
 plot(t_QEpro, spectra_QEpro(:,417:670))
 title('SIF Timeseries @ 720 nm - 760 nm')
@@ -89,32 +102,33 @@ title('SIF Timeseries @ 720 nm - 760 nm')
 subplot(2,3,4)
 plot(t_QEpro, spectra_QEpro(:,118:236))
 title('SIF Timeseries @ 670 nm - 690 nm')
-% 
-% lev = 0.9;
-% aboveLev = (NDVI_FLAME>=lev);
-% 
-% bottomLine = NDVI_FLAME;
-% topLine = NDVI_FLAME;
-% 
-% bottomLine(aboveLine) = NaN;
-% topLine(~aboveLine) = NaN;
 
 subplot(2,3,5)
-plot(t_QEpro, NDVI_FLAME)
+plot(t_QEpro, ndvi_fl)
 title('NDVI - BROADRANGE')
 
-% VIs = compute_VIs(wvl_FLAME, spectra_FLAME');
-% insertVIs(user_data, ids_FLAME, VIs)
+subplot(2,3,6)
+plot(t_QEpro, evi_fl)
+title('EVI - BROADRANGE')
+
+find(wvl_FLAME<=760)
+find(wvl_FLAME>=761)
+% 
+% subplot(2,3,6)
+% plot(t_QEpro, garb_fl)
+% title('Garbage Flagged Points')
+% 
 
 
 
-VIsArray = table2array(VIs);
-figure(2) 
-clf
-for i=1:10
-    subplot(5,2,i)
-    plot(VIsArray(:,i))
-    title(VIs.Properties.VariableNames(i))
-end
+
+% VIsArray = table2array(VIs);
+% figure(2) 
+% clf
+% for i=1:10
+%     subplot(5,2,i)
+%     plot(VIsArray(:,i))
+%     title(VIs.Properties.VariableNames(i))
+% end
 
 

@@ -59,6 +59,7 @@ VIs                                                         = compute_VIs(wvl_FL
 insertVIs(user_data, ids_FLAME, VIs);
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time');
 NDVI_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
+EVI_FLAME                                                   = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'EVI');
 Garb_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Garbage Flag');
 
 
@@ -73,6 +74,11 @@ for i=0:size(ndvi_fl)-1
     ndvi_fl(i+1,1) = NDVI_FLAME.get(i);
 end
 
+evi_fl = nan(size(EVI_FLAME),1);
+for i=0:size(evi_fl)-1
+    evi_fl(i+1,1) = EVI_FLAME.get(i);
+end
+
 
 figure(1) 
 clf
@@ -85,17 +91,33 @@ subplot(2,3,2)
 plot(wvl_QEpro, spectra_QEpro)
 title('SIF')
 
+% subplot(2,3,3)
+% plot(t_QEpro, spectra_QEpro(:,417:670))
+% title('SIF Timeseries @ 720 nm - 760 nm')
+
 subplot(2,3,3)
-plot(t_QEpro, spectra_QEpro(:,417:670))
-title('SIF Timeseries @ 720 nm - 760 nm')
+plot(t_QEpro, spectra_QEpro(:, find(wvl_FLAME >= 760 & wvl_FLAME <= 761)))
+title('SIF Timeseries @ 760 nm')
+
+% subplot(2,3,4)
+% plot(t_QEpro, spectra_QEpro(:,118:236))
+% title('SIF Timeseries @ 670 nm - 690 nm')
 
 subplot(2,3,4)
-plot(t_QEpro, spectra_QEpro(:,118:236))
-title('SIF Timeseries @ 670 nm - 690 nm')
+plot(t_QEpro, spectra_QEpro(:, find(wvl_FLAME >= 687 & wvl_FLAME <= 688)))
+title('SIF Timeseries @ 687 nm')
+
 
 subplot(2,3,5)
 plot(t_QEpro, ndvi_fl)
 title('NDVI - BROADRANGE')
+
+subplot(2,3,6)
+plot(t_QEpro, evi_fl)
+title('EVI - BROADRANGE')
+
+find(wvl_FLAME<=760)
+find(wvl_FLAME>=761)
 % 
 % subplot(2,3,6)
 % plot(t_QEpro, garb_fl)

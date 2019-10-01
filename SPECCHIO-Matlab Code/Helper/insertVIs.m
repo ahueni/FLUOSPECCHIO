@@ -18,6 +18,7 @@ function insertVIs(user_data, ids, VIs)
                 mp. setValue(val);
             end
 %             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])
+            disp('.');
             user_data.specchio_client.updateOrInsertEavMetadata(mp, new_spectrum_ids);           
         end
     end

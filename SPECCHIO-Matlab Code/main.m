@@ -94,18 +94,21 @@ title('SIF')
 % subplot(2,3,3)
 % plot(t_QEpro, spectra_QEpro(:,417:670))
 % title('SIF Timeseries @ 720 nm - 760 nm')
-
-subplot(2,3,3)
-plot(t_QEpro, spectra_QEpro(:, find(wvl_FLAME >= 760 & wvl_FLAME <= 761)))
-title('SIF Timeseries @ 760 nm')
-
 % subplot(2,3,4)
 % plot(t_QEpro, spectra_QEpro(:,118:236))
 % title('SIF Timeseries @ 670 nm - 690 nm')
 
+subplot(2,3,3)
+plot(t_QEpro, mean(spectra_QEpro(:, find(wvl_QEpro >= 760 & wvl_QEpro < 761)),2))
+title('SIF Timeseries @ 760 nm')
+
 subplot(2,3,4)
-plot(t_QEpro, spectra_QEpro(:, find(wvl_FLAME >= 687 & wvl_FLAME <= 688)))
+plot(t_QEpro, mean(spectra_QEpro(:, find(wvl_QEpro >= 687 & wvl_QEpro < 688)),2)) % find wavelength, then take mean of the measurements within the given frame mean(A,2) is row mean
 title('SIF Timeseries @ 687 nm')
+
+
+
+
 
 
 subplot(2,3,5)

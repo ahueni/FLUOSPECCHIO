@@ -7,12 +7,16 @@ function insertVIs(user_data, ids, VIs)
         new_spectrum_ids.clear();
         new_spectrum_ids.add(java.lang.Integer(ids.get(k-1)));
         for j=1:width(VIs)
-            mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j}));
-            val = VIs{k,j};
+            
             if(isfinite(VIs{k,j}))
                 mp.setValue(val);
+                mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(VIs.Properties.VariableNames{j}));
+                val = VIs{k,j};
             else
-%                 user_data.specchio_client.getSpectrum(ids.get(k-1), false)
+                mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get('Garbage Flag'));
+                val = 1;
+                mp. setValue(val);
+                
                 break
             end
 %             disp([ 'Row number = ' num2str(k) ', VI = ' VIs.Properties.VariableNames{j} ' = ' num2str(val) ' and Spectrum = ' num2str(ids.get(k-1)) ])

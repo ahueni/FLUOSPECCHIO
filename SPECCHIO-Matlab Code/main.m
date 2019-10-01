@@ -56,6 +56,7 @@ all_ids                                                     = user_data.specchio
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
 wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time');
+VIs_FLAME                                                   = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Spectral Indices');
 
 
 
@@ -83,6 +84,8 @@ title('SIF Timeseries @ 720 nm - 760 nm')
 subplot(2,2,4)
 plot(t_QEpro, spectra_QEpro(:,118:236))
 title('SIF Timeseries @ 670 nm - 690 nm')
+
+VIs = 
 
 VIs = compute_VIs(wvl_FLAME, spectra_FLAME');
 insertVIs(user_data, ids_FLAME, VIs)

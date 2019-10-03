@@ -85,14 +85,14 @@ for i=0:size(evi_fl)-1
 end
 
 % Visualize
-figure('Name', '2018-06-26') 
+figure(1) 
 clf
-subplot(2,1,1)
+subplot(2,2,1)
 plot(wvl_FLAME, spectra_FLAME)
 axis([640 850 0 1])
 title('Broadrange')
 
-subplot(2,1,2)
+subplot(2,2,2)
 plot(wvl_QEpro, spectra_QEpro)
 title('SIF')
 

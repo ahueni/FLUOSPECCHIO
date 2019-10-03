@@ -116,7 +116,7 @@ cond.setOperator('=');
 query.add_condition(cond);
 
 cond = ch.specchio.queries.QueryConditionObject('spectrum', 'spectrum_id');
-cond.setValue(all_ids_B);
+cond.setValue(all_ids_A);
 cond.setOperator('in');
 query.add_condition(cond);
 

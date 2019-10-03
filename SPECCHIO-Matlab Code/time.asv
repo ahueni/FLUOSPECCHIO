@@ -1,0 +1,35 @@
+%% Start
+% Define Hierarchy Levels:
+rawDataID           = [153, 154, 155];
+radianceDataID      = [157, 156, 158];
+reflectanceDataID   = ;
+connectionID        = 2;
+switchedChannels    = true;
+
+% Process Level 0 (DN) to Level 1 (Radiance)
+% parfor i=1:size(rawDataID,2) % Theoretically works but at some point
+% throws web client exception: returned a response status of 500 Internal Server Error
+for i=2:size(rawDataID,2)
+    FLOXBOX_Level_1(rawDataID(i), connectionID, switchedChannels);
+end
+
+% Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
+% it currently stores SIF not the Reflectance.
+for i=1:size(radianceDataID,2)
+    FLOXBOX_Level_2(radianceDataID(i), connectionID, switchedChannels);
+end
+
+
+
+%% connect to SPECCHIO
+import ch.specchio.client.*;
+import ch.specchio.queries.*;
+import ch.specchio.gui.*;
+import ch.specchio.types.*;
+user_data.cf                                                = SPECCHIOClientFactory.getInstance();
+user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
+user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
+
+%% Filter for requested data user_data, processing_level, startDateTime, endDateTime
+ids_a = getTimeWindowData(user_data, '2.0', '20180626093100', '20180626093300');
+ids_b = 

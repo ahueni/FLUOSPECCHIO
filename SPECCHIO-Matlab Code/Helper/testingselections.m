@@ -139,13 +139,17 @@ for i=0:size(all_ids_B)-1
     allB(i+1,1) = all_ids_B.get(i);
 end
 
+
+% FIND MATCHING:
+matched = find(ismember(allA,allB));
+selected = allA(matched);
+
+% BACK TO ARRAYLIST:
 all_ids_A.clear();
 for i=0:size(selected,1)-1
     all_ids_A.add(i,  int32(selected(i+1,1)));
 end
 
-matched = find(ismember(allA,allB));
-selected = allA(matched);
 [ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', all_ids_A);
 [ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', all_ids_A);
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();

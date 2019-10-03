@@ -1,4 +1,4 @@
-fid = fopen('C:\Users\bbuman\Downloads\Daten-Sentinel_3-Comparison\export.csv');
+fid = fopen('export.csv');
 for i=1:28
     fgetl(fid)
 end

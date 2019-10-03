@@ -6,6 +6,7 @@ reflectanceDataID   = ;
 connectionID        = 2;
 switchedChannels    = true;
 
+
 % Process Level 0 (DN) to Level 1 (Radiance)
 % parfor i=1:size(rawDataID,2) % Theoretically works but at some point
 % throws web client exception: returned a response status of 500 Internal Server Error

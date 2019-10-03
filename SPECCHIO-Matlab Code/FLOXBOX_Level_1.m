@@ -4,7 +4,7 @@
 %
 %   Process all data within a DN hierarchy to Radiances.
 %
-function FLOXBOX_Level_1(hierarchy_id, db_connector_id, channelswitched)
+function FLOXBOX_Level_1(connectionID, channelswitched, selectedIds)
 %% Function FLoX_level_1
 %   INPUT:
 %   hierarchy_id        : hierarchy_id of the SPECCHIO DN hierarchy
@@ -32,8 +32,6 @@ function FLOXBOX_Level_1(hierarchy_id, db_connector_id, channelswitched)
 %   12-Sep-2019
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    index = db_connector_id;
-
 
     % Channel switching (true if up and downwelling was switched)
     user_data.switch_channels_for_flox = channelswitched;
@@ -48,18 +46,14 @@ function FLOXBOX_Level_1(hierarchy_id, db_connector_id, channelswitched)
     import ch.specchio.gui.*;
     import ch.specchio.types.*;
     import ch.specchio.*;
-
-    % connect to SPECCHIO
+    
     user_data.cf = SPECCHIOClientFactory.getInstance();
     user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();
-    user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(index));
+    user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
 
-    % get spectra ids for this hierarchy
-    node = hierarchy_node(hierarchy_id, "", "");
-    DN_ids = user_data.specchio_client.getSpectrumIdsForNode(node);
 
     % group by instrument and calibration: use space factory
-    spaces = user_data.specchio_client.getSpaces(DN_ids, 'Acquisition Time');
+    spaces = user_data.specchio_client.getSpaces(selectedIds, 'Acquisition Time');
 
     % calibrate each space
     for i=1:length(spaces)

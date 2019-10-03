@@ -27,14 +27,49 @@
 %   V2, 25-Sep-2019
 
 % Define Hierarchy Levels:
-rawDataID           = 81;
+rawDataID           = 175;
 radianceDataID      = 129;
 reflectanceDataID   = 130;
+
+% Define Connection info:
 connectionID        = 2;
-switchedChannels    = true;
+
+
+
+% Import specchio functionality:
+import ch.specchio.client.*;
+import ch.specchio.queries.*;
+import ch.specchio.gui.*;
+import ch.specchio.types.*;
+import ch.specchio.*;
+
+% connect to SPECCHIO
+user_data.cf = SPECCHIOClientFactory.getInstance();
+user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();
+user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
+
+% get spectra ids for this hierarchy
+node = hierarchy_node(rawDataID, "", "");
+DN_ids = user_data.specchio_client.getSpectrumIdsForNode(node);
+
+% Split DNs up into a reasonable amount of threads figure out a good way to
+% do it
+
+DN_a = java.util.ArrayList(DN_ids.subList (0, 503));
+DN_b = java.util.ArrayList(DN_ids.subList (504, 1008));
+DN_c = java.util.ArrayList(DN_ids.subList (1009, 1513));
+DN_d = java.util.ArrayList(DN_ids.subList (1514, 2014));    
+DN_all = java.util.ArrayList();
+DN_all.add(0, DN_a);
+DN_all.add(1, DN_b);
+DN_all.add(2, DN_c);
+DN_all.add(3, DN_d);
 
 % Process Level 0 (DN) to Level 1 (Radiance)
-FLOXBOX_Level_1(rawDataID, connectionID, switchedChannels);
+parfor i=0:size(DN_all)-1
+    FLOXBOX_Level_1(connectionID, switchedChannels, DN_all.get(i));
+end
+
 
 % Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
 % it currently stores SIF not the Reflectance.
@@ -51,8 +86,9 @@ import ch.specchio.types.*;
 % connect to SPECCHIO
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
+connectionID                                                = 2;
 user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
-hierarchy_id                                                = reflectanceDataID;
+hierarchy_id                                                = 130;
 node                                                        = hierarchy_node(hierarchy_id, "", "");
 all_ids                                                     = user_data.specchio_client.getSpectrumIdsForNode(node);
 [ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', all_ids);
@@ -61,7 +97,8 @@ wvl_QEpro                                                   = space_QEpro.getAve
 wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
 VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
 insertVIs(user_data, ids_FLAME, VIs);
-time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time');
+time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time (UTC)');
+time_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Acquisition Time (UTC)');
 NDVI_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
 EVI_FLAME                                                   = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'EVI');
 Garb_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Garbage Flag');
@@ -71,6 +108,12 @@ for i=1:size(time_QEpro)
    tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
    measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
    t_QEpro(i, 1) = measurement_datetime;
+end
+
+for i=1:size(time_FLAME)
+   tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
+   measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
+   t_FLAME(i, 1) = measurement_datetime;
 end
 
 ndvi_fl = nan(size(NDVI_FLAME),1);

@@ -36,25 +36,25 @@ ids_b = getTimeWindowData(user_data, '2.0', '20180719093500', '20180719093700');
 ids_c = getTimeWindowData(user_data, '2.0', '20180911093400', '20180911093600');
 ids_all = java.util.ArrayList();
 
-% Combine arrays
 for i=0:size(ids_a)-1
-    ids_all.add(i, int32(ids_a.get(i)))
+    ids_all.add(i,ids_a.get(i))
 end
 for i=0:size(ids_b)-1
-    ids_all.add(i+size(ids_a), int32(ids_b.get(i)));
+    ids_all.add(i+size(ids_a)-1,ids_b.get(i));
 end
 for i=0:size(ids_c)-1
-    ids_all.add(i+size(ids_a) + size(ids_b), int32(ids_c.get(i)));
+    ids_all.add(i+size(ids_a)-1 + size(ids_b)-1,ids_c.get(i));
 end
 
 
-%% Prepare data for visualization
-[ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', ids_all);
-[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', ids_all);
+%% Prepare data for visualization - 2018-06-26
+
+[ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', ids_a);
+[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', ids_a);
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
 wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
-VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
-insertVIs(user_data, ids_FLAME, VIs);
+% VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
+% insertVIs(user_data, ids_FLAME, VIs);
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time (UTC)');
 time_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Acquisition Time (UTC)');
 NDVI_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
@@ -84,7 +84,7 @@ for i=0:size(evi_fl)-1
     evi_fl(i+1,1) = EVI_FLAME.get(i);
 end
 
-% Visualize
+
 figure('Name', '2018-06-26') 
 clf
 subplot(2,1,1)

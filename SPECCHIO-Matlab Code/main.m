@@ -26,10 +26,11 @@
 %   V1, 19-Sep-2019
 %   V2, 25-Sep-2019
 
+%% Processing
 % Define Hierarchy Levels:
 rawDataID           = 175;
-radianceDataID      = 129;
-reflectanceDataID   = 130;
+radianceDataID      = 177;
+reflectanceDataID   = 178;
 
 % Define Connection info:
 connectionID        = 2;
@@ -99,20 +100,12 @@ end
 FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
 
 
-
-%% Plot Data
-import ch.specchio.client.*;
-import ch.specchio.queries.*;
-import ch.specchio.gui.*;
-import ch.specchio.types.*;
-
+%% Visualization
 % connect to SPECCHIO
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
-connectionID                                                = 2;
 user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
-hierarchy_id                                                = 130;
-node                                                        = hierarchy_node(hierarchy_id, "", "");
+node                                                        = hierarchy_node(reflectanceDataID, "", "");
 all_ids                                                     = user_data.specchio_client.getSpectrumIdsForNode(node);
 [ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', all_ids);
 [ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', all_ids);

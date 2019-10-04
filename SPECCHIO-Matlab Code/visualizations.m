@@ -7,6 +7,13 @@ reflectanceDataID   = 178;
 % Define Connection info:
 connectionID        = 2;
 
+% Import specchio functionality:
+import ch.specchio.client.*;
+import ch.specchio.queries.*;
+import ch.specchio.gui.*;
+import ch.specchio.types.*;
+import ch.specchio.*;
+
 % connect to SPECCHIO
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
@@ -17,8 +24,8 @@ all_ids                                                     = user_data.specchio
 [ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', all_ids);
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
 wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
-VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
-insertVIs(user_data, ids_FLAME, VIs);
+% VIs                                                         = compute_VIs(wvl_FLAME, spectra_FLAME');
+% insertVIs(user_data, ids_FLAME, VIs);
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time (UTC)');
 time_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Acquisition Time (UTC)');
 NDVI_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'NDVI');
@@ -78,7 +85,12 @@ hold 'off'
 
 
 % Find max O2B-peak and O2A-peak of each spectrum:
-O2B_peaks = nanmax(spectra_QEpro(:, find(wvl_QEpro >= 650 & wvl_QEpro < 700)));
+% Define O2B-peak region:
+
+spectra_QEpro_t     = spectra_QEpro';
+testSpectrum        = spectra_QEpro_t(:, 1);
+O2B_region          = find(testSpectrum(find(wvl_QEpro >= 650 & wvl_QEpro < 700)));
+O2B_peaks           = find(testSpectrum(:) == max(testSpectrum(O2B_region)));
 subplot(2,2,2)
 
 

@@ -34,7 +34,7 @@ reflectanceDataID   = 130;
 % Define Connection info:
 connectionID        = 2;
 
-
+switchedChannels = true;
 
 % Import specchio functionality:
 import ch.specchio.client.*;
@@ -52,22 +52,45 @@ user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_li
 node = hierarchy_node(rawDataID, "", "");
 DN_ids = user_data.specchio_client.getSpectrumIdsForNode(node);
 
+% group spectra by spectral number: but as the spectral number can be
+% repeated within a day, it is better to group by UTC or Acquisition time
+% group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
+group_collection = user_data.specchio_client.sortByAttributes(DN_ids, 'Acquisition Time (UTC)');
+groups = group_collection.getSpectrum_id_lists;
+
+
 % Split DNs up into a reasonable amount of threads figure out a good way to
 % do it
+threads = 4;
+remainder = mod(size(groups),threads);
+split = floor(size(groups)/threads);
+Gr_a = java.util.ArrayList(groups.subList (0, split-1));
+Gr_b = java.util.ArrayList(groups.subList (split, 2*split-1));
+Gr_c = java.util.ArrayList(groups.subList (2*split, 3*split-1));
+Gr_d = java.util.ArrayList(groups.subList (3*split, 4*split+remainder));    
+Gr_all = java.util.ArrayList();
+Gr_all.add(0, Gr_a);
+Gr_all.add(1, Gr_b);
+Gr_all.add(2, Gr_c);
+Gr_all.add(3, Gr_d);
 
-DN_a = java.util.ArrayList(DN_ids.subList (0, 503));
-DN_b = java.util.ArrayList(DN_ids.subList (504, 1008));
-DN_c = java.util.ArrayList(DN_ids.subList (1009, 1513));
-DN_d = java.util.ArrayList(DN_ids.subList (1514, 2014));    
-DN_all = java.util.ArrayList();
-DN_all.add(0, DN_a);
-DN_all.add(1, DN_b);
-DN_all.add(2, DN_c);
-DN_all.add(3, DN_d);
+Gr_selected_DNs = java.util.ArrayList();
+
+
+for i=0:size(Gr_all)-1
+    selection = java.util.ArrayList();
+    for k=0:size(Gr_all.get(i))-1
+        for l=0:size(Gr_all.get(i).get(k).getSpectrumIds)-1
+            selection.add(k,int32(Gr_all.get(i).get(k).getSpectrumIds.get(l)));
+        end
+    end
+    disp(num2str(i));
+    Gr_selected_DNs.add(i, selection);
+end
 
 % Process Level 0 (DN) to Level 1 (Radiance)
-parfor i=0:size(DN_all)-1
-    FLOXBOX_Level_1(connectionID, switchedChannels, DN_all.get(i));
+parfor i=0:size(Gr_selected_DNs)-1
+    FLOXBOX_Level_1(connectionID, switchedChannels, Gr_selected_DNs.get(i));
 end
 
 

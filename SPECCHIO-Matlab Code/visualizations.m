@@ -54,10 +54,14 @@ end
 % creates the solid square defined by the four points (0,1), (0,0), (1,0), and (1,1).
 % >> pgon = polyshape([0 0 1 1],[1 0 0 1])
 % >> plot(pgon)
-maxValO2B   = nanmax(nanmax(spectra_QEpro(:, find(wvl_QEpro >= 687 & wvl_QEpro < 688))));
+% Find the entries in the spectra that correspond to the O2 bands (A and
+% B):
+O2B         = find(wvl_QEpro >= 687 & wvl_QEpro < 688);
+maxValO2B   = nanmax(nanmax(spectra_QEpro(:, O2B)));
 pO2B        = polyshape([686.5 687.5 687.5 686.5], [0 0 maxValO2B maxValO2B]);
 
-maxValO2A   = nanmax(nanmax(spectra_QEpro(:, find(wvl_QEpro >= 760 & wvl_QEpro < 761))));
+O2A         = find(wvl_QEpro >= 760 & wvl_QEpro < 761);
+maxValO2A   = nanmax(nanmax(spectra_QEpro(:, O2A)));
 pO2A        = polyshape([759.5 760.5 760.5 759.5], [0 0 maxValO2A maxValO2A]);
 
 figure('Name', 'SIF') 
@@ -73,10 +77,18 @@ title('A - Time Series and Oxygen Absorption Bands')
 hold 'off'
 
 
-subplot(2,3,2)
-plot(wvl_FLAME, spectra_FLAME)
-axis([640 850 0 1])
-title('Broadrange')
+% Find max O2B-peak and O2A-peak of each spectrum:
+O2B_peaks = nanmax(spectra_QEpro(:, find(wvl_QEpro >= 650 & wvl_QEpro < 700)));
+subplot(2,2,2)
+
+
+
+
+
+% subplot(2,3,2)
+% plot(wvl_FLAME, spectra_FLAME)
+% axis([640 850 0 1])
+% title('Broadrange')
 
 % subplot(2,3,3)
 % plot(t_QEpro, spectra_QEpro(:,417:670))

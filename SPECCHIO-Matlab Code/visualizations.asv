@@ -87,32 +87,40 @@ hold 'off'
 % Find max O2B-peak and O2A-peak of each spectrum:
 
 % Define O2B-peak region:
-spectra_QEpro_t         = spectra_QEpro';
-O2B_region              = find(spectra_QEpro_t(wvl_QEpro >= 650 & wvl_QEpro < 687));
-O2B_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2B_region,:),[], 1, 'omitnan');
+spectra_QEpro_t     = spectra_QEpro';
+% testSpectrum        = spectra_QEpro_t(:, 1);
+O2B_region          = find(spectra_QEpro_t(wvl_QEpro >= 650 & wvl_QEpro < 687));
+O2B_peak            = spectra_QEpro_t == max(spectra_QEpro_t(O2B_region,:));
 
-SpectrumO2B             = nan(size(spectra_QEpro_t));
-SpectrumO2B(O2B_peak)   = spectra_QEpro_t(O2B_peak)';
-
+testSpectrumConverted = nan(size(spectra_QEpro_t));
+testSpectrumConverted(O2B_peak) = spectra_QEpro_t(O2B_peak)';
+% wvl_QEpro_scatter = zeros(size(spectra_QEpro_t));
+% for i=1:size(wvl_QEpro_scatter,2)
+%     wvl_QEpro_scatter(:,i) = wvl_QEpro;
+% end
 subplot(2,2,2)
-title('maxF<O2B>')
-for i=1:size(SpectrumO2B,2)
-    scatter(wvl_QEpro, SpectrumO2B(:,i), 100)
+for i=1:size(testSpectrumConverted,2)
+    scatter(wvl_QEpro, testSpectrumConverted(:,i), 100)
     hold 'on'
 end
 hold 'off'
 
 
 % Define O2A-peak region:
-O2A_region              = find(spectra_QEpro_t(wvl_QEpro >= 735));
-O2A_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2A_region,:),[], 1, 'omitnan');
-SpectrumO2A             = nan(size(spectra_QEpro_t));
-SpectrumO2A(O2A_peak)   = spectra_QEpro_t(O2A_peak)';
+spectra_QEpro_t     = spectra_QEpro';
+% testSpectrum        = spectra_QEpro_t(:, 1);
+O2A_region          = find(spectra_QEpro_t(wvl_QEpro >= 720 & wvl_QEpro < 761));
+O2A_peak            = spectra_QEpro_t == max(spectra_QEpro_t(O2A_region,:));
 
+SpectrumO2A = nan(size(spectra_QEpro_t));
+SpectrumO2A(O2A_peak) = spectra_QEpro_t(O2A_peak)';
+% wvl_QEpro_scatter = zeros(size(spectra_QEpro_t));
+% for i=1:size(wvl_QEpro_scatter,2)
+%     wvl_QEpro_scatter(:,i) = wvl_QEpro;
+% end
 subplot(2,2,3)
-title('maxF<O2A>')
 for i=1:size(SpectrumO2A,2)
-    scatter(wvl_QEpro, SpectrumO2A(:,i), 100)
+    scatter(wvl_QEpro, testSpectrumConverted(:,i), 100)
     hold 'on'
 end
 hold 'off'

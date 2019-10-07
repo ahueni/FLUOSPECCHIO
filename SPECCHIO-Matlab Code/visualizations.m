@@ -108,11 +108,21 @@ O2B_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2B_region,:),[
 SpectrumO2B             = nan(size(spectra_QEpro_t));
 SpectrumO2B(O2B_peak)   = spectra_QEpro_t(O2B_peak)';
 
-subplot(2,2,2)
+subplot(1,2,1)
+linecol = parula(size(spectra_QEpro,1));
+colormap(linecol)
 for i=1:size(SpectrumO2B,2)
-    scatter(wvl_QEpro, SpectrumO2B(:,i), 100)
+    scatter(wvl_QEpro, SpectrumO2B(:,i), 50, linecol(i,:), 'filled')
     hold 'on'
 end
+hold 'on'
+cbar = colorbar;
+% Get the current location of the tick marks
+ticks = get(cbar, 'ticks');
+% Now create a label for each tick mark (you can modify these however you want)
+labels = arrayfun(@(x) timeLab(x, spectra_QEpro, t_QEpro), ticks, 'uniformoutput', false);
+% Assign the labels to the colorbar
+set(cbar,'Ticks', ticks, 'TickLabels', labels)
 title('maxF<O2B>')
 hold 'off'
 
@@ -123,29 +133,10 @@ O2A_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2A_region,:),[
 SpectrumO2A             = nan(size(spectra_QEpro_t));
 SpectrumO2A(O2A_peak)   = spectra_QEpro_t(O2A_peak)';
 
-subplot(2,2,3)
+subplot(1,2,2)
 for i=1:size(SpectrumO2A,2)
     scatter(wvl_QEpro, SpectrumO2A(:,i), 100)
     hold 'on'
 end
 title('maxF<O2A>')
 hold 'off'
-
-% plot(wvl_QEpro, spectra_QEpro_t(:,50)); % 'Color',jet(193)
-% hold 'on'
-% fill_color = [.929 .694 .125];
-% fh = fill(wvl_QEpro(points), spectra_QEpro_t(points,50),fill_color);
-% hold 'on'
-% fill(wvl_QEpro(end), 0, fill_color)
-%
-% trapz(wvl_QEpro, spectra_QEpro_t(:,1), 'omitnan')
-
-
-%%
-function timeLab = timeLab(x)
-     if x==0
-        timeLab = [num2str(hour(t_QEpro(1))) ':' num2str(minute(t_QEpro(1)))];
-     else 
-        timeLab = [num2str(hour(t_QEpro(round((x * size(spectra_QEpro,1)))+1))) ':' num2str(minute(t_QEpro(round((x * size(spectra_QEpro,1)))+1)))];
-     end
-end

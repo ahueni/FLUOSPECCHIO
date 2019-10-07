@@ -8,10 +8,7 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, provenance_spectr
      % DEFINE OUTPUT ARRAYS:
      provenance_spectrum_ids    = java.util.ArrayList();
      out_arr                    = zeros(21, ids.size);
-     outF_SFM                   = nan(no_of_bands, ids.size);
-     outR_SFM                   = nan(no_of_bands, ids.size);
-     outF_SpecFit               = nan(no_of_bands, ids.size);
-     outR_SpecFit               = nan(no_of_bands, ids.size);
+     [outF_SFM, outR_SFM, outF_specFit, outR_specFit] = deal(nan(no_of_bands, ids.size));
      
      for i=0:group_no-1
          

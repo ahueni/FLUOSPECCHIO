@@ -34,15 +34,15 @@ Garb_FLAME                                                  = user_data.specchio
 
 
 for i=1:size(time_QEpro)
-   tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
-   measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
-   t_QEpro(i, 1) = measurement_datetime;
+    tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
+    measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
+    t_QEpro(i, 1) = measurement_datetime;
 end
 
 for i=1:size(time_FLAME)
-   tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
-   measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
-   t_FLAME(i, 1) = measurement_datetime;
+    tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
+    measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
+    t_FLAME(i, 1) = measurement_datetime;
 end
 
 ndvi_fl = nan(size(NDVI_FLAME),1);
@@ -55,9 +55,11 @@ for i=0:size(evi_fl)-1
     evi_fl(i+1,1) = EVI_FLAME.get(i);
 end
 
-% The polyshape function creates a polygon defined by 2-D vertices, 
-% and returns a polyshape object with properties describing its vertices, 
-% solid regions, and holes. For example, pgon = polyshape([0 0 1 1],[1 0 0 1]) 
+
+
+% The polyshape function creates a polygon defined by 2-D vertices,
+% and returns a polyshape object with properties describing its vertices,
+% solid regions, and holes. For example, pgon = polyshape([0 0 1 1],[1 0 0 1])
 % creates the solid square defined by the four points (0,1), (0,0), (1,0), and (1,1).
 % >> pgon = polyshape([0 0 1 1],[1 0 0 1])
 % >> plot(pgon)
@@ -71,11 +73,23 @@ O2A         = find(wvl_QEpro >= 760 & wvl_QEpro < 761);
 maxValO2A   = nanmax(nanmax(spectra_QEpro(:, O2A)));
 pO2A        = polyshape([759.5 760.5 760.5 759.5], [0 0 maxValO2A maxValO2A]);
 
-figure('Name', 'SIF') 
+figure('Name', 'SIF')
 clf
-subplot(2,2,1)
-plot(wvl_QEpro, spectra_QEpro); % 'Color',jet(193)
+linecol = parula(size(spectra_QEpro,1));
+colormap(linecol)
+% subplot(2,2,1)
+for i=1:size(spectra_QEpro,1)
+    plot(wvl_QEpro, spectra_QEpro(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
+    hold 'on'
+end
 hold 'on'
+cbar = colorbar;
+% Get the current location of the tick marks
+ticks = get(cbar, 'ticks');
+% Now create a label for each tick mark (you can modify these however you want)
+labels = arrayfun(@(x) timeLab(x, spectra_QEpro, t_QEpro), ticks, 'uniformoutput', false);
+% Assign the labels to the colorbar
+set(cbar,'Ticks', ticks, 'TickLabels', labels)
 plot(pO2B, 'FaceColor', 'none');
 plot(pO2A, 'FaceColor', 'none');
 text(686, (maxValO2B+(0.1*maxValO2B)),'O2B')
@@ -123,8 +137,15 @@ hold 'off'
 % fh = fill(wvl_QEpro(points), spectra_QEpro_t(points,50),fill_color);
 % hold 'on'
 % fill(wvl_QEpro(end), 0, fill_color)
-% 
+%
 % trapz(wvl_QEpro, spectra_QEpro_t(:,1), 'omitnan')
 
 
-
+%%
+function timeLab = timeLab(x)
+     if x==0
+        timeLab = [num2str(hour(t_QEpro(1))) ':' num2str(minute(t_QEpro(1)))];
+     else 
+        timeLab = [num2str(hour(t_QEpro(round((x * size(spectra_QEpro,1)))+1))) ':' num2str(minute(t_QEpro(round((x * size(spectra_QEpro,1)))+1)))];
+     end
+end

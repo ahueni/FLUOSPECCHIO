@@ -1,4 +1,5 @@
 %% Visualization
+addpath('Helper');
 % Define Hierarchy Levels:
 rawDataID           = 175;
 radianceDataID      = 177;

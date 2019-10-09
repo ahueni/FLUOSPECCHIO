@@ -27,6 +27,8 @@ import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.gui.*;
 import ch.specchio.types.*;
+connectionID        = 2;
+switchedChannels    = true;
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
 user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
@@ -35,7 +37,7 @@ user_data.specchio_client                                   = user_data.cf.creat
 ids_a = getTimeWindowData(user_data, '2.0', '20180626093100', '20180626093300');
 ids_b = getTimeWindowData(user_data, '2.0', '20180719093500', '20180719093700');
 ids_c = getTimeWindowData(user_data, '2.0', '20180911093400', '20180911093600');
-ids_d = getTimeWindowData(user_data, '2.0', '20180425094200', '20180425094400');
+ids_d = getTimeWindowData(user_data, '2.0', '20180426094200', '20180426094400');
 ids_all = java.util.ArrayList();
 
 % Combine arrays
@@ -47,6 +49,9 @@ for i=0:size(ids_b)-1
 end
 for i=0:size(ids_c)-1
     ids_all.add(i+size(ids_a) + size(ids_b), int32(ids_c.get(i)));
+end
+for i=0:size(ids_d)-1
+    ids_all.add(i+size(ids_a) + size(ids_b) + size(ids_c), int32(ids_d.get(i)));
 end
 
 
@@ -91,7 +96,7 @@ figure(1)
 clf
 subplot(2,2,1)
 plot(wvl_FLAME, spectra_FLAME)
-axis([640 850 0 1])
+axis([500 700 0 1])
 title('Broadrange')
 
 subplot(2,2,2)

@@ -29,7 +29,7 @@
 
 %% Processing
 % Define Hierarchy Levels:
-rawDataID               = 207;
+rawDataID               = 211;
 radianceDataID          = 208;
 reflectanceDataID       = 178;
 % rawDataID_OEN           = 179;

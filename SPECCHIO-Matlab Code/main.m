@@ -29,15 +29,18 @@
 
 %% Processing
 % Define Hierarchy Levels:
-rawDataID           = 175;
-radianceDataID      = 177;
-reflectanceDataID   = 178;
+rawDataID               = 175;
+radianceDataID          = 177;
+reflectanceDataID       = 178;
+rawDataID_OEN           = 179;
+radianceData_OEN        = 180;
+reflectanceDataID_OEN   = 181;
 
 % Define Connection info:
 connectionID        = 2;
 
 % Box setup:
-switchedChannels    = true;
+switchedChannels    = false;
 
 % Import specchio functionality:
 import ch.specchio.client.*;

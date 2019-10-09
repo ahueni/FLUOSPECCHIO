@@ -35,6 +35,7 @@ user_data.specchio_client                                   = user_data.cf.creat
 ids_a = getTimeWindowData(user_data, '2.0', '20180626093100', '20180626093300');
 ids_b = getTimeWindowData(user_data, '2.0', '20180719093500', '20180719093700');
 ids_c = getTimeWindowData(user_data, '2.0', '20180911093400', '20180911093600');
+ids_d = getTimeWindowData(user_data, '2.0', '20180425094200', '20180425094400');
 ids_all = java.util.ArrayList();
 
 % Combine arrays

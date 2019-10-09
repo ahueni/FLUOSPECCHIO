@@ -29,8 +29,8 @@
 
 %% Processing
 % Define Hierarchy Levels:
-rawDataID               = 190;
-radianceDataID          = 185;
+rawDataID               = 207;
+radianceDataID          = 208;
 reflectanceDataID       = 178;
 % rawDataID_OEN           = 179;
 % radianceData_OEN        = 180;
@@ -63,7 +63,6 @@ DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
 % group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
 group_collection    = user_data.specchio_client.sortByAttributes(DN_ids, 'Acquisition Time (UTC)');
 groups              = group_collection.getSpectrum_id_lists;
-
 
 % Split DNs up into a reasonable amount of threads figure out a good way to
 % do it

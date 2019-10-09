@@ -167,7 +167,8 @@ function calibrate_space(user_data, space)
         % insert into database
        insert_radiances([WR_L, VEG_L, WR2_L], provenance_spectrum_ids, user_data);
         
-        disp([ 'Iteration = ' num2str(i) ]);
+%         disp([ 'Iteration = ' num2str(i) ]);
+        disp('.');
         
     end
     

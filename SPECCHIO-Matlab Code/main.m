@@ -29,12 +29,12 @@
 
 %% Processing
 % Define Hierarchy Levels:
-rawDataID               = 175;
-radianceDataID          = 177;
+rawDataID               = 190;
+radianceDataID          = 185;
 reflectanceDataID       = 178;
-rawDataID_OEN           = 179;
-radianceData_OEN        = 180;
-reflectanceDataID_OEN   = 181;
+% rawDataID_OEN           = 179;
+% radianceData_OEN        = 180;
+% reflectanceDataID_OEN   = 181;
 
 % Define Connection info:
 connectionID        = 2;
@@ -90,7 +90,7 @@ for i=0:size(Gr_all)-1
             selection.add(k,int32(Gr_all.get(i).get(k).getSpectrumIds.get(l)));
         end
     end
-    disp(num2str(i));
+%     disp(num2str(i));
     Gr_selected_DNs.add(i, selection);
 end
 

@@ -32,12 +32,7 @@
 rawDataID               = [184, 211, 207, 213, 186, 218, 188, 216, 190];
 % rawDataID               = [188, 216, 190];
 radianceDataID          = [196, 219, 208, 220, 197, 221, 198, 222, 201];
-% rawDataID               = 222;
-% radianceDataID          = 219;
-% reflectanceDataID       = 178;
-% rawDataID_OEN           = 179;
-% radianceData_OEN        = 180;
-% reflectanceDataID_OEN   = 181;
+rad                     = [196, 208, 197, 198, 201];
 
 % Define Connection info:
 connectionID        = 2;
@@ -108,9 +103,9 @@ for j=2:size(rawDataID,2)
 end 
 
 
-for j=1:size(radianceDataID,2)
+for j=1:size(rad,2)
     %% Level 1 -> Level 2
     % Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
     % it currently stores SIF not the Reflectance.
-    FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
+    FLOXBOX_Level_2(rad(j), connectionID, switchedChannels);
 end

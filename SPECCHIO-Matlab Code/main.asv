@@ -29,18 +29,16 @@
 
 %% Processing
 % Define Hierarchy Levels:
-rawDataID               = 210;
-radianceDataID          = 219;
-reflectanceDataID       = 178;
-% rawDataID_OEN           = 179;
-% radianceData_OEN        = 180;
-% reflectanceDataID_OEN   = 181;
+rawDataID               = [184, 211, 207, 213, 186, 218, 188, 216, 190];
+% rawDataID               = [188, 216, 190];
+radianceDataID          = [196, 219, 208, 220, 197, 221, 198, 222, 201];
+rad                     = [196, 208, 197, 198, 201];
 
 % Define Connection info:
 connectionID        = 2;
 
 % Box setup:
-switchedChannels    = false;
+switchedChannels    = true;
 
 % Import specchio functionality:
 import ch.specchio.client.*;
@@ -55,51 +53,59 @@ user_data.db_descriptor_list    = user_data.cf.getAllServerDescriptors();
 user_data.specchio_client       = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
 
 % get spectra ids for this hierarchy
-node    = hierarchy_node(rawDataID, "", "");
-DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
-
-% group spectra by spectral number: but as the spectral number can be
-% repeated within a day, it is better to group by UTC or Acquisition time
-% group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
-group_collection    = user_data.specchio_client.sortByAttributes(DN_ids, 'Acquisition Time (UTC)');
-groups              = group_collection.getSpectrum_id_lists;
-
-% Split DNs up into a reasonable amount of threads figure out a good way to
-% do it
-threads         = 4;
-remainder       = mod(size(groups),threads);
-split           = floor(size(groups)/threads);
-Gr_a            = java.util.ArrayList(groups.subList (0, split-1));
-Gr_b            = java.util.ArrayList(groups.subList (split, 2*split-1));
-Gr_c            = java.util.ArrayList(groups.subList (2*split, 3*split-1));
-Gr_d            = java.util.ArrayList(groups.subList (3*split, 4*split+remainder));    
-Gr_all          = java.util.ArrayList();
-Gr_all.add(0, Gr_a);
-Gr_all.add(1, Gr_b);
-Gr_all.add(2, Gr_c);
-Gr_all.add(3, Gr_d);
-
-% Create an arraylist that contains the arraylists of the individual
-% groups:
-Gr_selected_DNs = java.util.ArrayList();
-for i=0:size(Gr_all)-1
-    selection = java.util.ArrayList();
-    for k=0:size(Gr_all.get(i))-1
-        for l=0:size(Gr_all.get(i).get(k).getSpectrumIds)-1
-            selection.add(k,int32(Gr_all.get(i).get(k).getSpectrumIds.get(l)));
-        end
+for j=2:size(rawDataID,2)
+    if (j>1)
+        clearvars node DN_ids group_collection groups threads remainder split Gr_a Gr_b Gr_c Gr_d Gr_all Gr_selected_DNs k l;
     end
-%     disp(num2str(i));
-    Gr_selected_DNs.add(i, selection);
-end
+    node    = hierarchy_node(rawDataID(j), "", "");
+    DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
 
-%% Level 0 -> Level 1
-% Process Level 0 (DN) to Level 1 (Radiance)
-parfor i=0:size(Gr_selected_DNs)-1
-    FLOXBOX_Level_1(connectionID, switchedChannels, Gr_selected_DNs.get(i));
-end
+    % group spectra by spectral number: but as the spectral number can be
+    % repeated within a day, it is better to group by UTC or Acquisition time
+    % group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
+    group_collection    = user_data.specchio_client.sortByAttributes(DN_ids, 'Acquisition Time (UTC)');
+    groups              = group_collection.getSpectrum_id_lists;
 
-%% Level 1 -> Level 2
-% Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
-% it currently stores SIF not the Reflectance.
-FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
+    % Split DNs up into a reasonable amount of threads figure out a good way to
+    % do it
+    threads         = 4;
+    remainder       = mod(size(groups),threads);
+    split           = floor(size(groups)/threads);
+    Gr_a            = java.util.ArrayList(groups.subList (0, split-1));
+    Gr_b            = java.util.ArrayList(groups.subList (split, 2*split-1));
+    Gr_c            = java.util.ArrayList(groups.subList (2*split, 3*split-1));
+    Gr_d            = java.util.ArrayList(groups.subList (3*split, 4*split+remainder));    
+    Gr_all          = java.util.ArrayList();
+    Gr_all.add(0, Gr_a);
+    Gr_all.add(1, Gr_b);
+    Gr_all.add(2, Gr_c);
+    Gr_all.add(3, Gr_d);
+
+    % Create an arraylist that contains the arraylists of the individual
+    % groups:
+    Gr_selected_DNs = java.util.ArrayList();
+    for i=0:size(Gr_all)-1
+        selection = java.util.ArrayList();
+        for k=0:size(Gr_all.get(i))-1
+            for l=0:size(Gr_all.get(i).get(k).getSpectrumIds)-1
+                selection.add(k,int32(Gr_all.get(i).get(k).getSpectrumIds.get(l)));
+            end
+        end
+    %     disp(num2str(i));
+        Gr_selected_DNs.add(i, selection);
+    end
+
+    %% Level 0 -> Level 1
+    % Process Level 0 (DN) to Level 1 (Radiance)
+    parfor i=0:size(Gr_selected_DNs)-1
+        FLOXBOX_Level_1(connectionID, switchedChannels, Gr_selected_DNs.get(i));
+    end
+end 
+
+
+for j=1:size(radianceDataID,2)
+    %% Level 1 -> Level 2
+    % Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
+    % it currently stores SIF not the Reflectance.
+    FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
+end

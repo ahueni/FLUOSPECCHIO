@@ -87,7 +87,7 @@ plot(pO2B, 'FaceColor', 'none');
 plot(pO2A, 'FaceColor', 'none');
 text(686, (maxValO2B+(0.1*maxValO2B)),'O2B')
 text(760, (maxValO2A+(0.1*maxValO2A)),'O2A')
-title('A - Time Series and Oxygen Absorption Bands')
+title(['Time Series on ' datestr(t_QEpro(1), "YYYY-mm-dd")])
 hold 'off'
 
 set(subplot(2,2,2), 'Position', [0.5 0.6 (1/3) 0.30]);

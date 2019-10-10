@@ -91,16 +91,15 @@ title('A - Time Series and Oxygen Absorption Bands')
 hold 'off'
 
 set(subplot(2,2,2), 'Position', [0.5 0.6 (1/3) 0.30]);
-% plot(wvl_QEpro, spectra_QEpro(190,:))
+plot(wvl_QEpro, spectra_QEpro(190,:))
 for i=1:size(spectra_QEpro,1)
     plot(wvl_QEpro, spectra_QEpro(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
-    H(i)= area(wvl_QEpro,spectra_QEpro(i,:));
-    set(H(i),'FaceColor',linecol(i,:));
+    H(i)=area(wvl_QEpro,spectra_QEpro(190,:));
+    set(H(i),'FaceColor',linecol(190,:));
+    alpha(.5);
+    title('F-tot')
     hold 'on'
 end
-title('F-tot')
-% alpha(.5);
-hold 'off'
 % H=area(wvl_QEpro,spectra_QEpro(190,:));
 % set(H(1),'FaceColor',linecol(190,:));
 % alpha(.5);

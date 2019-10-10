@@ -96,7 +96,7 @@ figure(1)
 clf
 subplot(2,2,1)
 plot(wvl_FLAME, spectra_FLAME)
-axis([500 700 0 1])
+axis([500 900 0 1])
 title('Broadrange')
 
 subplot(2,2,2)

@@ -128,17 +128,28 @@ hold 'off'
 spectra_QEpro_t         = spectra_QEpro';
 O2B_region              = wvl_QEpro >= 670 & wvl_QEpro < 690;
 O2B_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2B_region,:),[], 1, 'omitnan');
+% O2B_max                 = max(spectra_QEpro_t(O2B_region,:),[], 1, 'omitnan')';
 
 SpectrumO2B             = nan(size(spectra_QEpro_t));
 SpectrumO2B(O2B_peak)   = spectra_QEpro_t(O2B_peak)';
 
-set(subplot(2,2,3), 'Position', [0.1 0.1 (1/3) 0.30]);
+wvlChangeO2B            = nan(size(spectra_QEpro_t));
+[row,col,v]             = find(O2B_peak);
+wvlChangeO2B(O2B_peak)  = wvl_QEpro(row);
+
+subplot(2,2,3)
 linecol = parula(size(spectra_QEpro,1));
 colormap(linecol)
 for i=1:size(SpectrumO2B,2)
-    scatter(wvl_QEpro, SpectrumO2B(:,i), 50, linecol(i,:), 'filled')
+    scatter(t_QEpro(i), wvlChangeO2B(wvlChangeO2B(:,i)>0,i),'k', 'filled')
     hold 'on'
 end
+
+% set(subplot(2,2,3), 'Position', [0.1 0.1 (1/3) 0.30]);
+% for i=1:size(SpectrumO2B,2)
+%     scatter(wvl_QEpro, SpectrumO2B(:,i), 50, linecol(i,:), 'filled')
+%     hold 'on'
+% end
 % cbar = colorbar;
 % % Get the current location of the tick marks
 % ticks = get(cbar, 'ticks');
@@ -152,20 +163,37 @@ hold 'off'
 
 % Define O2A-peak region:
 O2A_region              = wvl_QEpro >= 735 & wvl_QEpro < 760;
+spectra_QEpro_t(564,3)  = 0; % drop this value because it exists twice and will mess up the max later on
 O2A_peak                = spectra_QEpro_t == max(spectra_QEpro_t(O2A_region,:),[], 1, 'omitnan');
+
 
 SpectrumO2A             = nan(size(spectra_QEpro_t));
 SpectrumO2A(O2A_peak)   = spectra_QEpro_t(O2A_peak)';
 
-set(subplot(2,2,4), 'Position', [0.5 0.1 (1/3) 0.3]);
+wvlChangeO2A            = nan(size(spectra_QEpro_t));
+[row,col,v]             = find(O2A_peak);
+wvlChangeO2A(O2A_peak)  = wvl_QEpro(row);
+
+subplot(2,2,4)
 linecol = parula(size(spectra_QEpro,1));
 colormap(linecol)
+position = nan(size(SpectrumO2A,2),1);
 for i=1:size(SpectrumO2A,2)
-    scatter(wvl_QEpro, SpectrumO2A(:,i), 50, linecol(i,:), 'filled')
+    scatter(t_QEpro(i), wvlChangeO2A(wvlChangeO2A(:,i)>0,i),'k', 'filled')
     hold 'on'
 end
-title('maxF<O2A>')
-hold 'off'
+
+% 
+% 
+% set(subplot(2,2,4), 'Position', [0.5 0.1 (1/3) 0.3]);
+% linecol = parula(size(spectra_QEpro,1));
+% colormap(linecol)
+% for i=1:size(SpectrumO2A,2)
+%     scatter(wvl_QEpro, SpectrumO2A(:,i), 50, linecol(i,:), 'filled')
+%     hold 'on'
+% end
+% title('maxF<O2A>')
+% hold 'off'
 
 cbar = colorbar;
 % Get the current location of the tick marks

@@ -84,7 +84,7 @@ for i=1:size(spectra_QEpro,1)
     plot(wvl_QEpro, spectra_QEpro(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
     hold 'on'
 end
-% axis([650 800 0 0.2])
+axis([650 800 0.01 0.2])
 plot(pO2B, 'FaceColor', 'none');
 plot(pO2A, 'FaceColor', 'none');
 text(686, (maxValO2B+(0.1*maxValO2B)),'O2B')
@@ -138,8 +138,6 @@ wvlChangeO2B            = nan(size(spectra_QEpro_t));
 wvlChangeO2B(O2B_peak)  = wvl_QEpro(row);
 
 subplot(2,2,3)
-linecol = parula(size(spectra_QEpro,1));
-colormap(linecol)
 for i=1:size(SpectrumO2B,2)
     scatter(t_QEpro(i), wvlChangeO2B(wvlChangeO2B(:,i)>0,i),'k', 'filled')
     hold 'on'
@@ -157,7 +155,7 @@ end
 % labels = arrayfun(@(x) timeLab(x, spectra_QEpro, t_QEpro), ticks, 'uniformoutput', false);
 % % Assign the labels to the colorbar
 % set(cbar,'Ticks', ticks, 'TickLabels', labels)
-title('maxF<O2B>')
+title('Position of maxF<O2B>')
 hold 'off'
 
 
@@ -175,14 +173,12 @@ wvlChangeO2A            = nan(size(spectra_QEpro_t));
 wvlChangeO2A(O2A_peak)  = wvl_QEpro(row);
 
 subplot(2,2,4)
-linecol = parula(size(spectra_QEpro,1));
-colormap(linecol)
-position = nan(size(SpectrumO2A,2),1);
 for i=1:size(SpectrumO2A,2)
     scatter(t_QEpro(i), wvlChangeO2A(wvlChangeO2A(:,i)>0,i),'k', 'filled')
     hold 'on'
 end
-
+title('Position of maxF<O2A>')
+hold 'off'
 % 
 % 
 % set(subplot(2,2,4), 'Position', [0.5 0.1 (1/3) 0.3]);

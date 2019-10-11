@@ -89,7 +89,10 @@ plot(pO2B, 'FaceColor', 'none');
 plot(pO2A, 'FaceColor', 'none');
 text(686, (maxValO2B+(0.1*maxValO2B)),'O2B')
 text(760, (maxValO2A+(0.1*maxValO2A)),'O2A')
-title(['Time Series on ' datestr(t_QEpro(1), "YYYY-mm-dd")])
+title(datestr(t_QEpro(1), "YYYY-mm-dd"))
+xlabel('Wavelength [nm]')
+ylabel('F [mW m^{-2} sr^{-1} nm^{-1}]')
+% Colorbar
 cbar = colorbar;
 % Get the current location of the tick marks
 ticks = get(cbar, 'ticks');
@@ -97,16 +100,22 @@ ticks = get(cbar, 'ticks');
 labels = arrayfun(@(x) timeLab(x, spectra_QEpro, t_QEpro), ticks, 'uniformoutput', false);
 % Assign the labels to the colorbar
 set(cbar,'Ticks', ticks, 'TickLabels', labels)
+title(cbar,'Time')
 hold 'off'
 
-% set(subplot(2,2,2), 'Position', [0.5 0.6 (1/3) 0.30]);
-subplot(2,2,2)
+% Calculate total F (sum of all values, not exactly the integral but fair
+% enough for the moment)
 Ftot = nan(size(spectra_QEpro,1),1);
-
 for i=1:size(spectra_QEpro,1)
    Ftot(i,1) = nansum(spectra_QEpro(i,:));
 end
+
+subplot(2,2,2)
 plot(t_QEpro, Ftot)
+xlabel('Time [min]')
+ylabel('F [mW m^{-2} sr^{-1} nm^{-1}]')
+
+% set(subplot(2,2,2), 'Position', [0.5 0.6 (1/3) 0.30]);
 % for i=1:size(spectra_QEpro,1)
 %     plot(wvl_QEpro, spectra_QEpro(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
 %     H(i)= area(wvl_QEpro,spectra_QEpro(i,:));
@@ -156,6 +165,8 @@ end
 % % Assign the labels to the colorbar
 % set(cbar,'Ticks', ticks, 'TickLabels', labels)
 title('Position of maxF<O2B>')
+xlabel('Time [min]')
+ylabel('Wavelength [nm]')
 hold 'off'
 
 
@@ -178,6 +189,8 @@ for i=1:size(SpectrumO2A,2)
     hold 'on'
 end
 title('Position of maxF<O2A>')
+xlabel('Time [min]')
+ylabel('Wavelength [nm]')
 hold 'off'
 % 
 % 

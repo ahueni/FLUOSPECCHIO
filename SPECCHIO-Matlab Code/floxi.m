@@ -112,7 +112,7 @@ for i=1:size(spaces)
     group_collection    = user_data.specchio_client.sortByAttributes(sp.getSpectrumIds, 'Acquisition Time');
     groups              = group_collection.getSpectrum_id_lists;
     
-    [WR, VEG, WR2, DC_WR, DC_VEG] =  deal(zeros(size(user_data.sp.getVector(groups.get(0).getSpectrumIds.get(0)),1), size(groups)));
+    
     
 %     wvl  = sp.getAverageWavelengths();
     % CHECK:
@@ -126,8 +126,9 @@ for i=1:size(spaces)
     group_collection    = user_data.specchio_client.sortByAttributes(ordered_ids, 'Acquisition Time');
     groups              = group_collection.getSpectrum_id_lists;
     
+    [WR, VEG, WR2, DC_WR, DC_VEG] =  deal(zeros(size(user_data.sp.getVector(groups.get(0).getSpectrumIds.get(0)),1), size(groups)));
     % Integration time is required for the calibration
-    IT = zeros(size(groups),1);
+    IT = zeros(size(groups),size(groups.get(0)));
          
     DC_VEG_ind = 0; 
     DC_WR_ind = 1; 
@@ -137,17 +138,20 @@ for i=1:size(spaces)
     
     provenance_spectrum_ids = java.util.ArrayList;
     for n=1:size(groups)
-        DC_VEG(:,n)     = user_data.sp.getVector(groups.get(n-1).get(DC_VEG_ind));
-        DC_WR(:,n)      = user_data.sp.getVector(ordered_ids.get(DC_WR_ind));
-        VEG(:,n)        = user_data.sp.getVector(ordered_ids.get(VEG_ind));
-        WR(:,n)         = user_data.sp.getVector(ordered_ids.get(WR_ind));
-        WR2(:,n)        = user_data.sp.getVector(ordered_ids.get(WR2_ind)); 
+         disp(user_data.specchio_client.getMetaparameterValues(groups.get(n-1).getSpectrumIds, 'File Name'));
+    end
+        DC_VEG(:,n)     = user_data.sp.getVector(groups.get(n-1).getSpectrumIds.get(DC_VEG_ind));
+        DC_WR(:,n)      = user_data.sp.getVector(groups.get(n-1).getSpectrumIds.get(DC_WR_ind));
+        VEG(:,n)        = user_data.sp.getVector(groups.get(n-1).getSpectrumIds.get(VEG_ind));
+        WR(:,n)         = user_data.sp.getVector(groups.get(n-1).getSpectrumIds.get(WR_ind));
+        WR2(:,n)        = user_data.sp.getVector(groups.get(n-1).getSpectrumIds.get(WR2_ind)); 
+        
 %         Provenance Spectrum IDS required for updating EAV Metadata
-        provenance_spectrum_ids.add(java.lang.Integer(ordered_ids.get(VEG_ind)));
-        provenance_spectrum_ids.add(java.lang.Integer(ordered_ids.get(WR_ind)));
-        provenance_spectrum_ids.add(java.lang.Integer(ordered_ids.get(WR2_ind)));
+        provenance_spectrum_ids.add(java.lang.Integer(groups.get(n-1).getSpectrumIds.get(VEG_ind)));
+        provenance_spectrum_ids.add(java.lang.Integer(groups.get(n-1).getSpectrumIds.get(WR_ind)));
+        provenance_spectrum_ids.add(java.lang.Integer(groups.get(n-1).getSpectrumIds.get(WR2_ind)));
 %         get integration time of group
-        IT(n,1)         = user_data.specchio_client.getMetaparameterValues(groups.get(n-1), 'Integration Time');
+        IT(n,1)         = user_data.specchio_client.getMetaparameterValues(groups.get(n-1).getSpectrumIds, 'Integration Time');
     end
     
 %     Radiance      = ((DN-DC_DN) / IT) * GAIN;     where GAIN = up/down coef

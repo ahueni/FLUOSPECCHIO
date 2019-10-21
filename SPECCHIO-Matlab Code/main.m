@@ -14,7 +14,12 @@
 %   MISC:   
 %   The FLOXBOX has two sensors: (1) is the FLAME (in these files sometimes called ROX), full range sensor, files
 %   are named F*.csv; (2) is the QEpro, higher resolution for SIF retrieval (in these files someties called FLOX), files are named *.csv. 
-%   Naming these sensors ROX or FLOX respectively is wrong, and will be changed to FLAME and QEpro.
+%   Naming these sensors ROX or FLOX respectively is wrong, and will be
+%   changed to correspond to the naming scheme used by JB-Hyperspectral
+% 
+% 
+%   TBD:
+%   - sFLD; iFLD;
 %
 %   AUTHOR:
 %   Bastian Buman, RSWS, University of Zurich

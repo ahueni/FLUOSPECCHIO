@@ -1,4 +1,4 @@
-function [out_mat,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
+function [out_mat,outF_SpecFit,outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
@@ -147,12 +147,13 @@ parfor i = 1:n_files
         
         hbar.iterate(1)
         %
+    end
 end
 
 close(hbar);
 
 %% -- compute FLEX metrics
-      [SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
+[SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
     
 
 end

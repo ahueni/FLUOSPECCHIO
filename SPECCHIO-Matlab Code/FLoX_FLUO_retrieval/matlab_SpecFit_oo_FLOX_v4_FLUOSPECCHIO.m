@@ -1,4 +1,4 @@
-function [out_mat,outF_SpecFit,outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
+function [out_mat, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
@@ -9,11 +9,14 @@ function [out_mat,outF_SpecFit,outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SI
 %   L - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
 %
 %   OUTPUT:
-%   out_mat_all - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
-%   outF_SFM_all - nxm array with spectral fluorescence retrieved in the oxygen bands by SFM
-%   outR_SFM_all - nxm array with spectral true reflectance retrieved in the oxygen bands by SFM
-%   outF_SpecFit_all - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
-%   outR_SpecFit_all nxm array with spectral true reflectance retrieved in the full fitting window by SpecFit
+%   out_mat         - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
+%   outF_SpecFit    - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
+%   outR_SpecFit    - nxm array with spectral true reflectance retrieved in the full fitting window by SpecFit
+%   SIF_R_max       - max Reflectance of red SIF
+%   SIF_R_wl        - wavelength of the red SIF max
+%   SIF_FR_max      - max Reflectance of far-red SIF
+%   SIF_FR_wl       - wavelength of the far-red SIF
+%   SIFint          - total SIF emission (integrated using trapz())
 
 %   Sergio Cogliati, Ph.D
 %   Remote Sensing of Environmental Dynamics Lab.

@@ -1,4 +1,4 @@
-function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
+function [out_mat,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
@@ -9,7 +9,7 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_
 %   L - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
 %
 %   OUTPUT:
-%   out_arr_all - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
+%   out_mat_all - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
 %   outF_SFM_all - nxm array with spectral fluorescence retrieved in the oxygen bands by SFM
 %   outR_SFM_all - nxm array with spectral true reflectance retrieved in the oxygen bands by SFM
 %   outF_SpecFit_all - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
@@ -100,16 +100,15 @@ owvl            = wvl;
 [~,iowvl_687]   = min(abs(owvl-687));
 
 % create the output arrays
-out_hdr         = { 'filenum''f_SpecFit_A' 'r_SpecFit_A' 'f_SpecFit_B'  ... 
-                    'r_SpecFit_B' 'resnorm_SpecFit' 'exitflag_SpecFit'  ...
-                    'n_it_SpecFit''f_max_A' 'f_max_A_wvl' 'f_max_B'     ... 
-                    'f_max_B_wvl' 'f_int'                               ...                        ...
-                  };
-
-out_arr         = nan(n_files,size(out_hdr,2)); 
+out_hdr         = { 'filenum''f_SpecFit_A' 'r_SpecFit_A' 'f_SpecFit_B'  ...
+    'r_SpecFit_B' 'resnorm_SpecFit' 'exitflag_SpecFit'                  ...
+    'n_it_SpecFit''f_max_A' 'f_max_A_wvl' 'f_max_B'                     ...
+    'f_max_B_wvl' 'f_int'                                               ...                        ...
+    };
+              
+out_mat         = nan(n_files,size(out_hdr,2)-8);
 outF_SpecFit    = nan(numel(owvl),n_files);
 outR_SpecFit    = nan(numel(owvl),n_files);
-
 
 %% weighting scheme
 
@@ -138,7 +137,7 @@ parfor i = 1:n_files
         [x_F,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F] = FLOX_SpecFit_6C...
             (wvl,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,wvl);
         %
-        out_arr(i,:) = [ ...
+        out_mat(i,:) = [ ...
             f_wvl_F(iowvl_760) r_wvl_F(iowvl_760) f_wvl_F(iowvl_687) r_wvl_F(iowvl_687) resnorm_F exitflag_F output_F.iterations ...
             ];
         
@@ -151,14 +150,9 @@ parfor i = 1:n_files
 end
 
 close(hbar);
-%% resample at original wavelength vector (wvl)
-outF_SFM_A = interp1(wvl_A,outF_SFM_A,wvl);
-outR_SFM_A = interp1(wvl_A,outR_SFM_A,wvl);
-outF_SFM_B = interp1(wvl_B,outF_SFM_B,wvl);
-outR_SFM_B = interp1(wvl_B,outR_SFM_B,wvl);
 
-% and put together both oxygen bands
-outF_SFM = outF_SFM_A; outF_SFM(sub_ind_B(1):sub_ind_B(2),:) = outF_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
-outR_SFM = outR_SFM_A; outR_SFM(sub_ind_B(1):sub_ind_B(2),:) = outR_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
+%% -- compute FLEX metrics
+      [SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
+    
 
 end

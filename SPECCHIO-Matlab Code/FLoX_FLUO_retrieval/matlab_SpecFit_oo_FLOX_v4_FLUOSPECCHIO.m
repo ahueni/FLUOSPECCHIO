@@ -81,6 +81,13 @@ end
 %% Selects imput files
 n_files = size(L0,2);
 
+%% -- Wavelength definition
+[~, lb]         = min(abs(wvl-wvlRet(1)));
+[~, ub]         = min(abs(wvl-wvlRet(2)));
+
+%% -- Some basic filtering WHAT KIND OF FILTERING?
+L0_filter       = L0_table(500,:)>=0.01;
+
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
 [wvlF,~,sub_ind_F]      = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));

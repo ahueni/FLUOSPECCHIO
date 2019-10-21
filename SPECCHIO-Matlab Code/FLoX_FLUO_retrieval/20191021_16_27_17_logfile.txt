@@ -1,0 +1,41 @@
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 4).
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',103,1)">103 </a>[wvl_A, Lin_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+{Undefined function or variable 'Lup_F'.
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('FLOX_SpecFit_master', 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m', 141)" style="font-weight:bold">FLOX_SpecFit_master</a> (<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',141,0)">line 141</a>)
+        w_F     = ones(length(Lup_F),1);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('processQEpro', 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\Helper\processQEpro.m', 78)" style="font-weight:bold">processQEpro</a> (<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\Helper\processQEpro.m',78,0)">line 78</a>)
+    outR_SFM_B] =  FLOX_SpecFit_master(wvl,L0,L);
+
+Error in <a href="matlab:matlab.internal.language.introspective.errorDocCallback('FLOXBOX_Level_2', 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLOXBOX_Level_2.m', 100)" style="font-weight:bold">FLOXBOX_Level_2</a> (<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLOXBOX_Level_2.m',100,0)">line 100</a>)
+         processQEpro(ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
+} 
+FLOXBOX_Level_2(radianceDataID, connectionID, switchedChannels);
+Working Directory = C:\Users\bbuman\Documents\MATLAB
+Info:specchio.keystore not found in current dir. Trying to locate here: C:\Program Files\SPECCHIO
+Info:specchio.keystore found in SPECCHIO application directory.

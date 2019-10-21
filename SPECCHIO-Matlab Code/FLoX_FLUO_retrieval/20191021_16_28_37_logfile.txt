@@ -1,0 +1,37 @@
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 4).
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',103,1)">103 </a>[wvl_A, Lin_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',157,1)">157 </a>parfor i = 1:n_files
+if system_dependent('IsDebugMode')==1, dbstep; end
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',197,1)">197 </a>close(hbar);
+if system_dependent('IsDebugMode')==1, dbstep; end
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',200,1)">200 </a>[SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
+if system_dependent('IsDebugMode')==1, dbstep; end
+if system_dependent('IsDebugMode')==1, dbstep; end
+Parallel pool using the 'local' profile is shutting down.
+<a href="matlab: opentoline('C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\SPECCHIO-Matlab Code\FLoX_FLUO_retrieval\FLOX_SpecFit_master.m',206,1)">206 </a>diary off;

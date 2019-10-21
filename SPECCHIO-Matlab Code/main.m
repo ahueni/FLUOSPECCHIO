@@ -34,6 +34,7 @@
 rawDataID               = [184, 211, 207, 213, 186, 218, 188, 216, 190];
 % rawDataID               = [188, 216, 190];
 radianceDataID          = [196, 219, 208, 220, 197, 221, 198, 222, 201];
+radianceDataID          = 208;
 rad                     = [196, 208, 197, 198, 201];
 
 % Define Connection info:

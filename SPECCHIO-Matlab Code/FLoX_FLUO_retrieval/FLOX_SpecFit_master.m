@@ -71,17 +71,17 @@ global wvl_def
 wvl_definition(4); % with enlarged dx range for SFM A up to 780
 
 %% --- INITIALIZE PARPOOL
-
-profile      = 'local'; 
-n_cores      = feature('numcores');        % automatically select the max number of available cores
-p            = gcp('nocreate');            % If no pool, do not create new one.
-
-if isempty(p)
-    ppool    = parpool(profile,n_cores);   % ok<NOPTS>
-else
-    delete(p);
-    ppool    = parpool(profile,n_cores);   % ok<NOPTS>
-end
+% 
+% profile      = 'local'; 
+% n_cores      = feature('numcores');        % automatically select the max number of available cores
+% p            = gcp('nocreate');            % If no pool, do not create new one.
+% 
+% if isempty(p)
+%     ppool    = parpool(profile,n_cores);   % ok<NOPTS>
+% else
+%     delete(p);
+%     ppool    = parpool(profile,n_cores);   % ok<NOPTS>
+% end
 
 %% Selects imput files
 n_files = size(L0,2);
@@ -95,22 +95,22 @@ L0_filter       = L(500,:)>=0.01;
 
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
-wvl             = wvl(lb:ub);
+wvlF             = wvl(lb:ub);
 Lin             = L0(lb:ub,:)*1e3;
 Lup             = L(lb:ub,:)*1e3;
 
 % O2A
-[wvl_A, Lin_A, sub_ind_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~, Lup_A]                  = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~, iwvl_A_760]             = min(abs(wvl_A-760));
+[wvl_A, Lin_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+[~, Lup_A]       = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+[~, iwvl_A_760]  = min(abs(wvl_A-760));
 
 % O2B
-[wvl_B, Lin_B, sub_ind_B]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~, Lup_B]                  = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~, iwvl_B_687]             = min(abs(wvl_B-687));
+[wvl_B, Lin_B]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
+[~, Lup_B]       = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
+[~, iwvl_B_687]  = min(abs(wvl_B-687));
 
 % define output wvl for SpecFit
-owvl            = wvl;
+owvl            = wvlF;
 [~,iowvl_760]   = min(abs(owvl-760));
 [~,iowvl_687]   = min(abs(owvl-687));
 
@@ -138,16 +138,16 @@ switch weights
         w_A(:)  = 1.0;
         w_B     = ones(length(Lup_B),1);  
         w_B(:)  = 1.0;
-        w_F     = ones(length(Lup_F),1);  
+        w_F     = ones(length(Lup),1);  
         w_F(:)  = 1.0;   
     case 2
         w_A     = (1./Lup_A.^2);
         w_B     = (1./Lup_B.^2);
-        w_F     = (1./Lup_F); 
+        w_F     = (1./Lup); 
     case 3
         w_A     = (Lup_A.^2);
         w_B     = (Lup_B.^2);
-        w_F     = (Lup_F.^2);        
+        w_F     = (Lup.^2);        
     otherwise
 end
         
@@ -178,7 +178,7 @@ parfor i = 1:n_files
         
         % SPECFIT:
         [x_F,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F] = FLOX_SpecFit_6C...
-            (wvl,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,wvl);
+            (wvlF,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,wvlF);
         %
         out_mat(i,:) = [f_wvl_F(iowvl_760) r_wvl_F(iowvl_760)           ...
             f_wvl_F(iowvl_687) r_wvl_F(iowvl_687) resnorm_F exitflag_F  ...

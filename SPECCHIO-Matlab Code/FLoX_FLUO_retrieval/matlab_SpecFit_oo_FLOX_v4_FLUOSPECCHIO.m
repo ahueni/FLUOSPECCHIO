@@ -88,10 +88,11 @@ n_files = size(L0,2);
 %% -- Some basic filtering WHAT KIND OF FILTERING?
 L0_filter       = L(500,:)>=0.01;
 
-%% -- Spectral subset of input spectra to min_wvl - max_wvl range and convert to mW WHY CONVERT?
-wvl             = wvl(lb:ub);
-Lin             = L0(lb:ub,:)*1e3;
-Lup             = L(lb:ub,:)*1e3;
+%% Spectral subset of input spectra to min_wvl - max_wvl range
+% and convert to mW
+wvlF                    = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));
+Lin_F                   = L0(lb:ub,:)*1e3;
+Lup_F                   = L(lb:ub,:)*1e3;
 
 [wvl_A,Lin_A,sub_ind_A] = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
 [~,Lup_A]               = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
@@ -122,19 +123,18 @@ outF_SFM_B = nan(numel(wvl_B),n_files);
 outR_SFM_B = nan(numel(wvl_B),n_files);
 
 %% weighting scheme
+
 switch weights
     case 1
-        w_A = ones(length(Lup_A),1);  w_A(:) = 1.0;
-        w_B = ones(length(Lup_B),1);  w_B(:) = 1.0;
-        w_F = ones(length(Lup_F),1);  w_F(:) = 1.0;
+        w_F     = ones(size(Lup,1),1);
+        w_F(:)  = 1.0;
+        
     case 2
-        w_A= (1./Lup_A.^2);
-        w_B= (1./Lup_B.^2);
-        w_F= (1./Lup_F);
+        w_F     = (1./Lup);
+        
     case 3
-        w_A= (Lup_A.^2);
-        w_B= (Lup_B.^2);
-        w_F= (Lup_F.^2);
+        w_F     = (Lup.^2);
+        
     otherwise
 end
 

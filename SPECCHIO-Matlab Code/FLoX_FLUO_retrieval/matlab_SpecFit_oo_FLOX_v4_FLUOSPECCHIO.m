@@ -28,47 +28,77 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = matlab_SpecFit_
 %   email: marco.celesti@unimib.it
 %
 %   DATE: Nov/2018
-%
+%   
+%   UPDATE: Oct/2019
 
 
 %% STEPS
 
+%% --- INITIALIZE LOG FILE
+
+proc_time_all = datestr(now,'yyyymmdd_HH_MM_SS');
+Logfile       = fullfile(pwd,strcat(proc_time_all,'_logfile.txt'));
+diary(Logfile)
+
+% suppress warnings
+warning('off','all')
+
+addpath(genpath(pwd));
+
 %% ADJUST VARIABLES BEFORE RUN THE PROGRAM
-wvlRet = [670 780];
+% Adjust variables
+wvlRet    = [670 780];
 
-rng = 4;
-%SETS THE SF model used                   %
-opt_alg = 'tr';                 %optimization algorithm 'lm'= Levemberg-Marquard; 'tr'=trust region reflective
-weights = 1;                    % 1) w=1; 2) w=1/Lup^2; 3) w=Lup^2
-
-do_plot = 1;
-stio = 'off';                 %'off';'iter';'final'
-
+% Set options
+opt_alg   = 'tr';    % optimization algorithm 
+                       % 1) 'lm'= Levemberg-Marquard; 
+                       % 2) 'tr'=trust region reflective
+weights   = 1;       % weight options: 
+                       % 1) w = 1;
+                       % 2) w = (1/Lup)^2; 
+                       % 3) w = (Lup)^2
+stio      = 'off';   % options: 
+                       % 1) 'off';
+                       % 2) 'iter';
+                       % 3) 'final'
 %% DEFINITION OF GLOBAL VARIABLES
 global wvl_def
-wvl_definition(rng); % with enlarged dx range for SFM A up to 780
+wvl_definition(4); % with enlarged dx range for SFM A up to 780
+
+%% --- INITIALIZE PARPOOL
+
+profile      = 'local'; 
+n_cores      = feature('numcores');        % automatically select the max number of available cores
+p            = gcp('nocreate');            % If no pool, do not create new one.
+
+if isempty(p)
+    ppool    = parpool(profile,n_cores);   % ok<NOPTS>
+else
+    delete(p);
+    ppool    = parpool(profile,n_cores);   % ok<NOPTS>
+end
 
 %% Selects imput files
 n_files = size(L0,2);
 
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
-[wvlF,~,sub_ind_F] = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));
-Lin_F = L0(sub_ind_F(1):sub_ind_F(2),:)*1e3;
-Lup_F = L(sub_ind_F(1):sub_ind_F(2),:)*1e3;
+[wvlF,~,sub_ind_F]      = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));
+Lin_F                   = L0(sub_ind_F(1):sub_ind_F(2),:)*1e3;
+Lup_F                   = L(sub_ind_F(1):sub_ind_F(2),:)*1e3;
 
 [wvl_A,Lin_A,sub_ind_A] = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~,Lup_A] = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~,iwvl_A_760] = min(abs(wvl_A-760));
+[~,Lup_A]               = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+[~,iwvl_A_760]          = min(abs(wvl_A-760));
 
 [wvl_B,Lin_B,sub_ind_B] = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~,Lup_B] = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~,iwvl_B_687] = min(abs(wvl_B-687));
+[~,Lup_B]               = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
+[~,iwvl_B_687]          = min(abs(wvl_B-687));
 
 % define output wvl for SpecFit
-owvl = wvl;
-[~,iowvl_760] = min(abs(owvl-760));
-[~,iowvl_687] = min(abs(owvl-687));
+owvl            = wvl;
+[~,iowvl_760]   = min(abs(owvl-760));
+[~,iowvl_687]   = min(abs(owvl-687));
 
 % create the output arrays
 out_hdr = {'f_FLD_A' 'r_FLD_A' 'f_SFM_A' 'r_SFM_A' 'resnorm' 'exitflag' 'n_it_SFM_A' ...
@@ -76,9 +106,9 @@ out_hdr = {'f_FLD_A' 'r_FLD_A' 'f_SFM_A' 'r_SFM_A' 'resnorm' 'exitflag' 'n_it_SF
     'f_SpecFit_A' 'r_SpecFit_A' 'f_SpecFit_B' 'r_SpecFit_B' 'resnorm' 'exitflag' 'n_it_SpecFit' ...
     };
 
-out_arr = nan(n_files,size(out_hdr,2)); 
-outF_SpecFit = nan(numel(owvl),n_files);
-outR_SpecFit = nan(numel(owvl),n_files);
+out_arr         = nan(n_files,size(out_hdr,2)); 
+outF_SpecFit    = nan(numel(owvl),n_files);
+outR_SpecFit    = nan(numel(owvl),n_files);
 % save spectra from SFM too
 outF_SFM_A = nan(numel(wvl_A),n_files);
 outR_SFM_A = nan(numel(wvl_A),n_files);

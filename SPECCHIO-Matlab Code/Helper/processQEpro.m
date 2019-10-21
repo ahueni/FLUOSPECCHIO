@@ -1,4 +1,6 @@
-function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint, provenance_spectrum_ids] = processQEpro(user_data, ids, space, spectra, filenames)
+function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
+    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM_A, outF_SFM_B, outR_SFM_A,  ...
+    outR_SFM_B, provenance_spectrum_ids] = processQEpro(ids, space, spectra, filenames)
  % select groups of 3 and loop over data
      group_no = ids.size / 3;
      no_of_bands = space.getDimensionality.intValue; % use explicit conversion as for some reason a Java Integer cannot be used to create a matrix with 'ones'.
@@ -8,8 +10,9 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl
      % DEFINE OUTPUT ARRAYS:
      provenance_spectrum_ids    = java.util.ArrayList();
 
-     [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, ...
-         SIF_FR_max, SIF_FR_wl, SIFint] = deal(nan(no_of_bands, ids.size));
+     [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
+        SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM_A, outF_SFM_B, outR_SFM_A,  ...
+        outR_SFM_B] = deal(nan(no_of_bands, ids.size));
      
      for i=0:group_no-1
          
@@ -70,6 +73,7 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl
      end
      
      wvl = space.getAverageWavelengths();
-     [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, ...
-         SIF_FR_max, SIF_FR_wl, SIFint] =  FLOX_SpecFit_master(wvl,L0,L);
+     [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
+    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM_A, outF_SFM_B, outR_SFM_A,  ...
+    outR_SFM_B] =  FLOX_SpecFit_master(wvl,L0,L);
 end

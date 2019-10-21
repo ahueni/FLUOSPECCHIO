@@ -8,6 +8,8 @@ connectionID        = 2;
 % Box setup:
 switchedChannels    = true;
 
+% Add path
+addpath(genpath('Resources'));
 
 % Import specchio functionality:
 import ch.specchio.client.*;

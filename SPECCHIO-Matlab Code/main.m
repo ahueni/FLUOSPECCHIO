@@ -17,9 +17,6 @@
 %   Naming these sensors ROX or FLOX respectively is wrong, and will be
 %   changed to correspond to the naming scheme used by JB-Hyperspectral
 % 
-% 
-%   TBD:
-%   - sFLD; iFLD;
 %
 %   AUTHOR:
 %   Bastian Buman, RSWS, University of Zurich

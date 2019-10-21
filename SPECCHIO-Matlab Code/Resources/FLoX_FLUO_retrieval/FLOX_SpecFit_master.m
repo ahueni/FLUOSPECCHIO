@@ -38,16 +38,6 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
 
 
 %% STEPS
-
-%% --- INITIALIZE LOG FILE
-
-proc_time_all = datestr(now,'yyyymmdd_HH_MM_SS');
-Logfile       = fullfile(pwd,strcat(proc_time_all,'_logfile.txt'));
-diary(Logfile)
-
-% suppress warnings
-warning('off','all')
-
 addpath(genpath(pwd));
 
 %% ADJUST VARIABLES BEFORE RUN THE PROGRAM
@@ -69,19 +59,6 @@ stio      = 'off';   % options:
 %% DEFINITION OF GLOBAL VARIABLES
 global wvl_def
 wvl_definition(4); % with enlarged dx range for SFM A up to 780
-
-%% --- INITIALIZE PARPOOL
-% 
-% profile      = 'local'; 
-% n_cores      = feature('numcores');        % automatically select the max number of available cores
-% p            = gcp('nocreate');            % If no pool, do not create new one.
-% 
-% if isempty(p)
-%     ppool    = parpool(profile,n_cores);   % ok<NOPTS>
-% else
-%     delete(p);
-%     ppool    = parpool(profile,n_cores);   % ok<NOPTS>
-% end
 
 %% Selects imput files
 n_files = size(L0,2);
@@ -199,10 +176,4 @@ close(hbar);
 %% compute FLEX metrics
 [SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
     
-%% CLOSE PARPOOL
-delete(ppool);
-
-%% STOP LOGGING
-diary off;
-disp('Finished!');
 end

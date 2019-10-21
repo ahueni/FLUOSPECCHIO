@@ -1,0 +1,15 @@
+Parallel pool using the 'local' profile is shutting down.
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 4).
+plot(wvl, outR_SpecFit)
+{Error using <a href="matlab:matlab.internal.language.introspective.errorDocCallback('plot')" style="font-weight:bold">plot</a>
+Vectors must be the same length.
+} 
+whos outR_SpecFit
+  Name                Size               Bytes  Class     Attributes
+
+  outR_SpecFit      684x315            1723680  double              
+
+plot(owvl, outR_SpecFit)
+plot(owvl, outF_SpecFit)
+if system_dependent('IsDebugMode')==1, dbquit all; end

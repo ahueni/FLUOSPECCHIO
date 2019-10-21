@@ -86,13 +86,12 @@ n_files = size(L0,2);
 [~, ub]         = min(abs(wvl-wvlRet(2)));
 
 %% -- Some basic filtering WHAT KIND OF FILTERING?
-L0_filter       = L0_table(500,:)>=0.01;
+L0_filter       = L(500,:)>=0.01;
 
-%% Spectral subset of input spectra to min_wvl - max_wvl range
-% and convert to mW
-[wvlF,~,sub_ind_F]      = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));
-Lin_F                   = L0(sub_ind_F(1):sub_ind_F(2),:)*1e3;
-Lup_F                   = L(sub_ind_F(1):sub_ind_F(2),:)*1e3;
+%% -- Spectral subset of input spectra to min_wvl - max_wvl range and convert to mW WHY CONVERT?
+wvl             = wvl(lb:ub);
+Lin             = L0(lb:ub,:)*1e3;
+Lup             = L(lb:ub,:)*1e3;
 
 [wvl_A,Lin_A,sub_ind_A] = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
 [~,Lup_A]               = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);

@@ -1,4 +1,4 @@
-function [out_mat, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint] = matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L)
+function [out_mat, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint] = FLOX_SpecFit_master(wvl,L0,L)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
@@ -16,7 +16,7 @@ function [out_mat, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, 
 %   SIF_R_wl        - wavelength of the red SIF max
 %   SIF_FR_max      - max Reflectance of far-red SIF
 %   SIF_FR_wl       - wavelength of the far-red SIF
-%   SIFint          - total SIF emission (integral
+%   SIFint          - total SIF emission (integrated using trapz())
 
 %   Sergio Cogliati, Ph.D
 %   Remote Sensing of Environmental Dynamics Lab.

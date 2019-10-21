@@ -99,7 +99,6 @@ user_data.processed_hierarchy_id_Reflectance = user_data.specchio_client.getSubH
          SIF_FR_max, SIF_FR_wl, SIFint, provenance_QEpro_ids] =  ...
          processQEpro(user_data, ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
      
-%% TESTING NEW FUNCTIONALITY 
 
 %% INSERT INTO DB
 % Insert R

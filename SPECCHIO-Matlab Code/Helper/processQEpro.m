@@ -1,4 +1,4 @@
-function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, provenance_spectrum_ids] = processQEpro(user_data, ids, space, spectra, filenames)
+function [out_arr, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, SIF_FR_max, SIF_FR_wl, SIFint, provenance_spectrum_ids] = processQEpro(user_data, ids, space, spectra, filenames)
  % select groups of 3 and loop over data
      group_no = ids.size / 3;
      no_of_bands = space.getDimensionality.intValue; % use explicit conversion as for some reason a Java Integer cannot be used to create a matrix with 'ones'.
@@ -8,7 +8,9 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, provenance_spectr
      % DEFINE OUTPUT ARRAYS:
      provenance_spectrum_ids    = java.util.ArrayList();
      out_arr                    = zeros(21, ids.size);
-     [outF_SFM, outR_SFM, outF_specFit, outR_specFit] = deal(nan(no_of_bands, ids.size));
+
+     [out_arr, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, ...
+         SIF_FR_max, SIF_FR_wl, SIFint] = deal(nan(no_of_bands, ids.size));
      
      for i=0:group_no-1
          
@@ -67,6 +69,8 @@ function [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, provenance_spectr
          provenance_spectrum_ids.add(java.lang.Integer(ids.get(find(TGT_indices, 1) - 1)));
    
      end
+     
      wvl = space.getAverageWavelengths();
-     [out_arr,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] =  matlab_SpecFit_oo_FLOX_v4_FLUOSPECCHIO(wvl,L0,L);
+     [out_arr, outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, ...
+         SIF_FR_max, SIF_FR_wl, SIFint] =  FLOX_SpecFit_master(wvl,L0,L);
 end

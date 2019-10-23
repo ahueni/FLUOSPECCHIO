@@ -37,3 +37,4 @@ for j=1:size(radianceDataID,2)
     % it currently stores SIF not the Reflectance.
     FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
 end
+

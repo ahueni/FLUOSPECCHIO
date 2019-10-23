@@ -53,12 +53,21 @@ user_data.campaign.addKnownPath(fileStoragePath)
 user_data.cdl.set_campaign(user_data.campaign);
 user_data.cdl.start();
 
+delay = 0.01;  % 10 milliseconds
+while user_data.cdl.isAlive  
+    pause(delay);  % a slight pause before checking again if thread is alive
+end
+
+disp(['Number of parsed files: ' num2str(user_data.cdl.getParsed_file_counter)])
+disp(['Number of inserted files: ' num2str(user_data.cdl.getSuccessful_file_counter)])
+
+
 % wait for loading thread to finish: otherwise the number of parsed and
 % loaded files will be wrong as thread is still working.
 
 %% Processing L0 -> L1
 % Box setup:
-switchedChannels    = true;
+switchedChannels   = true;
 
 user_data.campaign = specchio_client.getCampaign(49);
 

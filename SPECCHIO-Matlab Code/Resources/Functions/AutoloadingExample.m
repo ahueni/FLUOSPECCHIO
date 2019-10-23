@@ -6,12 +6,6 @@
 % (c) ahueni, 17.10.2017
 %
 %%
-
-% dynamic classpath setting: adapt according to your system installation
-javaaddpath ({'/Applications/SPECCHIO/SPECCHIO.app/Contents/Java/specchio-client.jar', ...
-    '/Applications/SPECCHIO/SPECCHIO.app/Contents/Java/specchio-types.jar'});
-
-
 import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.types.*;

@@ -1,6 +1,30 @@
-rawDataID               = [207, 186, 188, 190];
-% rawDataID               = [188, 216, 190];
-radianceDataID          = [208, 197, 198, 201];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   FLUOSPECCHIO - MAIN PROCESSING SCRIPT
+%
+%
+%   INPUT:
+%   fileStoragePath     : Path to the folder(s) containing the .CSV(s)
+%   db_connector_id     : Index of the database connection to use
+% 
+%   OUTPUT:
+%   Fully check, filter and process your FloX Data.
+%   
+%   MISC:   
+%   Specchio API        : https://specchio.ch/javadoc/
+%   
+%
+%   AUTHOR:
+%   Andreas Hueni, RSL, University of Zurich
+%
+%   EDITOR:
+%   Bastian Buman, RSWS, University of Zurich
+%
+%   DATE:
+%   12-Sep-2019
+
+
+rawDataID       = 0;
+radianceDataID  = 0;
 
 % Define Connection info:
 connectionID        = 2;

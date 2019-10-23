@@ -72,7 +72,7 @@ L0_filter       = L(500,:)>=0.01;
 
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
-wvlF             = wvl(lb:ub);
+wvlF            = wvl(lb:ub);
 Lin             = L0(lb:ub,:)*1e3;
 Lup             = L(lb:ub,:)*1e3;
 

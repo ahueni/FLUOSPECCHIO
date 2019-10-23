@@ -27,9 +27,10 @@ import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.types.*;
 import ch.specchio.gui.*;
-%% Load Raw Data 
+%% transfer raw data to DB
 % Define connection
 connectionID    = 2;
+
 % Connect
 user_data.cf              = SPECCHIOClientFactory.getInstance();
 user_data.descriptor_list = cf.getAllServerDescriptors();

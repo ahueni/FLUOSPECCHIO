@@ -62,7 +62,9 @@ switchedChannels    = true;
 
 user_data.campaign = specchio_client.getCampaign(49);
 
-% Calculate QIs
+% Calculate QIs-0
+
+% Write QIs-0 to DB
 
 % Get Radiance
 for j=1:size(rawDataID,2)
@@ -73,7 +75,9 @@ end
 
 %% Process L1 --> L2
 
-% Calculate QIs
+% Calculate QIs-1
+
+% Write QIs-1 to DB
 
 % Get Reflection and SIF
 for j=1:size(radianceDataID,2)
@@ -83,5 +87,7 @@ for j=1:size(radianceDataID,2)
     FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
 end
 
-% Calculate QIs 
+% Calculate QIs-2
+
+% Write QIs-2 to DB
 

@@ -27,46 +27,38 @@ import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.types.*;
 import ch.specchio.gui.*;
+import ch.specchio.file.reader.campaign.*;
 %% transfer raw data to DB
 % Define connection
-connectionID    = 2;
+connectionID    = 0;
 
 % Connect
 user_data.cf              = SPECCHIOClientFactory.getInstance();
-user_data.descriptor_list = cf.getAllServerDescriptors();
-user_data.specchio_client = cf.createClient(descriptor_list.get(connectionID));
+user_data.descriptor_list = user_data.cf.getAllServerDescriptors();
+user_data.specchio_client = user_data.cf.createClient(user_data.descriptor_list.get(connectionID));
 
 % set up a campaign data loader
-user_data.cdl = SpecchioCampaignDataLoader(specchio_client);
+user_data.cdl = SpecchioCampaignDataLoader(user_data.specchio_client);
 
 % Get campaign to be loaded by its ID (The campaign ID can be selected in
 % the SPECCHIO Data Browser GUI using the context sensitive menu in the
 % 'matching spectra' field
-user_data.campaign = specchio_client.getCampaign(49);
+user_data.campaign = user_data.specchio_client.getCampaign(49);
 
 % Add file path
 fileStoragePath = 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\Example Data\CH-OE2_Oensingen\2019\190611_tinysubset';
 user_data.campaign.addKnownPath(fileStoragePath)
 
 % load campaign data
-user_data.cdl.set_campaign(campaign);
+user_data.cdl.set_campaign(user_data.campaign);
 user_data.cdl.start();
 
 % wait for loading thread to finish: otherwise the number of parsed and
 % loaded files will be wrong as thread is still working.
-delay = 0.01;  % 10 milliseconds
-while cdl.isAlive  
-    pause(delay);  % a slight pause before checking again if thread is alive
-end
-
-disp(['Number of parsed files: ' num2str(cdl.getParsed_file_counter)])
-disp(['Number of inserted files: ' num2str(cdl.getSuccessful_file_counter)])
-
-
-% Box setup:
-switchedChannels    = true;
 
 %% Processing L0 -> L1
+% Box setup:
+switchedChannels    = true;
 
 user_data.campaign = specchio_client.getCampaign(49);
 

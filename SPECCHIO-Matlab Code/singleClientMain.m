@@ -44,6 +44,7 @@ user_data.cdl = SpecchioCampaignDataLoader(user_data.specchio_client);
 % the SPECCHIO Data Browser GUI using the context sensitive menu in the
 % 'matching spectra' field
 user_data.campaign = user_data.specchio_client.getCampaign(49);
+disp(user_data.campaign.getName());
 
 % Add file path
 fileStoragePath = 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\Example Data\CH-OE2_Oensingen\2019\190611_tinysubset';
@@ -53,7 +54,7 @@ user_data.campaign.addKnownPath(fileStoragePath)
 user_data.cdl.set_campaign(user_data.campaign);
 user_data.cdl.start();
 
-delay = 0.01;  % 10 milliseconds
+delay = 0.1;  % 10 milliseconds
 while user_data.cdl.isAlive  
     pause(delay);  % a slight pause before checking again if thread is alive
 end
@@ -69,7 +70,7 @@ disp(['Number of inserted files: ' num2str(user_data.cdl.getSuccessful_file_coun
 % Box setup:
 switchedChannels   = true;
 
-user_data.campaign = specchio_client.getCampaign(49);
+user_data.campaign.campaign_node()
 
 % Calculate QIs-0
 

@@ -65,19 +65,30 @@ disp(['Number of inserted files: ' num2str(cdl.getSuccessful_file_counter)])
 % Box setup:
 switchedChannels    = true;
 
-%% processing
+%% Processing L0 -> L1
+
+user_data.campaign = specchio_client.getCampaign(49);
+
+% Calculate QIs
+
+% Get Radiance
 for j=1:size(rawDataID,2)
-  
     node    = hierarchy_node(rawDataID(j), "", "");
     DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
     FLOXBOX_Level_1(connectionID, switchedChannels, DN_ids);
 end 
 
+%% Process L1 --> L2
 
+% Calculate QIs
+
+% Get Reflection and SIF
 for j=1:size(radianceDataID,2)
     %% Level 1 -> Level 2
     % Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
     % it currently stores SIF not the Reflectance.
     FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
 end
+
+% Calculate QIs 
 

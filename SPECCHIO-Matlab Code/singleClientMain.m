@@ -48,6 +48,7 @@ disp(user_data.campaign.getName());
 
 % Add file path
 fileStoragePath = 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\Example Data\CH-OE2_Oensingen\2019\190611_tinysubset';
+fileName        = '190611_tinysubset';
 user_data.campaign.addKnownPath(fileStoragePath)
 
 % load campaign data
@@ -70,18 +71,27 @@ disp(['Number of inserted files: ' num2str(user_data.cdl.getSuccessful_file_coun
 % Box setup:
 switchedChannels   = true;
 
-user_data.campaign.campaign_node()
+% int getHierarchyId(Campaign campaign,
+%                    java.lang.String name,
+%                    int parent_id)
+%             throws SPECCHIOClientException
+% 
+% Get the identifier of a hierarchy node.
+% 
+% Parameters:
+%     campaign - the campaign in which the node is located
+%     name - the name of the node
+%     parent_id - the parent of the node
 
+rawDataID = user_data.specchio_client.getSubHierarchyId(fileName, 0);
 % Calculate QIs-0
 
 % Write QIs-0 to DB
 
 % Get Radiance
-for j=1:size(rawDataID,2)
-    node    = hierarchy_node(rawDataID(j), "", "");
-    DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
-    FLOXBOX_Level_1(connectionID, switchedChannels, DN_ids);
-end 
+node    = hierarchy_node(rawDataID, "", "");
+DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
+FLOXBOX_Level_1(connectionID, switchedChannels, DN_ids);
 
 %% Process L1 --> L2
 

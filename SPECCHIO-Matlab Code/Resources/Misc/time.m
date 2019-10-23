@@ -2,7 +2,7 @@
 % Define Hierarchy Levels:
 rawDataID           = [153, 154, 155];
 radianceDataID      = [196, 197, 198, 201];
-reflectanceDataID   = ;
+reflectanceDataID   = 209;
 connectionID        = 2;
 switchedChannels    = true;
 
@@ -32,7 +32,8 @@ switchedChannels    = true;
 user_data.cf                                                = SPECCHIOClientFactory.getInstance();
 user_data.db_descriptor_list                                = user_data.cf.getAllServerDescriptors();
 user_data.specchio_client                                   = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
-
+% node = hierarchy_node(reflectanceDataID, "", "");
+% L_ids = user_data.specchio_client.getSpectrumIdsForNode(node);
 %% Filter for requested data user_data, processing_level, startDateTime, endDateTime
 ids_a = getTimeWindowData(user_data, '2.0', '20180626093100', '20180626093300');
 ids_b = getTimeWindowData(user_data, '2.0', '20180719093500', '20180719093700');

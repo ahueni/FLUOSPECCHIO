@@ -52,7 +52,7 @@ campaign = user_data.specchio_client.getCampaign(s.getCampaignId());
 user_data.processed_hierarchy_id_Reflectance = user_data.specchio_client.getSubHierarchyId(campaign, 'Reflectance', parent_id);
 % user_data.processed_hierarchy_id_outF_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outF_SFM', parent_id);
 % user_data.processed_hierarchy_id_outR_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outR_SFM', parent_id);
-% user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'Fluorescence', parent_id);
+user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'F_SpecFit', parent_id);
 % user_data.processed_hierarchy_id_outR_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'True Reflectance', parent_id);
 
 % Process QEpro
@@ -65,10 +65,10 @@ user_data.processed_hierarchy_id_Reflectance = user_data.specchio_client.getSubH
 %% INSERT INTO DB
 % Insert R
 insert_reflectances(R, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
-insert_reflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
+insert_reflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
 % insert_reflectances(outF_SFM, provenance_QEpro_ids, user_data, 'outF_SFM', user_data.processed_hierarchy_id_outF_SFM);
 % insert_reflectances(outR_SFM, provenance_QEpro_ids, user_data, 'outR_SFM', user_data.processed_hierarchy_id_outR_SFM );
-% insert_reflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'outF_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);
+insert_reflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'F_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);
 % insert_reflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'True Reflectance', user_data.processed_hierarchy_id_outR_SpecFit);
 % 
 

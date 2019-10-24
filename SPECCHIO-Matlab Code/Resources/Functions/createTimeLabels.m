@@ -1,4 +1,4 @@
-function timeLab = timeLab(x, y, t)
+function timeLab = createTimeLabels(x, y, t)
     formatOut = 'HH:MM';
      if x<0.01
 %         timeLab = [num2str(hour(t(1))) ':' num2str(minute(t(1)))];

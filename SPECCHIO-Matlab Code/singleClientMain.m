@@ -75,7 +75,8 @@ switchedChannels   = false;
 rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 0);
 node        = hierarchy_node(rawDataID, "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
-
+% Visualize Raw
+visualizeLevel(user_data, DN_ids, 0);
 % Get spectrum ids:
 
 % Calculate QIs-0

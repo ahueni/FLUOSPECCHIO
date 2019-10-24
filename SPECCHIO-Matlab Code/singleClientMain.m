@@ -83,21 +83,22 @@ DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Write QIs-0 to DB
 
 % Get Radiance
-processL0ToL1(connectionID, switchedChannels, DN_ids);
-
+processL0ToL1(user_data, connectionID, switchedChannels, DN_ids);
+% Visualize Radiance
+% Get Hierarchy of the Radiance
+radianceDataId  = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);
+node            = hierarchy_node(radianceDataId, "", "");
+radianceDataID         = user_data.specchio_client.getSpectrumIdsForNode(node);
+visualizeLevel(user_data, Rad_ids);
 %% Process L1 --> L2
 
 % Calculate QIs-1
 
 % Write QIs-1 to DB
 
-% Get Reflection and SIF
-for j=1:size(radianceDataID,2)
-    %% Level 1 -> Level 2
-    % Process Level 1 (Radiance) to Level 2 (Reflectance); note that for QEpro
-    % it currently stores SIF not the Reflectance.
-    FLOXBOX_Level_2(radianceDataID(j), connectionID, switchedChannels);
-end
+% Get Reflection 
+processL1ToL2(user_data, radianceDataID, switchedChannels);
+
 
 % Calculate QIs-2
 

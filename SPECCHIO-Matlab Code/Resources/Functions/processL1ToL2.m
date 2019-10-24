@@ -52,7 +52,7 @@ campaign = user_data.specchio_client.getCampaign(s.getCampaignId());
 user_data.processed_hierarchy_id_Reflectance = user_data.specchio_client.getSubHierarchyId(campaign, 'Reflectance', parent_id);
 % user_data.processed_hierarchy_id_outF_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outF_SFM', parent_id);
 % user_data.processed_hierarchy_id_outR_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outR_SFM', parent_id);
-user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'F_SpecFit', parent_id);
+% user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'F_SpecFit', parent_id);
 % user_data.processed_hierarchy_id_outR_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'True Reflectance', parent_id);
 
 % Process QEpro
@@ -70,6 +70,5 @@ insertReflectances(outR_SFM, provenance_QEpro_ids, user_data, 'Reflectance', use
 % insert_reflectances(outR_SFM, provenance_QEpro_ids, user_data, 'outR_SFM', user_data.processed_hierarchy_id_outR_SFM );
 % insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'F_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);
 % insert_reflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'True Reflectance', user_data.processed_hierarchy_id_outR_SpecFit);
-% 
 
 end

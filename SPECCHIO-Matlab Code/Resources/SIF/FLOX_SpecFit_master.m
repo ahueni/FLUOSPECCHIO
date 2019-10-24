@@ -11,7 +11,6 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
 %   L - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
 %
 %   OUTPUT:
-%   out_mat         - mxi array where i is the number of output metrics of the SFM/SpecFit retrieval
 %   outF_SpecFit    - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
 %   outR_SpecFit    - nxm array with spectral true reflectance retrieved in the full fitting window by SpecFit
 %   SIF_R_max       - max Reflectance of red SIF
@@ -19,7 +18,7 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
 %   SIF_FR_max      - max Reflectance of far-red SIF
 %   SIF_FR_wl       - wavelength of the far-red SIF
 %   SIFint          - total SIF emission (integrated using trapz())
-
+% 
 %   Sergio Cogliati, Ph.D
 %   Remote Sensing of Environmental Dynamics Lab.
 %   University of Milano-Bicocca
@@ -35,10 +34,6 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
 %   DATE: Nov/2018
 %   
 %   UPDATE: Oct/2019
-
-
-%% STEPS
-addpath(genpath(pwd));
 
 %% ADJUST VARIABLES BEFORE RUN THE PROGRAM
 % Adjust variables

@@ -35,7 +35,7 @@ user_data.switch_channels_for_rox = channelswitched; % set to true if up and dow
 
 %% PROCESSING
 % Process FLAME
-[R, provenance_FLAME_ids] = processFLAME(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
+[R, provenance_FLAME_ids] = processFULL(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
 
 % prepare target sub hierarchy
 % get directory of first spectrum

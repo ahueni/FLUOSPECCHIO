@@ -1,4 +1,4 @@
-function visualizeLevel(user_data, selectedIds)
+function visualizeLevel(user_data, selectedIds, level)
 %% Function visualize a certain level of data
 %   INPUT:
 %   user_data           : variable containing connection, client, etc.
@@ -22,14 +22,14 @@ wvl_FLAME                                                   = space_FLAME.getAve
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time (UTC)');
 time_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Acquisition Time (UTC)');
 
-t_QEpro = nan(size(time_QEpro),1);
+t_QEpro = NaT(size(time_QEpro),1);
 for i=1:size(time_QEpro)
     tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
     t_QEpro(i, 1) = measurement_datetime;
 end
 
-t_FLAME = nan(size(time_FLAME), 1);
+t_FLAME = NaT(size(time_FLAME), 1);
 for i=1:size(time_FLAME)
     tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
@@ -46,10 +46,20 @@ for i=1:size(spectra_QEpro,1)
     plot(wvl_QEpro, spectra_QEpro(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
     hold 'on'
 end
-axis([650 800 0.01 0.2])
+
 title([datestr(t_QEpro(1), "YYYY-mm-dd") ' FLUO'])
 xlabel('Wavelength [nm]')
-ylabel('Radiance [mW m^{-2} sr^{-1} nm^{-1}]')
+if(level == 0)
+    ylabel('Count [DN]')
+elseif(level == 1)
+    ylabel('Radiance [mW m^{-2} sr^{-1} nm^{-1}]')
+    axis([650 800 0.0 max(spectra_QEpro(i,:))])
+elseif(level == 2)
+    ylabel('Reflectance')
+    axis([650 800 0.0 2.0])
+else
+    disp(num2str(level));
+end
 % Colorbar
 cbar = colorbar;
 % Get the current location of the tick marks
@@ -68,10 +78,20 @@ for i=1:size(spectra_FLAME,1)
     plot(wvl_FLAME, spectra_FLAME(i,:), 'Color', linecol(i,:)); % 'Color',jet(193)
     hold 'on'
 end
-axis([650 800 0.01 0.2])
+
 title([datestr(t_FLAME(1), "YYYY-mm-dd") ' FULL'])
 xlabel('Wavelength [nm]')
-ylabel('Radiance [mW m^{-2} sr^{-1} nm^{-1}]')
+if(level == 0)
+    ylabel('Count [DN]')
+elseif(level == 1)
+    ylabel('Radiance [mW m^{-2} sr^{-1} nm^{-1}]')
+    axis([650 800 0.0 max(spectra_QEpro(i,:))])
+elseif(level == 2)
+    ylabel('Reflectance')
+    axis([650 800 0.0 2.0])
+else
+    disp(num2str(level));
+end
 % Colorbar
 cbar = colorbar;
 % Get the current location of the tick marks

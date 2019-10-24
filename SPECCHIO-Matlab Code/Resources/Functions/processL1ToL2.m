@@ -8,7 +8,7 @@
 %
 % 
 %
-function FLOXBOX_Level_2(hierarchy_id, db_connector_id, channelswitched)
+function processL1ToL2(user_data, selectedIds, channelswitched)
 %% Function QEpro_and_FLAME_Level_2
 %   INPUT:
 %   hierarchy_id        : hierarchy_id of the SPECCHIO Radiance hierarchy
@@ -39,42 +39,21 @@ function FLOXBOX_Level_2(hierarchy_id, db_connector_id, channelswitched)
 %   16-Sep-2019
 %
 
-
-%% CONNECT TO DB
-index = db_connector_id;
-
+%% MISC
 user_data.settings.reflectance_hierarchy_level = 1; % controls the level where the radiance folder is created
-
 user_data.switch_channels_for_rox = channelswitched; % set to true if up and downwelling channels were switched during construction
 
-import ch.specchio.client.*;
-import ch.specchio.queries.*;
-import ch.specchio.gui.*;
-import ch.specchio.types.*;
-addpath(genpath('FLoX_FLUO_retrieval'));
-addpath(genpath('Helper'));
-
-% connect to SPECCHIO
-user_data.cf = SPECCHIOClientFactory.getInstance();
-user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();
-user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(index));
 
 %% GET DATA
-% get spectra ids for this hierarchy
-node = hierarchy_node(hierarchy_id, "", "");
-all_ids = user_data.specchio_client.getSpectrumIdsForNode(node);
-
 % restrict to flame and QEpro respectively and order data by 
 % spectrum number (this should only ever be a single space ...)
-[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME] = restrictToSensor(user_data, 'ROX', all_ids);
-[ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro] = restrictToSensor(user_data, 'FloX', all_ids);
-
-
+[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME] = restrictToSensor(user_data, 'ROX', selectedIds);
+[ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro] = restrictToSensor(user_data, 'FloX', selectedIds);
 
 
 %% PROCESSING
 % Process FLAME
- [R, provenance_FLAME_ids] = processFLAME(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
+[R, provenance_FLAME_ids] = processFLAME(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
 
 % prepare target sub hierarchy
 % get directory of first spectrum

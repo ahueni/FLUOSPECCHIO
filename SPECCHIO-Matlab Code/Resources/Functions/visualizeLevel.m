@@ -1,5 +1,20 @@
 function visualizeLevel(user_data, selectedIds)
+%% Function visualize a certain level of data
+%   INPUT:
+%   user_data           : variable containing connection, client, etc.
+%   selectedIds         : spectrum ids to process
+% 
+%   OUTPUT:
+%   Plot to validate FLUO and FULL Levels
+%              
+%
+%   AUTHORS:
+%   Bastian Buman, RSWS, University of Zurich
+%
+%   DATE:
+%   24-Oct-2019 V1.0
 
+%% Get Data
 [ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro]    = restrictToSensor(user_data, 'FloX', selectedIds);
 [ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME]    = restrictToSensor(user_data, 'ROX', selectedIds);
 wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
@@ -7,13 +22,14 @@ wvl_FLAME                                                   = space_FLAME.getAve
 time_QEpro                                                  = user_data.specchio_client.getMetaparameterValues(ids_QEpro, 'Acquisition Time (UTC)');
 time_FLAME                                                  = user_data.specchio_client.getMetaparameterValues(ids_FLAME, 'Acquisition Time (UTC)');
 
-
+t_QEpro = nan(size(time_QEpro),1);
 for i=1:size(time_QEpro)
     tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
     t_QEpro(i, 1) = measurement_datetime;
 end
 
+t_FLAME = nan(size(time_FLAME), 1);
 for i=1:size(time_FLAME)
     tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');

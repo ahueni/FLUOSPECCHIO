@@ -1,6 +1,5 @@
 function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
-    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM_A, outF_SFM_B, outR_SFM_A,  ...
-    outR_SFM_B] = FLOX_SpecFit_master(wvl,L0,L)
+    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM, outR_SFM] = FLOX_SpecFit_master(wvl,L0,L)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
@@ -72,14 +71,14 @@ Lin             = L0(lb:ub,:)*1e3;
 Lup             = L(lb:ub,:)*1e3;
 
 % O2A
-[wvl_A, Lin_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~, Lup_A]       = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
-[~, iwvl_A_760]  = min(abs(wvl_A-760));
+[wvl_A, Lin_A, sub_ind_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+[~, Lup_A]                  = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
+[~, iwvl_A_760]             = min(abs(wvl_A-760));
 
 % O2B
-[wvl_B, Lin_B]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~, Lup_B]       = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
-[~, iwvl_B_687]  = min(abs(wvl_B-687));
+[wvl_B, Lin_B, sub_ind_B]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
+[~, Lup_B]                  = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_B, wvl_def.sfm_up_wl_B);
+[~, iwvl_B_687]             = min(abs(wvl_B-687));
 
 % define output wvl for SpecFit
 owvl            = wvlF;
@@ -159,7 +158,17 @@ parfor i = 1:n_files
 end
 
 close(hbar);
+%% resample at original wavelength vector (wvl)
+outF_SFM_A = interp1(wvl_A,outF_SFM_A,wvl);
+outR_SFM_A = interp1(wvl_A,outR_SFM_A,wvl);
+outF_SFM_B = interp1(wvl_B,outF_SFM_B,wvl);
+outR_SFM_B = interp1(wvl_B,outR_SFM_B,wvl);
 
+% and put together both oxygen bands
+outF_SFM = outF_SFM_A; 
+outF_SFM(sub_ind_B(1):sub_ind_B(2),:) = outF_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
+outR_SFM = outR_SFM_A; 
+outR_SFM(sub_ind_B(1):sub_ind_B(2),:) = outR_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
 %% compute FLEX metrics
 [SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
     

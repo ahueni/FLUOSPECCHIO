@@ -68,30 +68,22 @@ disp(['Number of inserted files: ' num2str(user_data.cdl.getSuccessful_file_coun
 % loaded files will be wrong as thread is still working.
 
 %% Processing L0 -> L1
-% Box setup:
-switchedChannels   = true;
+% Box setup (Laegeren has switched up-and-downwellling channels):
+switchedChannels   = false;
 
-% int getHierarchyId(Campaign campaign,
-%                    java.lang.String name,
-%                    int parent_id)
-%             throws SPECCHIOClientException
-% 
-% Get the identifier of a hierarchy node.
-% 
-% Parameters:
-%     campaign - the campaign in which the node is located
-%     name - the name of the node
-%     parent_id - the parent of the node
+% Get Hierarchy of the newly loaded file
+rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 0);
+node        = hierarchy_node(rawDataID, "", "");
+DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 
-rawDataID = user_data.specchio_client.getSubHierarchyId(fileName, 0);
+% Get spectrum ids:
+
 % Calculate QIs-0
 
 % Write QIs-0 to DB
 
 % Get Radiance
-node    = hierarchy_node(rawDataID, "", "");
-DN_ids  = user_data.specchio_client.getSpectrumIdsForNode(node);
-FLOXBOX_Level_1(connectionID, switchedChannels, DN_ids);
+processL0ToL1(connectionID, switchedChannels, DN_ids);
 
 %% Process L1 --> L2
 

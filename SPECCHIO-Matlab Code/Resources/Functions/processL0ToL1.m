@@ -4,7 +4,7 @@
 %
 %   Process all data within a DN hierarchy to Radiances.
 %
-function FLOXBOX_Level_1(connectionID, channelswitched, selectedIds)
+function processL0ToL1(connectionID, channelswitched, selectedIds)
 %% Function FLoX_level_1
 %   INPUT:
 %   hierarchy_id        : hierarchy_id of the SPECCHIO DN hierarchy

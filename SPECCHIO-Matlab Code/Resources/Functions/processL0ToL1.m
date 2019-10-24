@@ -1,36 +1,24 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   FLoX_Level_1 - SPECCHIO Database Centric Processing
-%   Level 0 (DN) --> Level 1 (Radiance)
-%
-%   Process all data within a DN hierarchy to Radiances.
-%
 function processL0ToL1(user_data, channelswitched, selectedIds)
 %% Function Process Level 0 (Raw, DN) to Level 1 (Radiance)
 %   INPUT:
-%   selectedIds         : spectrum ids to process
+%   user_data           : variable containing connection, client, etc.
 %   channelswitched     : if channels of sensors were switched during
 %                         construction
-%   connectionID        : index into the list of known database connection (identical to SPECCHIO client app)
+%   selectedIds         : spectrum ids to process
 % 
 %   OUTPUT:
 %   Stores Radiance [W.m-2.sr-1.nm-1] in SPECCHIO DB
 %   
-%   MISC:   
-%   user_data           : A structure array used to store all specchio-related functionality. 
-%   Structure array     : is a data type that groups related data using data containers called fields. Each field 
-%                         can contain any type of data. Access data in a field using dot notation of the form structName.fieldName.
-%   Specchio API        : https://specchio.ch/javadoc/
-%   
-%   SpectralSpace       : A Specchio-Class 
 %
 %   AUTHOR:
 %   Andreas Hueni, RSL, University of Zurich
-%
+%   Bastian Buman, RSWS, University of Zurich
+% 
 %   EDITOR:
 %   Bastian Buman, RSWS, University of Zurich
 %
 %   DATE:
-%   12-Sep-2019 V1
+%   12-Sep-2019 V1.0
 %   24-Oct-2019 V1.1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

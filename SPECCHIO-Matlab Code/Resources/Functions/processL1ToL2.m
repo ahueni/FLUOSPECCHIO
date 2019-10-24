@@ -58,7 +58,7 @@ user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSub
 % Process QEpro
 [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl, ...
          SIF_FR_max, SIF_FR_wl, SIFint, provenance_QEpro_ids] =  ...
-         processQEpro(ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
+         processFLUO(ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
      
 %% TESTING NEW FUNCTIONALITY 
 

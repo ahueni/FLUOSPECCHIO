@@ -117,6 +117,7 @@ end
 hbar = parfor_progressbar(n_files-1,'Please wait...');
 
 parfor i = 1:n_files
+% for i = 1:n_files
     % -- process only filtered data
     if L0_filter(i) == 1
    
@@ -138,9 +139,9 @@ parfor i = 1:n_files
         outR_SFM_A(:,i) = r_wvl_A;
         outR_SFM_B(:,i) = r_wvl_B;
         
-        % SPECFIT:
+        % SPECFIT:       
         [x_F,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F] = FLOX_SpecFit_6C...
-            (wvlF,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,wvlF);
+            (owvl,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,owvl);
 
         % spectral output from SpecFit
         outF_SpecFit(:,i) = f_wvl_F;

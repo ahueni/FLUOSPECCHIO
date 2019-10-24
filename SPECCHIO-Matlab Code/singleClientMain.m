@@ -89,7 +89,7 @@ processL0ToL1(user_data, connectionID, switchedChannels, DN_ids);
 radianceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);
 node                = hierarchy_node(radianceHierarchy, "", "");
 radianceDataID      = user_data.specchio_client.getSpectrumIdsForNode(node);
-visualizeLevel(user_data, radianceDataID);
+visualizeLevel(user_data, radianceDataID, 1);
 %% Process L1 --> L2
 
 % Calculate QIs-1
@@ -103,7 +103,7 @@ processL1ToL2(user_data, radianceDataID, switchedChannels);
 reflectanceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', rawDataID);
 node                   = hierarchy_node(reflectanceHierarchy, "", "");
 reflectanceDataID      = user_data.specchio_client.getSpectrumIdsForNode(node);
-visualizeLevel(user_data, reflectanceDataID);
+visualizeLevel(user_data, reflectanceDataID, 2);
 % Calculate QIs-2
 
 % Write QIs-2 to DB

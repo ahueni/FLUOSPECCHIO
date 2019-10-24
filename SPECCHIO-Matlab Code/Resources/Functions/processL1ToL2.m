@@ -1,32 +1,14 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   QEpro_Level_2 - SPECCHIO Database Centric Processing
-%   Level 1 (DN) --> Level 2 (Reflectance)
-%
-%   Code to process all data within a Radiance hierarchy to Reflectance.
-%   Currently only supports flame (full spectrum) because QEpro (SIF) requires
-%   a different retrieval process.
-%
-% 
-%
 function processL1ToL2(user_data, selectedIds, channelswitched)
-%% Function QEpro_and_FLAME_Level_2
+%% Function Process Level 1 (Radiance) to Level 2 (Reflectance)
 %   INPUT:
-%   hierarchy_id        : hierarchy_id of the SPECCHIO Radiance hierarchy
-%   specchio_pathname   : path to local SPECCHIO Java installation
-%   db_connector_id     : index into the list of known database connection (identical to SPECCHIO client app)
+%   user_data           : variable containing connection, client, etc.
+%   channelswitched     : if channels of sensors were switched during
+%                         construction
+%   selectedIds         : spectrum ids to process
 % 
 %   OUTPUT:
 %   Stores Reflectance in SPECCHIO DB
-%   
-%   MISC:   
-%   user_data           : A structure array used to store all specchio-related functionality. 
-%   Structure array     : is a data type that groups related data using data containers called fields. Each field 
-%                         can contain any type of data. Access data in a field using dot notation of the form structName.fieldName.
-%   Specchio API        : https://specchio.ch/javadoc/
-%   Java class path     : \MATLAB\R2019a\toolbox\local\classpath.txt
-%   SpectralSpace       : A Specchio-Class 
-%   getSpaces()          : Space[] getSpaces(java.util.ArrayList<java.lang.Integer> ids, java.lang.String order_by)
-%                   
+%              
 %
 %   AUTHORS:
 %   Andreas Hueni, RSL, University of Zurich
@@ -36,8 +18,8 @@ function processL1ToL2(user_data, selectedIds, channelswitched)
 %   Bastian Buman, RSWS, University of Zurich
 %
 %   DATE:
-%   16-Sep-2019
-%
+%   16-Sep-2019 V1.0
+%   24-Oct-2019 V1.1
 
 %% MISC
 user_data.settings.reflectance_hierarchy_level = 1; % controls the level where the radiance folder is created

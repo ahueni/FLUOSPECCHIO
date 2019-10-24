@@ -5,11 +5,12 @@
 %   Process all data within a DN hierarchy to Radiances.
 %
 function processL0ToL1(connectionID, channelswitched, selectedIds)
-%% Function FLoX_level_1
+%% Function Process Level 0 (Raw, DN) to Level 1 (Radiance)
 %   INPUT:
-%   hierarchy_id        : hierarchy_id of the SPECCHIO DN hierarchy
-%   specchio_pathname   : path to local SPECCHIO Java installation
-%   db_connector_id     : index into the list of known database connection (identical to SPECCHIO client app)
+%   selectedIds         : spectrum ids to process
+%   channelswitched     : if channels of sensors were switched during
+%                         construction
+%   connectionID        : index into the list of known database connection (identical to SPECCHIO client app)
 % 
 %   OUTPUT:
 %   Stores Radiance [W.m-2.sr-1.nm-1] in SPECCHIO DB
@@ -29,7 +30,8 @@ function processL0ToL1(connectionID, channelswitched, selectedIds)
 %   Bastian Buman, RSWS, University of Zurich
 %
 %   DATE:
-%   12-Sep-2019
+%   12-Sep-2019 V1
+%   24-Oct-2019 V1.1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

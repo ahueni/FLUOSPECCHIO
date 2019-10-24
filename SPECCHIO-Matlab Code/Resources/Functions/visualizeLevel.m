@@ -56,7 +56,7 @@ elseif(level == 1)
     axis([650 800 0.0 max(spectra_QEpro(i,:))])
 elseif(level == 2)
     ylabel('Reflectance')
-    axis([650 800 0.0 2.0])
+    axis([400 800 0.0 2.0])
 else
     disp(num2str(level));
 end
@@ -85,10 +85,10 @@ if(level == 0)
     ylabel('Count [DN]')
 elseif(level == 1)
     ylabel('Radiance [mW m^{-2} sr^{-1} nm^{-1}]')
-    axis([650 800 0.0 max(spectra_QEpro(i,:))])
+    axis([400 800 0.0 max(spectra_QEpro(i,:))])
 elseif(level == 2)
     ylabel('Reflectance')
-    axis([650 800 0.0 2.0])
+    axis([400 800 0.0 2.0])
 else
     disp(num2str(level));
 end

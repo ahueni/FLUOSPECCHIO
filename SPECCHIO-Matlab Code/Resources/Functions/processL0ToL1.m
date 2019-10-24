@@ -4,7 +4,7 @@
 %
 %   Process all data within a DN hierarchy to Radiances.
 %
-function processL0ToL1(connectionID, channelswitched, selectedIds)
+function processL0ToL1(user_data, channelswitched, selectedIds)
 %% Function Process Level 0 (Raw, DN) to Level 1 (Radiance)
 %   INPUT:
 %   selectedIds         : spectrum ids to process
@@ -49,11 +49,6 @@ function processL0ToL1(connectionID, channelswitched, selectedIds)
     import ch.specchio.types.*;
     import ch.specchio.*;
     
-    user_data.cf = SPECCHIOClientFactory.getInstance();
-    user_data.db_descriptor_list = user_data.cf.getAllServerDescriptors();
-    user_data.specchio_client = user_data.cf.createClient(user_data.db_descriptor_list.get(connectionID));
-
-
     % group by instrument and calibration: use space factory
     spaces = user_data.specchio_client.getSpaces(selectedIds, 'Acquisition Time');
 

@@ -1,8 +1,7 @@
 function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
-    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM, outR_SFM] = FLOX_SpecFit_master(wvl,L0,L)
-
+   SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM, outR_SFM] = FLOX_SpecFit_master(wvl,L0,L)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
+%  FUNCTION to process FLOX data with new matlab algorithms within FLUOSPECCHIO %%%%%%%%
 %
 %   INPUT:
 %   wvl - wavelength vector (nX1) in nanometer (nm)
@@ -142,12 +141,7 @@ parfor i = 1:n_files
         % SPECFIT:
         [x_F,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F] = FLOX_SpecFit_6C...
             (wvlF,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,wvlF);
-        %
-%         out_mat(i,:) = [f_wvl_F(iowvl_760) r_wvl_F(iowvl_760)           ...
-%             f_wvl_F(iowvl_687) r_wvl_F(iowvl_687) resnorm_F exitflag_F  ...
-%             output_F.iterations                                         ...
-%             ];
-        
+
         % spectral output from SpecFit
         outF_SpecFit(:,i) = f_wvl_F;
         outR_SpecFit(:,i) = r_wvl_F;

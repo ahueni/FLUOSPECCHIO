@@ -1,4 +1,4 @@
-function processL0ToL1(user_data, channelswitched, selectedIds)
+function processL0ToL1(user_data, selectedIds)
 %% Function Process Level 0 (Raw, DN) to Level 1 (Radiance)
 %   INPUT:
 %   user_data           : variable containing connection, client, etc.
@@ -21,29 +21,17 @@ function processL0ToL1(user_data, channelswitched, selectedIds)
 %   12-Sep-2019 V1.0
 %   24-Oct-2019 V1.1
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+% controls the level where the radiance folder is created in the DB
+user_data.settings.radiance_hierarchy_level = 1;
 
-    % Channel switching (true if up and downwelling was switched)
-    user_data.switch_channels_for_flox = channelswitched;
-    user_data.switch_channels_for_rox = channelswitched;
+% group by instrument and calibration: use space factory
+spaces = user_data.specchio_client.getSpaces(selectedIds, 'Acquisition Time');
 
-    % controls the level where the radiance folder is created in the DB
-    user_data.settings.radiance_hierarchy_level = 1;
-
-    % Import specchio functionality:
-    import ch.specchio.client.*;
-    import ch.specchio.queries.*;
-    import ch.specchio.gui.*;
-    import ch.specchio.types.*;
-    import ch.specchio.*;
-    
-    % group by instrument and calibration: use space factory
-    spaces = user_data.specchio_client.getSpaces(selectedIds, 'Acquisition Time');
-
-    % calibrate each space
-    for i=1:length(spaces)
-        calibrate_space(user_data, spaces(i));
-    end
+% calibrate each space
+for i=1:length(spaces)
+    calibrate_space(user_data, spaces(i));
+end
 end
 
 %% Function Calibrate_space()

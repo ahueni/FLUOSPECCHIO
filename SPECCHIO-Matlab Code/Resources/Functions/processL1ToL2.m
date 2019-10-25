@@ -21,7 +21,7 @@ function user_data = processL1ToL2(user_data, selectedIds)
 %   16-Sep-2019 V1.0
 %   24-Oct-2019 V1.1
 %%
-user_data.settings.reflectance_hierarchy_level = 1
+user_data.settings.reflectance_hierarchy_level = 1;
 %% GET DATA
 % restrict to flame and QEpro respectively and order data by 
 % spectrum number (this should only ever be a single space ...)

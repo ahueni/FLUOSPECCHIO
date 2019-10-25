@@ -88,7 +88,7 @@ elseif(level == 1)
     axis([400 800 0.0 max(max(spectra_FLAME(:,:)))])
 elseif(level == 2)
     ylabel('Reflectance')
-    axis([400 800 0.0 2.0])
+    axis([400 800 0.0 2])
 else
     disp(num2str(level));
 end

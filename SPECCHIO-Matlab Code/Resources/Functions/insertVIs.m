@@ -1,7 +1,4 @@
 function insertVIs(user_data, ids, VIs)
-    import ch.specchio.client.*;
-    import ch.specchio.types.*;
-
     new_spectrum_ids = java.util.ArrayList();
     for k=1:height(VIs)
         new_spectrum_ids.clear();

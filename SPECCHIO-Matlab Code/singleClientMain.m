@@ -30,7 +30,7 @@ import ch.specchio.types.*;
 import ch.specchio.gui.*;
 
 
-%% transfer raw data to DB
+%% Transfer raw data to DB
 % Define connection
 connectionID    = 0;
 

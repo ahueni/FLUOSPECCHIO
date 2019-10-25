@@ -6,6 +6,7 @@ no_of_bands = space.getDimensionality.intValue; % use explicit conversion as for
 R                       = ones(no_of_bands, group_no);
 provenance_spectrum_ids = java.util.ArrayList();
 
+
 %% Calculation
 for i=0:group_no-1
     

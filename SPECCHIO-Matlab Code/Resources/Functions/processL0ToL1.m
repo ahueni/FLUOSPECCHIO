@@ -1,4 +1,4 @@
-function processL0ToL1(user_data, selectedIds)
+function user_data = processL0ToL1(user_data, selectedIds)
 %% Function Process Level 0 (Raw, DN) to Level 1 (Radiance)
 %   INPUT:
 %   user_data           : variable containing connection, client, etc.

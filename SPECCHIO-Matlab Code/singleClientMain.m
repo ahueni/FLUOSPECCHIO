@@ -22,12 +22,14 @@
 
 %% Add Path
 addpath(genpath('Resources'));
+
 %% Imports
 import ch.specchio.client.*;
 import ch.specchio.queries.*;
 import ch.specchio.types.*;
 import ch.specchio.gui.*;
-import ch.specchio.file.reader.campaign.*;
+
+
 %% transfer raw data to DB
 % Define connection
 connectionID    = 0;
@@ -40,11 +42,13 @@ user_data.specchio_client = user_data.cf.createClient(user_data.descriptor_list.
 % Load data into db
 filePath = 'C:\Users\bbuman\Documents\GitHub\FLUOSPECCHIO\Example Data\CH-OE2_Oensingen\2019\190611_tinysubset';
 fileName = '190611_tinysubset';
-autoLoadCampaignData(user_data, filePath);
+user_data = autoLoadCampaignData(user_data, filePath);
 
 %% Processing L0 -> L1
 % Box setup (Laegeren has switched up-and-downwellling channels):
-switchedChannels   = false;
+% Channel switching (true if up and downwelling was switched)
+user_data.switch_channels_for_flox = false;
+user_data.switch_channels_for_rox = false;
 
 % Get Hierarchy of the newly loaded file
 rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 0);
@@ -59,7 +63,7 @@ visualizeLevel(user_data, DN_ids, 0);
 % Write QIs-0 to DB
 
 % Get Radiance
-processL0ToL1(user_data, connectionID, switchedChannels, DN_ids);
+processL0ToL1(user_data, DN_ids);
 % Visualize Radiance
 % Get Hierarchy of the Radiance
 radianceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);

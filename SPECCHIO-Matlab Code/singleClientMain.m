@@ -63,7 +63,7 @@ visualizeLevel(user_data, DN_ids, 0);
 % Write QIs-0 to DB
 
 % Get Radiance
-processL0ToL1(user_data, DN_ids);
+user_data = processL0ToL1(user_data, DN_ids);
 % Visualize Radiance
 % Get Hierarchy of the Radiance
 radianceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);
@@ -77,7 +77,7 @@ visualizeLevel(user_data, radianceDataID, 1);
 % Write QIs-1 to DB
 
 % Get Reflection 
-processL1ToL2(user_data, radianceDataID, switchedChannels);
+user_data = processL1ToL2(user_data, radianceDataID);
 % Visualize Reflectance
 % Get Hierarchy of the Radiance
 reflectanceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', rawDataID);

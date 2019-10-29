@@ -38,6 +38,8 @@ connectionID    = 3;
 user_data.cf              = SPECCHIOClientFactory.getInstance();
 user_data.descriptor_list = user_data.cf.getAllServerDescriptors();
 user_data.specchio_client = user_data.cf.createClient(user_data.descriptor_list.get(connectionID));
+user_data.campaign        = user_data.specchio_client.getCampaign(1);
+user_data.tophierarchy    = user_data.getSubHierarchyId(user_data.campaign,'', 
 
 % Load data into db
 filePath = 'C:\Users\bbuman\Downloads\Data\OE2_Oensingen\2019\raw\1 week\190501';
@@ -45,13 +47,13 @@ fileName = '190501';
 user_data = autoLoadCampaignData(user_data, 1, filePath);
 
 %% Processing L0 -> L1
-% Box setup (Laegeren has switched up-and-downwellling channels):
+% Box setup (Laegeren has switched up-and-downwelling channels):
 % Channel switching (true if up and downwelling was switched)
 user_data.switch_channels_for_flox = false;
 user_data.switch_channels_for_rox = false;
 
 % Get Hierarchy of the newly loaded file
-rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 0);
+rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 7);
 node        = hierarchy_node(rawDataID, "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Visualize Raw

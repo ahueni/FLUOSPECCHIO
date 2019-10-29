@@ -39,11 +39,11 @@ user_data.cf              = SPECCHIOClientFactory.getInstance();
 user_data.descriptor_list = user_data.cf.getAllServerDescriptors();
 user_data.specchio_client = user_data.cf.createClient(user_data.descriptor_list.get(connectionID));
 user_data.campaign        = user_data.specchio_client.getCampaign(1);
-user_data.tophierarchy    = user_data.getSubHierarchyId(user_data.campaign,'', 
+user_data.topHierarchyId  = user_data.specchio_client.getHierarchyId(user_data.campaign,'1 week', 0);
 
 % Load data into db
 filePath = 'C:\Users\bbuman\Downloads\Data\OE2_Oensingen\2019\raw\1 week\190501';
-fileName = '190501';
+fileName = '190502';
 user_data = autoLoadCampaignData(user_data, 1, filePath);
 
 %% Processing L0 -> L1
@@ -53,7 +53,7 @@ user_data.switch_channels_for_flox = false;
 user_data.switch_channels_for_rox = false;
 
 % Get Hierarchy of the newly loaded file
-rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 7);
+rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, user_data.topHierarchyId);
 node        = hierarchy_node(rawDataID, "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Visualize Raw

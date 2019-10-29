@@ -1,4 +1,4 @@
-function [user_data] = autoLoadCampaignData(user_data, campaignID, filePath)
+function [user_data] = autoLoadCampaignData(user_data, filePath)
 import ch.specchio.file.reader.campaign.*;
 % set up a campaign data loader
 user_data.cdl = SpecchioCampaignDataLoader(user_data.specchio_client);
@@ -6,7 +6,7 @@ user_data.cdl = SpecchioCampaignDataLoader(user_data.specchio_client);
 % Get campaign to be loaded by its ID (The campaign ID can be selected in
 % the SPECCHIO Data Browser GUI using the context sensitive menu in the
 % 'matching spectra' field
-user_data.campaign = user_data.specchio_client.getCampaign(campaignID);
+% user_data.campaign = user_data.specchio_client.getCampaign(campaignID);
 % disp(user_data.campaign.getName());
 
 % Add file path

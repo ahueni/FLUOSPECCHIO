@@ -24,14 +24,22 @@ time_FLAME                                                  = user_data.specchio
 
 t_QEpro = NaT(size(time_QEpro),1);
 for i=1:size(time_QEpro)
-    tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
+    try
+        tmp_dateTime_str = time_QEpro.get(i-1).toString().toCharArray';
+    catch 
+        tmp_dateTime_str = '2000-01-01T01:01:01.000Z';
+    end
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
     t_QEpro(i, 1) = measurement_datetime;
 end
 
 t_FLAME = NaT(size(time_FLAME), 1);
 for i=1:size(time_FLAME)
-    tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
+    try
+        tmp_dateTime_str = time_FLAME.get(i-1).toString().toCharArray';
+    catch 
+        tmp_dateTime_str = '2000-01-01T01:01:01.000Z';
+    end
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
     t_FLAME(i, 1) = measurement_datetime;
 end

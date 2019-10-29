@@ -96,11 +96,11 @@ outR_SFM_B      = nan(numel(wvl_B),n_files);
 
 switch weights
     case 1
-        w_A     = ones(length(Lup_A),1);  
+        w_A     = ones(size(Lup_A,1),1);  
         w_A(:)  = 1.0;
-        w_B     = ones(length(Lup_B),1);  
+        w_B     = ones(size(Lup_B,1),1);  
         w_B(:)  = 1.0;
-        w_F     = ones(length(Lup),1);  
+        w_F     = ones(size(Lup,1),1);  
         w_F(:)  = 1.0;   
     case 2
         w_A     = (1./Lup_A.^2);
@@ -118,6 +118,7 @@ hbar = parfor_progressbar(n_files-1,'Please wait...');
 
 parfor i = 1:n_files
 % for i = 1:n_files
+%     disp(num2str(i));
     % -- process only filtered data
     if L0_filter(i) == 1
    

@@ -44,7 +44,7 @@ user_data.topHierarchyId  = user_data.specchio_client.getHierarchyId(user_data.c
 % Load data into db
 filePath = 'C:\Users\bbuman\Downloads\Data\OE2_Oensingen\2019\raw\1 week\190501';
 fileName = '190502';
-user_data = autoLoadCampaignData(user_data, 1, filePath);
+% user_data = autoLoadCampaignData(user_data, 1, filePath);
 
 %% Processing L0 -> L1
 % Box setup (Laegeren has switched up-and-downwelling channels):

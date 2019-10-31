@@ -7,10 +7,11 @@ user_data.cdl = SpecchioCampaignDataLoader(user_data.specchio_client);
 % the SPECCHIO Data Browser GUI using the context sensitive menu in the
 % 'matching spectra' field
 % user_data.campaign = user_data.specchio_client.getCampaign(campaignID);
-% disp(user_data.campaign.getName());
+disp(user_data.campaign.getName());
 
 % Add file path
 user_data.campaign.addKnownPath(filePath)
+user_data.campaign.setPath(filePath)
 
 % load campaign data
 user_data.cdl.set_campaign(user_data.campaign);

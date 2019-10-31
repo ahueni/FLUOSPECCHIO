@@ -5,8 +5,8 @@ function [outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
 %
 %   INPUT:
 %   wvl - wavelength vector (nX1) in nanometer (nm)
-%   L0 - downwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
-%   L - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
+%   L0  - downwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
+%   L   - upwelling radiance (can be a column or a nxm array where each column is a measurement) [W.m-2.sr-1.nm-1]
 %
 %   OUTPUT:
 %   outF_SpecFit    - nxm array with spectral fluorescence retrieved in the full fitting window by SpecFit
@@ -40,7 +40,7 @@ wvlRet    = [670 780];
 % Set options
 opt_alg   = 'tr';    % optimization algorithm 
                        % 1) 'lm'= Levemberg-Marquard; 
-                       % 2) 'tr'=trust region reflective
+                       % 2) 'tr'= trust region reflective
 weights   = 1;       % weight options: 
                        % 1) w = 1;
                        % 2) w = (1/Lup)^2; 

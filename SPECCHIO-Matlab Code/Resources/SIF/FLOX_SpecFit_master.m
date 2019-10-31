@@ -65,9 +65,13 @@ L0_filter       = L(500,:)>=0.01;
 
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
-wvlF            = wvl(lb:ub);
-Lin             = L0(lb:ub,:)*1e3;
-Lup             = L(lb:ub,:)*1e3;
+% wvlF            = wvl(lb:ub);
+% Lin             = L0(lb:ub,:)*1e3;
+% Lup             = L(lb:ub,:)*1e3;
+
+[wvlF,~,sub_ind_F]  = subset_2d_array(wvl, wvl, wvlRet(1), wvlRet(2));
+Lin_F               = L0(sub_ind_F(1):sub_ind_F(2),:)*1e3;
+Lup_F               = L(sub_ind_F(1):sub_ind_F(2),:)*1e3;
 
 % O2A
 [wvl_A, Lin_A, sub_ind_A]   = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
@@ -84,8 +88,8 @@ owvl            = wvlF;
 [~,iowvl_760]   = min(abs(owvl-760));
 [~,iowvl_687]   = min(abs(owvl-687));
 
-outF_SpecFit    = nan(numel(owvl),n_files);
-outR_SpecFit    = nan(numel(owvl),n_files);
+outF_SpecFit    = nan(numel(wvl),n_files);
+outR_SpecFit    = nan(numel(wvl),n_files);
 
 outF_SFM_A      = nan(numel(wvl_A),n_files);
 outR_SFM_A      = nan(numel(wvl_A),n_files);
@@ -100,16 +104,16 @@ switch weights
         w_A(:)  = 1.0;
         w_B     = ones(size(Lup_B,1),1);  
         w_B(:)  = 1.0;
-        w_F     = ones(size(Lup,1),1);  
+        w_F     = ones(size(Lup_F,1),1);  
         w_F(:)  = 1.0;   
     case 2
         w_A     = (1./Lup_A.^2);
         w_B     = (1./Lup_B.^2);
-        w_F     = (1./Lup); 
+        w_F     = (1./Lup_F); 
     case 3
         w_A     = (Lup_A.^2);
         w_B     = (Lup_B.^2);
-        w_F     = (Lup.^2);        
+        w_F     = (Lup_F.^2);        
     otherwise
 end
         
@@ -142,9 +146,9 @@ parfor i = 1:n_files
         
         % SPECFIT:       
         [x_F,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F] = FLOX_SpecFit_6C...
-            (owvl,Lin(:,i),Lup(:,i),[1,1],w_F,opt_alg,stio,owvl);
+            (owvl,Lin_F(:,i),Lup_F(:,i),[1,1],w_F,opt_alg,stio,wvl);
 
-        % spectral output from SpecFit
+        % SpecFit
         outF_SpecFit(:,i) = f_wvl_F;
         outR_SpecFit(:,i) = r_wvl_F;
         
@@ -166,6 +170,6 @@ outF_SFM(sub_ind_B(1):sub_ind_B(2),:) = outF_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
 outR_SFM = outR_SFM_A; 
 outR_SFM(sub_ind_B(1):sub_ind_B(2),:) = outR_SFM_B(sub_ind_B(1):sub_ind_B(2),:);
 %% compute FLEX metrics
-[SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(owvl,outF_SpecFit); 
+[SIF_R_max,SIF_R_wl,~,SIF_FR_max,SIF_FR_wl,~,SIFint] = sif_parms(wvl,outF_SpecFit); 
     
 end

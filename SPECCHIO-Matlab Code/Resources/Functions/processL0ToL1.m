@@ -79,19 +79,19 @@ function calibrate_space(user_data, space)
     % special switches to deal with the problem of switched coefficients
     % for upwelling and downwelling channels
     if user_data.switch_channels_for_flox == true && user_data.curr_instr_type == 2
-        up_coef = user_data.dw_coef;
-        dw_coef = user_data.up_coef;
+        up_coef_tmp = user_data.dw_coef;
+        dw_coef_tmp = user_data.up_coef;
         
-        user_data.dw_coef = dw_coef;
-        user_data.up_coef = up_coef;
+        user_data.dw_coef = dw_coef_tmp;
+        user_data.up_coef = up_coef_tmp;
     end
     
      if user_data.switch_channels_for_rox == true && user_data.curr_instr_type == 1
-        up_coef = user_data.dw_coef;
-        dw_coef = user_data.up_coef;
+        up_coef_tmp = user_data.dw_coef;
+        dw_coef_tmp = user_data.up_coef;
         
-        user_data.dw_coef = dw_coef;
-        user_data.up_coef = up_coef;
+        user_data.dw_coef = dw_coef_tmp;
+        user_data.up_coef = up_coef_tmp;
     end
 
     % load space into memory    
@@ -272,31 +272,6 @@ function saturation_QC(WR, VEG, WR2, provenance_spectrum_ids, user_data)
     
 end
 
-%% insert_QC_data 
-%% saturation_QC -- 
-%   INPUT:
-%   spectrum_id                 :   Spectrum id
-%   value                       :   Sum of exceeded max values
-%   attribute_name              :   attribute name (e.g. 'Saturation Count')
-%   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
-%                                   clientfactory instance (cf), db_descriptor_list,
-%                                   specchio client, up_coef, dw_coef, curr_instr_type,
-%                                   space, processed_hierarchy_id.
-%   OUTPUT:
-%   is only an intermediate function, no output.
-function insert_QC_data(user_data, spectrum_id, value, attribute_name)
-    import ch.specchio.types.*;   
-    attribute = user_data.specchio_client.getAttributesNameHash().get(attribute_name);
-    
-    ids = java.util.ArrayList();
-    ids.add(java.lang.Integer(spectrum_id));
-   
-    e = MetaParameter.newInstance(attribute);
-    e.setValue(value);
-    user_data.specchio_client.updateOrInsertEavMetadata(e, ids);
-
-end
-
 %% illumination_QC -- Illumination Condition Stability (E_stability) 
 %   DESCRIPTION:
 %   evaluates if the illumination condition between the consecutive upward measurements are stable.
@@ -338,6 +313,52 @@ function illumination_QC(WR, WR2, space, provenance_spectrum_ids, user_data)
     % at position 1 in the list)
     insert_QC_data(user_data, provenance_spectrum_ids.get(1), java.lang.Double(E_stability), 'Irradiance Instability');
     
+end
+
+%% rad_cal -- Radiometric Calibration
+%   DESCRIPTION:
+%   converts digital numbers to radiance (i.e. intensities [mW m-2 nm-1]).
+%
+%   INPUT:
+%   DN      :   Digital Number of a certain measurement
+%   DN_DC   :   Digital Number of the Dark Current measurement
+%   IT      :   Integration Time 
+%   gain    :   dw_coef, uw_coef
+%
+%   OUTPUT:
+%   L       :   Radiometrically calibrated radiance values.
+
+function L = rad_cal(DN, DN_DC, IT, gain)
+
+    DN_dc = DN - DN_DC;
+    DN_dc_it = DN_dc / IT;
+    L = DN_dc_it .* gain;
+
+end
+
+%% insert_QC_data 
+% saturation_QC -- 
+%   INPUT:
+%   spectrum_id                 :   Spectrum id
+%   value                       :   Sum of exceeded max values
+%   attribute_name              :   attribute name (e.g. 'Saturation Count')
+%   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
+%                                   clientfactory instance (cf), db_descriptor_list,
+%                                   specchio client, up_coef, dw_coef, curr_instr_type,
+%                                   space, processed_hierarchy_id.
+%   OUTPUT:
+%   is only an intermediate function, no output.
+function insert_QC_data(user_data, spectrum_id, value, attribute_name)
+    import ch.specchio.types.*;   
+    attribute = user_data.specchio_client.getAttributesNameHash().get(attribute_name);
+    
+    ids = java.util.ArrayList();
+    ids.add(java.lang.Integer(spectrum_id));
+   
+    e = MetaParameter.newInstance(attribute);
+    e.setValue(value);
+    user_data.specchio_client.updateOrInsertEavMetadata(e, ids);
+
 end
 
 
@@ -391,37 +412,15 @@ function insert_radiances(L, provenance_spectrum_ids, user_data)
     
     
     % set Processing Atttributes
-%     processing_attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Algorithm');
-%    
-%     e = MetaParameter.newInstance(processing_attribute);
-%     e.setValue('Radiance calculation in Matlab');
-%     user_data.specchio_client.updateEavMetadata(e, new_spectrum_ids);
+    processing_attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Algorithm');
+   
+    e = MetaParameter.newInstance(processing_attribute);
+    e.setValue('Radiance calculation in Matlab');
+    user_data.specchio_client.updateEavMetadata(e, new_spectrum_ids);
  
 
 
 end
-
-%% rad_cal -- Radiometric Calibration
-%   DESCRIPTION:
-%   converts digital numbers to radiance (i.e. intensities [mW m-2 nm-1]).
-%
-%   INPUT:
-%   DN      :   Digital Number of a certain measurement
-%   DN_DC   :   Digital Number of the Dark Current measurement
-%   IT      :   Integration Time 
-%   gain    :   dw_coef, uw_coef
-%
-%   OUTPUT:
-%   L       :   Radiometrically calibrated radiance values.
-
-function L = rad_cal(DN, DN_DC, IT, gain)
-
-    DN_dc = DN - DN_DC;
-    DN_dc_it = DN_dc / IT;
-    L = DN_dc_it .* gain;
-
-end
-
 
 
 

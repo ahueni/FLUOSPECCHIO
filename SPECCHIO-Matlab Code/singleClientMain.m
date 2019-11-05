@@ -33,7 +33,7 @@ import ch.specchio.gui.*;
 %% Transfer raw data to DB
 % Define connection
 connectionID    = 3;
-campaignID      = 2;
+campaignID      = 14;
 
 % Connect
 user_data.cf              = SPECCHIOClientFactory.getInstance();
@@ -43,8 +43,8 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 % user_data.topHierarchyId  = user_data.specchio_client.getHierarchyId(user_data.campaign,'data', 0);
 
 % Load data into db
-filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_day\190502';
-fileName = '190502';
+filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190503';
+fileName = '190503';
 user_data = autoLoadCampaignData(user_data, filePath);
 
 %% Processing L0 -> L1

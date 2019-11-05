@@ -50,102 +50,104 @@ end
 
 function calibrate_space(user_data, space)
 
-    user_data.up_coef = [];
-    user_data.dw_coef = [];
-    
-    % get instrument and calibration
-    
-    if(space.get_wvl_of_band(0) < 500)
-        user_data.curr_instr_type = 1; % Broadband
-    else
-        user_data.curr_instr_type = 2; % Fluorescence
-    end
-    
-    instr_id = space.getInstrumentId();
-    CalibrationMetadata = user_data.specchio_client.getInstrumentCalibrationMetadata(instr_id);
+user_data.up_coef = [];
+user_data.dw_coef = [];
 
-    for i=1:length(CalibrationMetadata)
-        
-        cal = CalibrationMetadata(i);
-        if(strcmp(cal.getName(), 'up_coef')) 
-            user_data.up_coef = cal.getFactors();
-        end
-        if(strcmp(cal.getName(), 'dw_coef'))
-            user_data.dw_coef = cal.getFactors();
-        end
-        
-    end
-    
-    % special switches to deal with the problem of switched coefficients
-    % for upwelling and downwelling channels
-    if user_data.switch_channels_for_flox == true && user_data.curr_instr_type == 2
-        up_coef_tmp = user_data.dw_coef;
-        dw_coef_tmp = user_data.up_coef;
-        
-        user_data.dw_coef = dw_coef_tmp;
-        user_data.up_coef = up_coef_tmp;
-    end
-    
-     if user_data.switch_channels_for_rox == true && user_data.curr_instr_type == 1
-        up_coef_tmp = user_data.dw_coef;
-        dw_coef_tmp = user_data.up_coef;
-        
-        user_data.dw_coef = dw_coef_tmp;
-        user_data.up_coef = up_coef_tmp;
-    end
+% get instrument and calibration
 
-    % load space into memory    
-    try
-        user_data.space =  user_data.specchio_client.loadSpace(space);
-    catch e
-        e.message
-        if(isa(e,'matlab.exception.JavaException'))
-            ex = e.ExceptionObject;
-            assert(isjava(ex));
-            ex.printStackTrace;
-        end
-    end    
-    
-    % group spectra by spectral number: but as the spectral number can be
-    % repeated within a day, it is better to group by UTC or Acquisition time 
-    % group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
-    group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Acquisition Time');
-    
-    groups = group_collection.getSpectrum_id_lists;
-    
-    % prepare target sub hierarchy 'Radiance'
-    % get directory and campaign of first spectrum, then use this to navigate within
-    % hierarchy and 
-    s = user_data.specchio_client.getSpectrum(user_data.space.getSpectrumIds.get(1), false);  % load first spectrum to get the hierarchy
-    current_hierarchy_id = s.getHierarchyLevelId(); % essentially the same as hierarchy_id parameter of this matlab function
+if(space.get_wvl_of_band(0) < 500)
+    user_data.curr_instr_type = 1; % Broadband
+else
+    user_data.curr_instr_type = 2; % Fluorescence
+end
 
-    % move within hierarchy to the level where the new directory is to be
-    % created
-    for i=1:user_data.settings.radiance_hierarchy_level
-        parent_id = user_data.specchio_client.getHierarchyParentId(current_hierarchy_id);
-        current_hierarchy_id = parent_id;
+instr_id            = space.getInstrumentId();
+CalibrationMetadata = user_data.specchio_client.getInstrumentCalibrationMetadata(instr_id);
+
+for i=1:length(CalibrationMetadata)
+    
+    cal = CalibrationMetadata(i);
+    if(strcmp(cal.getName(), 'up_coef'))
+        user_data.up_coef = cal.getFactors();
     end
-       
-    campaign = user_data.specchio_client.getCampaign(s.getCampaignId());
-    
-    user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId(campaign, 'Radiance', parent_id);
-    
-    
-    % process each group (a group is a set of WR, WR2, WR_DC, VEG_DC and
-    % VEG spectra)
-    
-    for i=1:groups.size - 1
-        [WR_L, WR2_L, VEG_L, provenance_spectrum_ids] = calibrate_group(user_data, groups.get(i));
-        
-        % insert into database
-       insert_radiances([WR_L, VEG_L, WR2_L], provenance_spectrum_ids, user_data);
-        
-%         disp([ 'Iteration = ' num2str(i) ]);
-        disp('.');
-        
+    if(strcmp(cal.getName(), 'dw_coef'))
+        user_data.dw_coef = cal.getFactors();
     end
     
- 
+end
+
+% special switches to deal with the problem of switched coefficients
+% for upwelling and downwelling channels
+if user_data.switch_channels_for_flox == true && user_data.curr_instr_type == 2
+    up_coef_tmp = user_data.dw_coef;
+    dw_coef_tmp = user_data.up_coef;
+    
+    user_data.dw_coef = dw_coef_tmp;
+    user_data.up_coef = up_coef_tmp;
+end
+
+if user_data.switch_channels_for_rox == true && user_data.curr_instr_type == 1
+    up_coef_tmp = user_data.dw_coef;
+    dw_coef_tmp = user_data.up_coef;
+    
+    user_data.dw_coef = dw_coef_tmp;
+    user_data.up_coef = up_coef_tmp;
+end
+
+% load space into memory
+try
+    user_data.space =  user_data.specchio_client.loadSpace(space);
+catch e
+    e.message
+    if(isa(e,'matlab.exception.JavaException'))
+        ex = e.ExceptionObject;
+        assert(isjava(ex));
+        ex.printStackTrace;
+    end
+end
+
+% group spectra by spectral number: but as the spectral number can be
+% repeated within a day, it is better to group by UTC or Acquisition time
+% group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
+group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Acquisition Time');
+
+groups = group_collection.getSpectrum_id_lists;
+
+% prepare target sub hierarchy 'Radiance'
+% get directory and campaign of first spectrum, then use this to navigate within
+% hierarchy and
+s = user_data.specchio_client.getSpectrum(user_data.space.getSpectrumIds.get(1), false);  % load first spectrum to get the hierarchy
+current_hierarchy_id = s.getHierarchyLevelId(); % essentially the same as hierarchy_id parameter of this matlab function
+
+% move within hierarchy to the level where the new directory is to be
+% created
+for i=1:user_data.settings.radiance_hierarchy_level
+    parent_id = user_data.specchio_client.getHierarchyParentId(current_hierarchy_id);
+    current_hierarchy_id = parent_id;
+end
+
+campaign = user_data.specchio_client.getCampaign(s.getCampaignId());
+
+user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId(campaign, 'Radiance', parent_id);
+
+
+% process each group (a group is a set of WR, WR2, WR_DC, VEG_DC and
+% VEG spectra)
+
+f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processer');
+for i=1:groups.size % was i=1:size-1, check and see
+    waitbar((i/groups.size), f, 'Please wait...');
+    [WR_L, WR2_L, VEG_L, provenance_spectrum_ids] = calibrate_group(user_data, groups.get(i-1));
+    
+    % insert into database
+    insert_radiances([WR_L, VEG_L, WR2_L], provenance_spectrum_ids, user_data);
+    
+    %         disp([ 'Iteration = ' num2str(i) ]);
+    %         disp('.');
+    
+end
+waitbar(1, f, 'Processing finished', 'Name', 'L0 Processer');
+close(f);
 end
 
 %% FUNCTION calibrate_group()

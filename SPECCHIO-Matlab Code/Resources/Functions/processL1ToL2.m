@@ -57,7 +57,7 @@ user_data.processed_hierarchy_id_Reflectance = ...
 %% INSERT INTO DB
 % Insert R
 insertReflectances(R, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
-insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
+insertReflectances(outR_SFM, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
 
 %% Misc
 % user_data.processed_hierarchy_id_outF_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outF_SFM', parent_id);

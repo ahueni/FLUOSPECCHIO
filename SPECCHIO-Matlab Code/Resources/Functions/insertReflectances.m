@@ -1,4 +1,4 @@
-function insert_reflectances(R, provenance_spectrum_ids, user_data, spectrumType, hierarchy_id)
+function insertReflectances(R, provenance_spectrum_ids, user_data, spectrumType, hierarchy_id)
 
 import ch.specchio.types.*;
 new_spectrum_ids = java.util.ArrayList();
@@ -9,21 +9,20 @@ if 1==0
     ylim([0 1]);
 end
 
-
-for i=0:provenance_spectrum_ids.size()-1
-    
+f = waitbar(0, 'L1 to L2', 'Name', 'L1 Processer');
+for i=1:provenance_spectrum_ids.size() % was i = 0 and size-1
+    waitbar((i/provenance_spectrum_ids.size()), f, 'Please wait...');
     % copy the spectrum to new hierarchy
-    new_spectrum_id = user_data.specchio_client.copySpectrum(provenance_spectrum_ids.get(i), hierarchy_id);
+    new_spectrum_id = user_data.specchio_client.copySpectrum(provenance_spectrum_ids.get(i-1), hierarchy_id);
     
     % replace spectral data
-    user_data.specchio_client.updateSpectrumVector(new_spectrum_id, R(:,i+1));
+    user_data.specchio_client.updateSpectrumVector(new_spectrum_id, R(:,i));
     new_spectrum_ids.add(java.lang.Integer(new_spectrum_id));
     
-    disp(',');
+%     disp(',');
 end
-
-
-
+waitbar(1, f, 'Processing finished', 'Name', 'L1 Processer');
+close(f);
 % change EAV entry to new Processing Level by removing old and inserting new
 attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Level');
 

@@ -45,8 +45,6 @@ end
 %                   specchio client
 %   space       :   sensor and instrument space (specchio)
 %
-%   OUTPUT:
-%   Radiance is stored into the DB.
 
 function calibrate_space(user_data, space)
 
@@ -54,7 +52,6 @@ user_data.up_coef = [];
 user_data.dw_coef = [];
 
 % get instrument and calibration
-
 if(space.get_wvl_of_band(0) < 500)
     user_data.curr_instr_type = 1; % Broadband
 else
@@ -109,42 +106,46 @@ end
 % group spectra by spectral number: but as the spectral number can be
 % repeated within a day, it is better to group by UTC or Acquisition time
 % group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Spectrum Number');
-group_collection = user_data.specchio_client.sortByAttributes(user_data.space.getSpectrumIds, 'Acquisition Time');
+group_collection = user_data.specchio_client.sortByAttributes...
+    (user_data.space.getSpectrumIds, 'Acquisition Time');
 
-groups = group_collection.getSpectrum_id_lists;
+groups           = group_collection.getSpectrum_id_lists;
 
 % prepare target sub hierarchy 'Radiance'
 % get directory and campaign of first spectrum, then use this to navigate within
 % hierarchy and
-s = user_data.specchio_client.getSpectrum(user_data.space.getSpectrumIds.get(1), false);  % load first spectrum to get the hierarchy
+s                    = user_data.specchio_client.getSpectrum...
+    (user_data.space.getSpectrumIds.get(1), false);  % load first spectrum to get the hierarchy
 current_hierarchy_id = s.getHierarchyLevelId(); % essentially the same as hierarchy_id parameter of this matlab function
 
-% move within hierarchy to the level where the new directory is to be
-% created
+% move within hierarchy to the level where the new directory is to be created
 for i=1:user_data.settings.radiance_hierarchy_level
-    parent_id = user_data.specchio_client.getHierarchyParentId(current_hierarchy_id);
+    parent_id            = user_data.specchio_client.getHierarchyParentId(current_hierarchy_id);
     current_hierarchy_id = parent_id;
 end
 
-campaign = user_data.specchio_client.getCampaign(s.getCampaignId());
+campaign                         = user_data.specchio_client.getCampaign...
+    (s.getCampaignId());
 
-user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId(campaign, 'Radiance', parent_id);
+user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId...
+    (campaign, 'Radiance', parent_id);
 
 
 % process each group (a group is a set of WR, WR2, WR_DC, VEG_DC and
 % VEG spectra)
 
-f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processer');
+f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processer'); % progress or waitbar
+
 for i=1:groups.size % was i=1:size-1, check and see
+    
     waitbar((i/groups.size), f, 'Please wait...');
-    [WR_L, WR2_L, VEG_L, provenance_spectrum_ids] = calibrate_group(user_data, groups.get(i-1));
+    
+    [sv_E, sv_L, sv_E2, E_stability, WR_L, WR2_L, VEG_L,...
+        provenance_spectrum_ids] = calibrate_group(user_data, groups.get(i-1));
     
     % insert into database
-    insert_radiances([WR_L, VEG_L, WR2_L], provenance_spectrum_ids, user_data);
-    
-    %         disp([ 'Iteration = ' num2str(i) ]);
-    %         disp('.');
-    
+    insertL1(user_data, provenance_spectrum_ids, [sv_E, sv_L, sv_E2],...
+        E_stability, [WR_L, VEG_L, WR2_L])
 end
 waitbar(1, f, 'Processing finished', 'Name', 'L0 Processer');
 close(f);
@@ -158,21 +159,23 @@ end
 %                   space, processed_hierarchy_id
 %   group       :   a group of spectra matched by acquisition time
 %
-%   OUTPUT:
-%   is only an intermediate function, no output.
 
-function [WR_L, WR2_L, VEG_L, provenance_spectrum_ids] = calibrate_group(user_data, group)
+function [sv_E, sv_L, sv_E2, E_stability, WR_L, WR2_L, VEG_L,...
+    provenance_spectrum_ids] = calibrate_group(user_data, group)
 
     % order this group by file name to always have the same sequence of
     % measured spectra, e.g.:
-    % [2-DC_VEG (F060050.CSV), 2-DC_WR (F060050.CSV), 2-VEG (F060050.CSV), 2-WR (F060050.CSV), 2-WR2 (F060050.CSV)]
-    DC_VEG_ind = 0; DC_WR_ind = 1; VEG_ind = 2; WR_ind = 3; WR2_ind = 4;
+    % [2-DC_VEG (F060050.CSV), 2-DC_WR (F060050.CSV), 2-VEG (F060050.CSV), 
+    % 2-WR (F060050.CSV), 2-WR2 (F060050.CSV)]
+    % names = user_data.specchio_client.getMetaparameterValues(ordered_ids, 'File Name')
 
     spaces = user_data.specchio_client.getSpaces(group.getSpectrumIds, 'File Name');
     space = spaces(1);
     ordered_ids = space.getSpectrumIds();
-%     names = user_data.specchio_client.getMetaparameterValues(ordered_ids, 'File Name')
-
+    
+    % Define the indices
+    DC_VEG_ind = 0; DC_WR_ind = 1; VEG_ind = 2; WR_ind = 3; WR2_ind = 4;
+    
     % get vectors from space
     WR = user_data.space.getVector(ordered_ids.get(WR_ind));
     VEG = user_data.space.getVector(ordered_ids.get(VEG_ind));
@@ -188,89 +191,46 @@ function [WR_L, WR2_L, VEG_L, provenance_spectrum_ids] = calibrate_group(user_da
     provenance_spectrum_ids.add(java.lang.Integer(ordered_ids.get(VEG_ind)));
     provenance_spectrum_ids.add(java.lang.Integer(ordered_ids.get(WR2_ind)));
     
-    % QC 1: saturation
-    saturation_QC(WR, VEG, WR2, provenance_spectrum_ids, user_data);
-    
-    % QC 3: Irradiance stability
-    illumination_QC(WR, WR2, user_data.space, provenance_spectrum_ids, user_data)
-    
-    % Plot for the evaluation of assignments:
-    if 1 == 0 
-        figure
-        plot(user_data.space.getAverageWavelengths, WR);
-        hold
-        plot(user_data.space.getAverageWavelengths, VEG);
-        plot(user_data.space.getAverageWavelengths, WR2);
-        plot(user_data.space.getAverageWavelengths, DC_WR);
-        plot(user_data.space.getAverageWavelengths, DC_VEG);
+    % QC 1: Saturation
+    [sv_E, sv_L, sv_E2] = saturation_QC(WR, VEG, WR2, user_data);
         
-        legend({'WR','VEG','WR2','DC\_WR','DC\_VEG',});
-    end
+    % QC 3: Irradiance stability
+    E_stability = illumination_QC(WR, WR2, user_data.space);
     
-    % get integration time of group
+    
+    % get integration time of the group
     IT = user_data.specchio_client.getMetaparameterValues(ordered_ids, 'Integration Time');
 
-    
     % dark current correction and radiometeric calibration
-    WR_L = rad_cal(WR, DC_WR, IT.get(WR_ind)/1000, user_data.dw_coef);
+    WR_L  = rad_cal(WR, DC_WR, IT.get(WR_ind)/1000, user_data.dw_coef);
     WR2_L = rad_cal(WR2, DC_WR, IT.get(WR2_ind)/1000, user_data.dw_coef);
     VEG_L = rad_cal(VEG, DC_VEG, IT.get(VEG_ind)/1000, user_data.up_coef);
-    
-    
-    % Plot for the evaluation of the calibration.
-    if 1 == 0
-        
-        figure
-        plot(user_data.space.getAverageWavelengths, WR_L);
-        hold
-        plot(user_data.space.getAverageWavelengths, WR2_L);
-        plot(user_data.space.getAverageWavelengths, VEG_L, 'g');
-        legend({'WR\_L','WR2\_L','VEGL',});
-        
-        % compare gains of up and downwelling channels
-        figure
-        plot(user_data.space.getAverageWavelengths, user_data.dw_coef, 'r');
-        hold
-        plot(user_data.space.getAverageWavelengths, user_data.up_coef, 'g');
-        
-        
-    end
-
+       
 end
 
-%% saturation_QC -- 
+%% saturation_QC -- Check the sensor saturation
 %   INPUT:
-%   WR                          :   
-%   WR2                         :   
-%   VEG                         :   
-%   provenance_spectrum_ids     :   ArrayList of spectrum ids, withouth
-%                                   dark current
+%   WR                          :   Downwelling before 
+%   WR2                         :   Downwelling after
+%   VEG                         :   Upwelling
 %   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
 %                                   clientfactory instance (cf), db_descriptor_list,
 %                                   specchio client, up_coef, dw_coef, curr_instr_type,
 %                                   space, processed_hierarchy_id.
-%   OUTPUT:
-%   is only an intermediate function, no output.
 
-function saturation_QC(WR, VEG, WR2, provenance_spectrum_ids, user_data)
+function [sv_E, sv_L, sv_E2] = saturation_QC(WR, VEG, WR2, user_data)
 
     if user_data.curr_instr_type == 2
-        %Fluo Range
+        %FLUO
         max_count = 200000;
     else
-        %Full Range
+        %FULL
         max_count = 54000;
     end
-
-    
+   
     sv_E = sum(WR == max_count);
     sv_L = sum(VEG == max_count);
     sv_E2 = sum(WR2 == max_count);
-    
-    % insert saturation data 
-    insert_QC_data(user_data, provenance_spectrum_ids.get(0), java.lang.Integer(sv_E), 'Saturation Count');
-    insert_QC_data(user_data, provenance_spectrum_ids.get(1), java.lang.Integer(sv_L), 'Saturation Count');
-    insert_QC_data(user_data, provenance_spectrum_ids.get(2), java.lang.Integer(sv_E2), 'Saturation Count');
     
 end
 
@@ -281,18 +241,12 @@ end
 %   QC3 values vary between 0 and 100.  
 %
 %   INPUT:
-%   WR                          :   
-%   WR2                         :   
-%   provenance_spectrum_ids     :   ArrayList of spectrum ids, withouth
-%                                   dark current
-%   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
-%                                   clientfactory instance (cf), db_descriptor_list,
-%                                   specchio client, up_coef, dw_coef, curr_instr_type,
-%                                   space, processed_hierarchy_id.
-%   OUTPUT:
-%   is only an intermediate function, no output.
+%   WR    : Downwelling before
+%   WR2   : Downwelling after
+%   space : Data restricted to a certain sensor.
+% 
 
-function illumination_QC(WR, WR2, space, provenance_spectrum_ids, user_data)
+function E_stability = illumination_QC(WR, WR2, space)
 
 
     % QC3. Illumination condition stability. (E_stability)
@@ -310,10 +264,6 @@ function illumination_QC(WR, WR2, space, provenance_spectrum_ids, user_data)
     E2 = mean(WR2(start_band_ind:end_band_ind));
     
     E_stability = (abs(E1-E2))/E1*100;
-    
-    % insert E stability as target metadata (the VEG spectrum id is always
-    % at position 1 in the list)
-    insert_QC_data(user_data, provenance_spectrum_ids.get(1), java.lang.Double(E_stability), 'Irradiance Instability');
     
 end
 
@@ -338,93 +288,37 @@ function L = rad_cal(DN, DN_DC, IT, gain)
 
 end
 
-%% insert_QC_data 
-% saturation_QC -- 
-%   INPUT:
-%   spectrum_id                 :   Spectrum id
-%   value                       :   Sum of exceeded max values
-%   attribute_name              :   attribute name (e.g. 'Saturation Count')
-%   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
-%                                   clientfactory instance (cf), db_descriptor_list,
-%                                   specchio client, up_coef, dw_coef, curr_instr_type,
-%                                   space, processed_hierarchy_id.
-%   OUTPUT:
-%   is only an intermediate function, no output.
-function insert_QC_data(user_data, spectrum_id, value, attribute_name)
-    import ch.specchio.types.*;   
-    attribute = user_data.specchio_client.getAttributesNameHash().get(attribute_name);
-    
-    ids = java.util.ArrayList();
-    ids.add(java.lang.Integer(spectrum_id));
-   
-    e = MetaParameter.newInstance(attribute);
-    e.setValue(value);
-    user_data.specchio_client.updateOrInsertEavMetadata(e, ids);
-
-end
+%% CODE CHUNKS DELETE LATER
+% 
+%     % Plot for the evaluation of assignments:
+%     if 1 == 0 
+%         figure
+%         plot(user_data.space.getAverageWavelengths, WR);
+%         hold
+%         plot(user_data.space.getAverageWavelengths, VEG);
+%         plot(user_data.space.getAverageWavelengths, WR2);
+%         plot(user_data.space.getAverageWavelengths, DC_WR);
+%         plot(user_data.space.getAverageWavelengths, DC_VEG);
+%         
+%         legend({'WR','VEG','WR2','DC\_WR','DC\_VEG',});
+%     end
 
 
-%% insert_radiance -- 
-%   INPUT:
-%   L                           :   
-%   provenance_spectrum_ids     :   ArrayList of spectrum ids, withouth
-%                                   dark current
-%   user_data                   :   Struct containing switch_channels_for_flox/rox, settings,
-%                                   clientfactory instance (cf), db_descriptor_list,
-%                                   specchio client, up_coef, dw_coef, curr_instr_type,
-%                                   space, processed_hierarchy_id.
-%   OUTPUT:
-%   is only an intermediate function, no output.
-function insert_radiances(L, provenance_spectrum_ids, user_data)
-    
-    import ch.specchio.types.*;
-    new_spectrum_ids = java.util.ArrayList();
-    
-
-    for i=0:provenance_spectrum_ids.size()-1
-%         for j=0:provenance_spectrum_ids.get(0).size-1
-        
-        % copy the spectrum to new hierarchy
-        new_spectrum_id = user_data.specchio_client.copySpectrum(provenance_spectrum_ids.get(i), user_data.processed_hierarchy_id);
-
-        % replace spectral data
-        user_data.specchio_client.updateSpectrumVector(new_spectrum_id, L(:,i+1));       
-        new_spectrum_ids.add(java.lang.Integer(new_spectrum_id));
-%         end
-
-    end
-    
-
-    
-    % change EAV entry to new Processing Level by removing old and inserting new
-    attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Level');
-    
-    user_data.specchio_client.removeEavMetadata(attribute, new_spectrum_ids, 0);
-    
-    
-    e = MetaParameter.newInstance(attribute);
-    e.setValue(1.0);
-    user_data.specchio_client.updateEavMetadata(e, new_spectrum_ids);
-    
-    % set unit to radiance
-    
-    category_values = user_data.specchio_client.getMetadataCategoriesForNameAccess(Spectrum.MEASUREMENT_UNIT);
-    L_id = category_values.get('Radiance');
-    user_data.specchio_client.updateSpectraMetadata(new_spectrum_ids, 'measurement_unit', L_id);
-    
-    
-    % set Processing Atttributes
-    processing_attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Algorithm');
-   
-    e = MetaParameter.newInstance(processing_attribute);
-    e.setValue('Radiance calculation in Matlab');
-    user_data.specchio_client.updateEavMetadata(e, new_spectrum_ids);
- 
-
-
-end
-
-
-
-
-
+% % Plot for the evaluation of the calibration.
+%     if 1 == 0
+%         
+%         figure
+%         plot(user_data.space.getAverageWavelengths, WR_L);
+%         hold
+%         plot(user_data.space.getAverageWavelengths, WR2_L);
+%         plot(user_data.space.getAverageWavelengths, VEG_L, 'g');
+%         legend({'WR\_L','WR2\_L','VEGL',});
+%         
+%         % compare gains of up and downwelling channels
+%         figure
+%         plot(user_data.space.getAverageWavelengths, user_data.dw_coef, 'r');
+%         hold
+%         plot(user_data.space.getAverageWavelengths, user_data.up_coef, 'g');
+%         
+%         
+%     end

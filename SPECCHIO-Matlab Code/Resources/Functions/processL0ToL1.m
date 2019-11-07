@@ -134,7 +134,7 @@ user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId..
 % process each group (a group is a set of WR, WR2, WR_DC, VEG_DC and
 % VEG spectra)
 
-f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processer'); % progress or waitbar
+f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processor'); % progress or waitbar
 
 for i=1:groups.size % was i=1:size-1, check and see
     
@@ -146,8 +146,9 @@ for i=1:groups.size % was i=1:size-1, check and see
     % insert into database
     insertL1(user_data, provenance_spectrum_ids, [sv_E, sv_L, sv_E2],...
         E_stability, [WR_L, VEG_L, WR2_L])
+
 end
-waitbar(1, f, 'Processing finished', 'Name', 'L0 Processer');
+waitbar(1, f, 'Processing finished', 'Name', 'L0 Processor');
 close(f);
 end
 
@@ -202,10 +203,10 @@ function [sv_E, sv_L, sv_E2, E_stability, WR_L, WR2_L, VEG_L,...
     IT = user_data.specchio_client.getMetaparameterValues(ordered_ids, 'Integration Time');
 
     % dark current correction and radiometeric calibration
-    WR_L  = rad_cal(WR, DC_WR, IT.get(WR_ind)/1000, user_data.dw_coef);
-    WR2_L = rad_cal(WR2, DC_WR, IT.get(WR2_ind)/1000, user_data.dw_coef);
-    VEG_L = rad_cal(VEG, DC_VEG, IT.get(VEG_ind)/1000, user_data.up_coef);
-       
+    WR_L  = rad_cal(WR, DC_WR, IT.get(WR_ind)/1000, user_data.up_coef);
+    WR2_L = rad_cal(WR2, DC_WR, IT.get(WR2_ind)/1000, user_data.up_coef);
+    VEG_L = rad_cal(VEG, DC_VEG, IT.get(VEG_ind)/1000, user_data.dw_coef);
+
 end
 
 %% saturation_QC -- Check the sensor saturation

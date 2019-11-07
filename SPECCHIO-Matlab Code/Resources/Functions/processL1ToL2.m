@@ -65,7 +65,6 @@ insertReflectances(outR_SFM, provenance_QEpro_ids, user_data, 'Reflectance', use
 % user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'F_SpecFit', parent_id);
 % user_data.processed_hierarchy_id_outR_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'True Reflectance', parent_id);
 
-
 % insert_reflectances(outF_SFM, provenance_QEpro_ids, user_data, 'outF_SFM', user_data.processed_hierarchy_id_outF_SFM);
 % insert_reflectances(outR_SFM, provenance_QEpro_ids, user_data, 'outR_SFM', user_data.processed_hierarchy_id_outR_SFM );
 % insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'F_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);

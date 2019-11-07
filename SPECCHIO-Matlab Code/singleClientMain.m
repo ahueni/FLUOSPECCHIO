@@ -44,6 +44,7 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 
 % Load data into db
 % filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190503';
+% fileName = '190503';
 filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190504';
 fileName = '190504';
 user_data = autoLoadCampaignData(user_data, filePath);

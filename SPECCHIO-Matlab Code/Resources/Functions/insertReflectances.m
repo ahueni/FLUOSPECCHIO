@@ -9,7 +9,7 @@ if 1==0
     ylim([0 1]);
 end
 
-f = waitbar(0, 'L1 to L2', 'Name', 'L1 Processer');
+f = waitbar(0, 'L1 to L2', 'Name', 'L1 Processor');
 for i=1:provenance_spectrum_ids.size() % was i = 0 and size-1
     waitbar((i/provenance_spectrum_ids.size()), f, 'Please wait...');
     % copy the spectrum to new hierarchy
@@ -21,7 +21,7 @@ for i=1:provenance_spectrum_ids.size() % was i = 0 and size-1
     
 %     disp(',');
 end
-waitbar(1, f, 'Processing finished', 'Name', 'L1 Processer');
+waitbar(1, f, 'Processing finished', 'Name', 'L1 Processor');
 close(f);
 % change EAV entry to new Processing Level by removing old and inserting new
 attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Level');

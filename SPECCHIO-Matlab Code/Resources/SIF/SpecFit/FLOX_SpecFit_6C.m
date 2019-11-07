@@ -13,10 +13,6 @@
 %   L0      = downwelling radiance (mW m-2 sr-1 nm-1)
 %   LS      = upward radiance from the canopy (mW m-2 sr-1 nm-1)
 %   fsPeak  = first guess for red and far-red fluorescence (not used for the moment...)
-%   do_plot = it is a service variable when you want to plot the retrieval result 
-%             (i.e. fluorescence, reflectance and modeled radiance, residualsetc)
-%                   - do_plot = 0 --> no plot; 
-%                   - do_plot = 1 --> do plot;    
 %   w       = vector with same size as wvl which contains weights for the
 %             optimization algorithm; 
 %             no weigths are used for the moment therefore all elements values are = 1

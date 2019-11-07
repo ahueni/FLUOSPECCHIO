@@ -37,6 +37,7 @@ for i=0:group_no-1
     % calculate average WR and TGT, but only if there is more than 1
     % spectrum
     WR_arr = spectra(WR_indices, :);
+%     WR_avg = WR_arr(1,:);
     
     if(sum(WR_indices) > 1)
         WR_avg = mean(WR_arr);

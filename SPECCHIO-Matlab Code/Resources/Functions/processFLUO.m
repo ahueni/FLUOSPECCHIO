@@ -64,8 +64,8 @@ for i=0:group_no-1
     
     
     % prepare L0 and L for SpecFit
-    L0(:,i+1) = WR_avg';
-    L(:,i+1) = TGT_avg';
+    L0(:,i+1) = WR_avg;
+    L(:,i+1) = TGT_avg;
     
     % compile provenance_spectrum_ids: get target id by using
     % TGT_indices logical vector

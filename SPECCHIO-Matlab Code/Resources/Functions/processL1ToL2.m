@@ -44,29 +44,39 @@ for i=1:user_data.settings.reflectance_hierarchy_level
     current_hierarchy_id = parent_id;
 end
 
+% Reflectance Hierarchies:
 user_data.processed_hierarchy_id_Reflectance = ...
     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', parent_id);
+user_data.processed_hierarchy_id_ApparentReflectance = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Apparent Reflectance', parent_id);
+user_data.processed_hierarchy_id_outR_SpecFit = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'True Reflectance', parent_id);
+% Fluorescence Hierarchies:
+user_data.processed_hierarchy_id_outF_SpecFit = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'F_SpecFit', parent_id);
+user_data.processed_hierarchy_id_outF_SFM = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'F_SFM', parent_id);
+
+
+
 
 % Process QEpro
-[outF_SpecFit, outR_SpecFit, SIF_R_max, SIF_R_wl,     ...
-    SIF_FR_max, SIF_FR_wl, SIFint, outF_SFM, outR_SFM, provenance_QEpro_ids] =  ...
+[R_app, out_table, outF_SFM, outR_SFM, outF_SpecFit, outR_SpecFit, provenance_QEpro_ids] =  ...
          processFLUO(ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
      
 %% TESTING NEW FUNCTIONALITY 
 
 %% INSERT INTO DB
-% Insert R
+% Insert R and R_app
 insertReflectances(R, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
-insertReflectances(outR_SFM, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
+insertReflectances(R_app, provenance_QEpro_ids, user_data, 'Apparent Reflectance', user_data.processed_hierarchy_id_ApparentReflectance);
+% Insert R_true
+insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'True Reflectance', user_data.processed_hierarchy_id_outR_SpecFit);
+% Insert SpecFit
+insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'F_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);
+% Insert SFM
+insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'F_SFM', user_data.processed_hierarchy_id_outF_SFM);
 
-%% Misc
-% user_data.processed_hierarchy_id_outF_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outF_SFM', parent_id);
-% user_data.processed_hierarchy_id_outR_SFM = user_data.specchio_client.getSubHierarchyId(campaign, 'outR_SFM', parent_id);
-% user_data.processed_hierarchy_id_outF_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'F_SpecFit', parent_id);
-% user_data.processed_hierarchy_id_outR_SpecFit = user_data.specchio_client.getSubHierarchyId(campaign, 'True Reflectance', parent_id);
-
-% insert_reflectances(outF_SFM, provenance_QEpro_ids, user_data, 'outF_SFM', user_data.processed_hierarchy_id_outF_SFM);
-% insert_reflectances(outR_SFM, provenance_QEpro_ids, user_data, 'outR_SFM', user_data.processed_hierarchy_id_outR_SFM );
-% insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'F_SpecFit', user_data.processed_hierarchy_id_outF_SpecFit);
-% insert_reflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'True Reflectance', user_data.processed_hierarchy_id_outR_SpecFit);
+% Insert SIF metrics
+% TBD
 end

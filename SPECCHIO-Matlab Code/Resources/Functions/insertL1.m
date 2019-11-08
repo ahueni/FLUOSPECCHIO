@@ -52,7 +52,7 @@ user_data.specchio_client.updateSpectraMetadata(new_spectrum_ids, 'measurement_u
 % set Processing Atttributes
 processing_attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Algorithm');
 e = MetaParameter.newInstance(processing_attribute);
-e.setValue('Radiance calculation in Matlab');
+e.setValue('FluoSpecchio');
 user_data.specchio_client.updateEavMetadata(e, new_spectrum_ids);
 
 end

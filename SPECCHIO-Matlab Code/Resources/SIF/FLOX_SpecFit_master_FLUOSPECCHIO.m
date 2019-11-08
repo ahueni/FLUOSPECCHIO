@@ -95,9 +95,9 @@ outR_SFM_B = nan(numel(wvl_B),n_files);
 %% weighting scheme
 switch weights
     case 1
-        w_A = ones(length(Lup_A),1);  w_A(:) = 1.0;
-        w_B = ones(length(Lup_B),1);  w_B(:) = 1.0;
-        w_F = ones(length(Lup_F),1);  w_F(:) = 1.0;
+        w_A = ones(size(Lup_A,1),1);  w_A(:) = 1.0;
+        w_B = ones(size(Lup_B,1),1);  w_B(:) = 1.0;
+        w_F = ones(size(Lup_F,1),1);  w_F(:) = 1.0;
     case 2
         w_A= (1./Lup_A.^2);
         w_B= (1./Lup_B.^2);
@@ -109,7 +109,7 @@ switch weights
     otherwise
 end
 
-parfor i = 1:n_files
+for i = 1:n_files
         
     % Processing
         

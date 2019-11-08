@@ -3,12 +3,6 @@ function insertReflectances(R, provenance_spectrum_ids, user_data, spectrumType,
 import ch.specchio.types.*;
 new_spectrum_ids = java.util.ArrayList();
 
-if 1==0
-    figure
-    plot(R, 'b')
-    ylim([0 1]);
-end
-
 f = waitbar(0, 'L1 to L2', 'Name', 'L1 Processor');
 for i=1:provenance_spectrum_ids.size() % was i = 0 and size-1
     waitbar((i/provenance_spectrum_ids.size()), f, 'Please wait...');

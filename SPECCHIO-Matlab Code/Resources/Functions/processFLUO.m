@@ -1,5 +1,5 @@
-function [R, out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, ...
-    provenance_spectrum_ids] = processFLUO(ids, space, spectra, filenames)
+function [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit, ...
+    R, provenance_spectrum_ids] = processFLUO(user_data, ids, space, spectra, filenames)
 % select groups of 3 and loop over data
 group_no    = ids.size / 3;
 no_of_bands = space.getDimensionality.intValue; % use explicit conversion as for some reason a Java Integer cannot be used to create a matrix with 'ones'.

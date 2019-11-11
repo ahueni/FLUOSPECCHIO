@@ -54,32 +54,37 @@ user_data.processed_hierarchy_id_Reflectance = ...
 % Prepare SIF Hierarchy:
 user_data.processed_hierarchy_id_SIF = ...
     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SIF', parent_id);
-% 
-% % Prepare Reflectance Subhierarchies:
-% user_data.processed_hierarchy_id_ApparentReflectance = ...
-%     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Apparent Reflectance', parent_id);
-% user_data.processed_hierarchy_id_outR_SpecFit = ...
-%     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'True Reflectance', parent_id);
-% 
-% % Prepare SIF Subhierarchies:
-% user_data.processed_hierarchy_id_outF_SpecFit = ...
-%     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'F_SpecFit', parent_id);
-% user_data.processed_hierarchy_id_outF_SFM = ...
-%     user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'F_SFM', parent_id);
+
+% Prepare Reflectance Subhierarchies:
+user_data.processed_hierarchy_id_AppRef = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
+    'Apparent Reflectance', user_data.processed_hierarchy_id_Reflectance);
+user_data.processed_hierarchy_id_TruRef = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
+    'True Reflectance', user_data.processed_hierarchy_id_Reflectance);
+
+% Prepare SIF Subhierarchies:
+user_data.processed_hierarchy_id_SpecFit = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
+    'SpecFit', user_data.processed_hierarchy_id_SIF);
+
+user_data.processed_hierarchy_id_SFM = ...
+    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
+    'SFM', user_data.processed_hierarchy_id_SIF);
 
 
 %% TESTING NEW FUNCTIONALITY 
 
 %% INSERT INTO DB
 % Insert R_app
-insertReflectances(R_FULL, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
-insertReflectances(R_FLUO, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
+insertReflectances(R_FULL, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
+insertReflectances(R_FLUO, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
 % Insert R_true
-insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_Reflectance);
+insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_TruRef);
 % Insert SIF_SpecFit
-insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SIF);
+insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SpecFit);
 % Insert SIF_SFM
-insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SIF);
+insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SFM);
 
 % Insert SIF metrics
 % TBD

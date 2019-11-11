@@ -43,8 +43,8 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 % user_data.topHierarchyId  = user_data.specchio_client.getHierarchyId(user_data.campaign,'data', 0);
 
 % Load data into db
-filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190503';
-fileName = '190503';
+filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\3_months\190702';
+fileName = '190702';
 % filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190504';
 % fileName = '190504';
 user_data = autoLoadCampaignData(user_data, filePath);
@@ -84,12 +84,32 @@ radianceDataID      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Get Reflection 
 user_data = processL1ToL2(user_data, radianceDataID);
 toc
-% Visualize Reflectance
-% Get Hierarchy of the Radiance
-reflectanceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', rawDataID);
-node                   = hierarchy_node(reflectanceHierarchy, "", "");
-reflectanceDataID      = user_data.specchio_client.getSpectrumIdsForNode(node);
-visualizeLevel(user_data, reflectanceDataID, 2);
+% Visualize L2
+% Reflectance
+reflectanceHierarchy = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', rawDataID);
+% True reflectance
+tru_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'True Reflectance', reflectanceHierarchy);
+node_tru_ref         = hierarchy_node(tru_ref, "", "");
+tru_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_tru_ref);
+visualizeLevel(user_data, tru_ref_ids, 2, true);
+% Apparent reflectance
+app_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Apparent Reflectance', reflectanceHierarchy);
+node_app_ref         = hierarchy_node(app_ref, "", "");
+app_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_app_ref);
+visualizeLevel(user_data, app_ref_ids, 2, false);
+% SIF
+sif_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SIF', rawDataID);
+% SFM
+sfm_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SFM', sif_hierarchy);
+node_sfm             = hierarchy_node(sfm_hierarchy, "", "");
+sfm_ids              = user_data.specchio_client.getSpectrumIdsForNode(node_sfm);
+visualizeLevel(user_data, sfm_ids, 2, true);
+% SpecFit
+specfit_hierarchy    = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SpecFit', sif_hierarchy);
+node_specfit         = hierarchy_node(specfit_hierarchy, "", "");
+specfit_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_specfit);
+visualizeLevel(user_data, specfit_ids, 2, true);
+
 % Calculate QIs-2
 
 % Write QIs-2 to DB

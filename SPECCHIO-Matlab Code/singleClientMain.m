@@ -43,8 +43,8 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 % user_data.topHierarchyId  = user_data.specchio_client.getHierarchyId(user_data.campaign,'data', 0);
 
 % Load data into db
-filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\3_months\190702';
-fileName = '190702';
+filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\3_months\190603';
+fileName = '190603';
 % filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\1_week\190504';
 % fileName = '190504';
 user_data = autoLoadCampaignData(user_data, filePath);
@@ -68,7 +68,7 @@ DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Write QIs-0 to DB
 
 % Get Radiance
-user_data = processL0ToL1(user_data, DN_ids);
+% user_data = processL0ToL1(user_data, DN_ids);
 % Visualize Radiance
 % Get Hierarchy of the Radiance
 radianceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);

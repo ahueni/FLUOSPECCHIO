@@ -91,24 +91,26 @@ reflectanceHierarchy = user_data.specchio_client.getSubHierarchyId(user_data.cam
 tru_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'True Reflectance', reflectanceHierarchy);
 node_tru_ref         = hierarchy_node(tru_ref, "", "");
 tru_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_tru_ref);
-visualizeLevel(user_data, tru_ref_ids, 2, true);
+% visualizeLevel(user_data, tru_ref_ids, 2, true);
 % Apparent reflectance
 app_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Apparent Reflectance', reflectanceHierarchy);
 node_app_ref         = hierarchy_node(app_ref, "", "");
 app_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_app_ref);
-visualizeLevel(user_data, app_ref_ids, 2, false);
+% visualizeLevel(user_data, app_ref_ids, 2, false);
 % SIF
 sif_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SIF', rawDataID);
 % SFM
 sfm_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SFM', sif_hierarchy);
 node_sfm             = hierarchy_node(sfm_hierarchy, "", "");
 sfm_ids              = user_data.specchio_client.getSpectrumIdsForNode(node_sfm);
-visualizeLevel(user_data, sfm_ids, 2, true);
+% visualizeLevel(user_data, sfm_ids, 2, true);
 % SpecFit
 specfit_hierarchy    = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SpecFit', sif_hierarchy);
 node_specfit         = hierarchy_node(specfit_hierarchy, "", "");
 specfit_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_specfit);
-visualizeLevel(user_data, specfit_ids, 2, true);
+% visualizeLevel(user_data, specfit_ids, 2, true);
+% Calculate VIs and SIF metrics:
+processProperties(user_data, app_ref_ids, specfit_ids);
 
 % Calculate QIs-2
 

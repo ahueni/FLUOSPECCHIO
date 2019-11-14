@@ -32,16 +32,13 @@ user_data.settings.reflectance_hierarchy_level = 1;
 %% PROCESSING
 % Process FULL
 [R_FULL, provenance_FLAME_ids] = processFULL(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
-% VI = computeVIs(space_FLAME.getAverageWavelengths(), R_FULL);
-% insertVIs(user_data, ids_FLAME, VI);
+
 
 % Process FLUO
 [out_table, outF_SFM, outR_SFM, outF_SpecFit, outR_SpecFit, R_FLUO, provenance_QEpro_ids] =  ...
          processFLUO(user_data, ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
 
-SIFmetric = table(out_table.f_int, out_table.f_max_R, out_table.f_max_FR) ;
-SIFmetric.Properties.VariableNames = {'Total_SIF', 'SIF_R_max','SIF_FR_max'};
-insertVIs(user_data, ids_QEpro, SIFmetric);
+user_data.out_table = out_table;
      
 % prepare target sub hierarchy
 % get directory of first spectrum

@@ -48,6 +48,7 @@ end
 
 function calibrate_space(user_data, space)
 
+
 user_data.up_coef = [];
 user_data.dw_coef = [];
 
@@ -135,18 +136,24 @@ user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId..
 % VEG spectra)
 
 f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processor'); % progress or waitbar
-
+% wvl = space.getAverageWavelengths;
 for i=1:groups.size % was i=1:size-1, check and see
     
     waitbar((i/groups.size), f, 'Please wait...');
     
     [sv_E, sv_L, sv_E2, E_stability, WR_L, WR2_L, VEG_L,...
         provenance_spectrum_ids] = calibrate_group(user_data, groups.get(i-1));
+%     sza = zenith(solar(UTC_time), lon, lat);
+%     WR_750  = statsonspectra(wvl, 748, 750, WR_L, 1);
+%     WR2_750 = statsonspectra(wvl, 748, 750, WR2_L, 1);
+%     VEG_760 = statsonspectra(wvl, 759, 760, VEG_L, 1);
+%     VEG_687 = statsonspectra(wvl, 687, 688, VEG_L, 1);
+%     VEG_750 = statsonspectra(wvl, 748, 750, VEG_L, 1);
     
     % insert into database
     insertL1(user_data, provenance_spectrum_ids, [sv_E, sv_L, sv_E2],...
         E_stability, [WR_L, VEG_L, WR2_L])
-
+    
 end
 waitbar(1, f, 'Processing finished', 'Name', 'L0 Processor');
 close(f);
@@ -267,7 +274,6 @@ function E_stability = illumination_QC(WR, WR2, space)
     E_stability = (abs(E1-E2))/E1*100;
     
 end
-
 %% rad_cal -- Radiometric Calibration
 %   DESCRIPTION:
 %   converts digital numbers to radiance (i.e. intensities [mW m-2 nm-1]).
@@ -287,6 +293,17 @@ function L = rad_cal(DN, DN_DC, IT, gain)
     DN_dc_it = DN_dc / IT;
     L = DN_dc_it .* gain;
 
+end
+
+
+%% Compute spectra statistics
+function stats = statsonspectra(wl, wlStart, wlEnd, spectra, dim)
+% Calculate statistics for the spectra from wStart to wlEnd using the
+% mean. Dim specifies row- or column-wise operation.
+
+subset   = find(wl>=wlStart & wl <= wlEnd);
+sub_spec = spectra(subset);
+stats    = mean(sub_spec, dim);
 end
 
 %% CODE CHUNKS DELETE LATER

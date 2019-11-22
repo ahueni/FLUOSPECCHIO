@@ -60,22 +60,36 @@ end
 %% Query
 function ids = queryAttribute(user_data, attribute, min, max)
 import ch.specchio.queries.*;
-query = Query('spectrum');
-query.setQueryType(Query.SELECT_QUERY);
-
-query.addColumn('spectrum_id')
-
-cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', attribute, 'double_val');
-cond.setValue(num2str(min));
-cond.setOperator('>=');
-query.add_condition(cond);
-
-cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', attribute, 'double_val');
-cond.setValue(num2str(max));
-cond.setOperator('<=');
-query.add_condition(cond);
-
-ids = user_data.specchio_client.getSpectrumIdsMatchingQuery(query);
+if(min == max)
+    
+    query = Query('spectrum');
+    query.setQueryType(Query.SELECT_QUERY);
+    
+    query.addColumn('spectrum_id')
+    
+    cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', attribute, 'double_val');
+    cond.setValue(num2str(min));
+    cond.setOperator('>=');
+    query.add_condition(cond);
+    ids = user_data.specchio_client.getSpectrumIdsMatchingQuery(query);
+else
+    query = Query('spectrum');
+    query.setQueryType(Query.SELECT_QUERY);
+    
+    query.addColumn('spectrum_id')
+    
+    cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', attribute, 'double_val');
+    cond.setValue(num2str(min));
+    cond.setOperator('>=');
+    query.add_condition(cond);
+    
+    cond = EAVQueryConditionObject('eav', 'spectrum_x_eav', attribute, 'double_val');
+    cond.setValue(num2str(max));
+    cond.setOperator('<=');
+    query.add_condition(cond);
+    
+    ids = user_data.specchio_client.getSpectrumIdsMatchingQuery(query);
+end
 end
 %% 
 function  [t_FULL, attr_FULL,...

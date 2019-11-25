@@ -16,30 +16,45 @@ function bandTimeVis(user_data, level, band)
 %
 %   DATE:
 %   18-Nov-2019 V1.0
-%   20-Nov-2019 V1.1
-
+%   22-Nov-2019 V1.5
+tic
 ids    = queryAttribute(user_data, 'Processing Level', level);
 spaces = user_data.specchio_client.getSpaces(ids, 'Acquisition Time');
 
+instrId   = zeros(size(spaces));
 for i=1:length(spaces)
-    instrId(i) = spaces(i).getInstrumentId;
-end
-uniqueInstrId = unique(instrId(:));
-
-if(length(uniqueInstrId) > 1)
-    [t_FULL, band_FULL,...
-    t_FLUO, band_FLUO]...
-    = getInfoMultSensor(user_data, ids, band);
-    
-    figure('Name', 'Checkplots')
-    clf
-    plot(t_FLUO, band_FLUO,'.', t_FULL, band_FULL, '.'); 
-    legend('FLUO','FULL')
-    title(['Average of bands rounded to ' num2str(band) ' [nm]'])
-    xlabel('Wavelength')
-    ylabel('W')
+    if (find(instrId == spaces(i).getInstrumentId))
+        disp('already available');
+    else
+        instrId(i)   = spaces(i).getInstrumentId;
+        index(i) = i;
+    end
 end
 
+[t_tmp, b_tmp, n_tmp] = getTimeBand(user_data, spaces(index(1)), band);
+t_1 = t_tmp;
+b_1 = b_tmp;
+n_1 = n_tmp;
+
+[t_tmp, b_tmp, n_tmp] = getTimeBand(user_data, spaces(index(2)), band);
+t_2 = t_tmp;
+b_2 = b_tmp;
+n_2 = n_tmp;
+
+figure('Name', 'Checkplots')
+clf
+subplot(2,1,1)
+plot(t_1, b_1, '.')
+title(n_1)
+xlabel('Wavelength')
+ylabel('Signal')
+subplot(2,1,2)
+plot(t_2, b_2, '.')
+title(n_2)
+xlabel('Wavelength')
+ylabel('Signal')
+
+toc
 end
 
 
@@ -64,47 +79,36 @@ query.add_condition(cond);
 ids = user_data.specchio_client.getSpectrumIdsMatchingQuery(query);
 end
 %% 
-function  [t_FULL, band_FULL,...
-    t_FLUO, band_FLUO] = getInfoMultSensor(user_data, ids, band)
+function  [t, b, instrName] = getTimeBand(user_data, space, band)
 
-[ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO] = restrictToSensor(user_data, 'FloX', ids);
-[ids_FULL, space_FULL, spectra_FULL, filenames_FULL] = restrictToSensor(user_data, 'ROX', ids);
-wvl_FLUO                                             = space_FLUO.getAverageWavelengths;
-wvl_FULL                                             = space_FULL.getAverageWavelengths;
-time_FLUO                                            = user_data.specchio_client.getMetaparameterValues(ids_FLUO, 'Acquisition Time (UTC)');
-time_FULL                                            = user_data.specchio_client.getMetaparameterValues(ids_FULL, 'Acquisition Time (UTC)');
+ids = space.getSpectrumIds();
+wvl = space.getAverageWavelengths;
+space = user_data.specchio_client.loadSpace(space);
+spectra = space.getVectorsAsArray();
+instrName = convertCharsToStrings(space.getInstrument.getInstrumentName.get_value);
+time = user_data.specchio_client.getMetaparameterValues(ids, 'Acquisition Time (UTC)');
+filename =  user_data.specchio_client.getMetaparameterValues(ids, 'File Name');
+f =  cell(size(filename),1);
 
-
-
-t_FLUO_tmp = NaT(size(time_FLUO),1);
-for i=1:size(time_FLUO)
-    try
-        tmp_dateTime_str = time_FLUO.get(i-1).toString().toCharArray';
-    catch 
-        tmp_dateTime_str = '2000-01-01T01:01:01.000Z';
-    end
-    measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
-    t_FLUO_tmp(i, 1) = measurement_datetime;
+for i=1:size(filename)
+   f(i,1) = cellstr(filename.get(i-1)); 
 end
-t_FLUO = t_FLUO_tmp(t_FLUO_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),1);
 
-spec_FLUO = spectra_FLUO(t_FLUO_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),:);
-band_FLUO = spec_FLUO(:,round(wvl_FLUO) == band);
-band_FLUO = mean(band_FLUO, 2);
-
-t_FULL = NaT(size(time_FULL), 1);
-for i=1:size(time_FULL)
+spectra = spectra(contains(f, 'WR'),:);
+t_tmp = NaT(size(time),1);
+for i=1:size(time)
     try
-        tmp_dateTime_str = time_FULL.get(i-1).toString().toCharArray';
+        tmp_dateTime_str = time.get(i-1).toString().toCharArray';
     catch
         tmp_dateTime_str = '2000-01-01T01:01:01.000Z';
     end
     measurement_datetime = datetime(tmp_dateTime_str, 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z');
-    t_FULL(i, 1) = measurement_datetime;
+    t_tmp(i, 1) = measurement_datetime;
 end
-t_FULL = t_FULL(t_FULL > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),1);
+t_tmp = t_tmp(contains(f, 'WR'));
+t = t_tmp(t_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),1);
 
-spec_FULL = spectra_FULL(t_FULL > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),:);
-band_FULL = spec_FULL(:,round(wvl_FULL) == band);
-band_FULL = mean(band_FULL, 2);
+spec = spectra(t_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),:);
+b = spec(:,round(wvl) == band);
+b = mean(b, 2);
 end

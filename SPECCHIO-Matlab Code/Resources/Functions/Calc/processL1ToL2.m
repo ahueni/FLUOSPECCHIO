@@ -25,7 +25,7 @@ user_data.settings.reflectance_hierarchy_level = 1;
 %% GET DATA
 % restrict to flame and QEpro respectively and order data by 
 % spectrum number (this should only ever be a single space ...)
-[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME] = restrictToSensor(user_data, 'ROX', selectedIds);
+[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME] = restrictToSensor(user_data, 'RoX', selectedIds);
 [ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro] = restrictToSensor(user_data, 'FloX', selectedIds);
 
 

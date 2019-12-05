@@ -30,7 +30,7 @@ import ch.specchio.types.*;
 import ch.specchio.gui.*;
 
 %% JDBC MYSQL 
-configureJDBCDataSource
+% configureJDBCDataSource
 datasource = "SpecchioDB";
 username = "sdb_admin";
 password = "specchio";
@@ -54,17 +54,14 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 % Channel switching (true if up and downwelling was switched)
 user_data.switch_channels_for_flox = false;
 user_data.switch_channels_for_rox  = false;
-
-% filePath = 'C:\Users\bbuman\Documents\Data\OE2_Oensingen\2019\raw\06\190602';
-% fileName = '190601';
-% user_data = autoLoadCampaignData(user_data, filePath);
-
-for i=1:size(data,1)
+for i=1:1
 %% Processing L0 -> L1
 % Get Hierarchy of the newly loaded file
 % rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 1);
+tic
+parent_id   = user_data.specchio_client.getHierarchyParentId(data{i,1});
 node        = hierarchy_node(data{i,1}, "", "");
-DN_ids     = user_data.specchio_client.getSpectrumIdsForNode(node);
+DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Visualize Raw
 % visualizeLevel(user_data, DN_ids, 0);
 % Get spectrum ids:
@@ -77,7 +74,7 @@ DN_ids     = user_data.specchio_client.getSpectrumIdsForNode(node);
 user_data = processL0ToL1(user_data, DN_ids);
 % Visualize Radiance
 % Get Hierarchy of the Radiance
-radianceHierarchy   = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Radiance', rawDataID);
+radianceHierarchy   = user_data.specchio_client.getSubHierarchyId('Radiance', parent_id);
 node                = hierarchy_node(radianceHierarchy, "", "");
 Rad_ids             = user_data.specchio_client.getSpectrumIdsForNode(node);
 % visualizeLevel(user_data, radianceDataID, 1);
@@ -92,31 +89,32 @@ user_data = processL1ToL2(user_data, Rad_ids);
 %     toc
 % Visualize L2
 % Reflectance
-reflectanceHierarchy = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', rawDataID);
+reflectanceHierarchy = user_data.specchio_client.getSubHierarchyId('Reflectance', parent_id);
 % True reflectance
-tru_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'True Reflectance', reflectanceHierarchy);
+tru_ref              = user_data.specchio_client.getSubHierarchyId('True Reflectance', reflectanceHierarchy);
 node_tru_ref         = hierarchy_node(tru_ref, "", "");
 tru_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_tru_ref);
 % visualizeLevel(user_data, tru_ref_ids, 2, true);
 % Apparent reflectance
-app_ref              = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Apparent Reflectance', reflectanceHierarchy);
+app_ref              = user_data.specchio_client.getSubHierarchyId('Apparent Reflectance', reflectanceHierarchy);
 node_app_ref         = hierarchy_node(app_ref, "", "");
 app_ref_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_app_ref);
 % visualizeLevel(user_data, app_ref_ids, 2, false);
 % SIF
-sif_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SIF', rawDataID);
+sif_hierarchy        = user_data.specchio_client.getSubHierarchyId('SIF', parent_id);
 % SFM
-sfm_hierarchy        = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SFM', sif_hierarchy);
+sfm_hierarchy        = user_data.specchio_client.getSubHierarchyId('SFM', sif_hierarchy);
 node_sfm             = hierarchy_node(sfm_hierarchy, "", "");
 sfm_ids              = user_data.specchio_client.getSpectrumIdsForNode(node_sfm);
 % visualizeLevel(user_data, sfm_ids, 2, true);
 % SpecFit
-specfit_hierarchy    = user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SpecFit', sif_hierarchy);
+specfit_hierarchy    = user_data.specchio_client.getSubHierarchyId('SpecFit', sif_hierarchy);
 node_specfit         = hierarchy_node(specfit_hierarchy, "", "");
 specfit_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_specfit);
 % visualizeLevel(user_data, specfit_ids, 2, true);
 % Calculate VIs and SIF metrics:
 processProperties(user_data, app_ref_ids, specfit_ids);
+toc
 end
 toc
 % Calculate QIs-2

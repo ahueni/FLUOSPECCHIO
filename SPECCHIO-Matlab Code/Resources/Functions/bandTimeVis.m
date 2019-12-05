@@ -22,12 +22,14 @@ ids    = queryAttribute(user_data, 'Processing Level', level);
 spaces = user_data.specchio_client.getSpaces(ids, 'Acquisition Time');
 
 instrId   = zeros(size(spaces));
+count = 1;
 for i=1:length(spaces)
     if (find(instrId == spaces(i).getInstrumentId))
         disp('already available');
     else
         instrId(i)   = spaces(i).getInstrumentId;
-        index(i) = i;
+        index(count) = i;
+        count = count +1;
     end
 end
 
@@ -46,12 +48,12 @@ clf
 subplot(2,1,1)
 plot(t_1, b_1, '.')
 title(n_1)
-xlabel('Wavelength')
+xlabel('Time')
 ylabel('Signal')
 subplot(2,1,2)
 plot(t_2, b_2, '.')
 title(n_2)
-xlabel('Wavelength')
+xlabel('Time')
 ylabel('Signal')
 
 toc
@@ -82,8 +84,8 @@ end
 function  [t, b, instrName] = getTimeBand(user_data, space, band)
 
 ids = space.getSpectrumIds();
-wvl = space.getAverageWavelengths;
-space = user_data.specchio_client.loadSpace(space);
+% wvl = space.getAverageWavelengths;
+space = user_data.specchio_client.loadSpace(space, band);
 spectra = space.getVectorsAsArray();
 instrName = convertCharsToStrings(space.getInstrument.getInstrumentName.get_value);
 time = user_data.specchio_client.getMetaparameterValues(ids, 'Acquisition Time (UTC)');
@@ -109,6 +111,7 @@ t_tmp = t_tmp(contains(f, 'WR'));
 t = t_tmp(t_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),1);
 
 spec = spectra(t_tmp > datetime('2000-01-01T01:01:01.000Z', 'InputFormat', 'yyyy-MM-dd''T''HH:mm:ss.SSS''Z'),:);
-b = spec(:,round(wvl) == band);
-b = mean(b, 2);
+b = spec;
+% b = spec(:,round(wvl) == band);
+% b = mean(b, 2);
 end

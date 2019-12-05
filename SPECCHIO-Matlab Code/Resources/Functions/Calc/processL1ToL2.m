@@ -23,20 +23,20 @@ function user_data = processL1ToL2(user_data, selectedIds)
 %%
 user_data.settings.reflectance_hierarchy_level = 1;
 %% GET DATA
-% restrict to flame and QEpro respectively and order data by 
+% restrict to FULL and FLUO respectively and order data by 
 % spectrum number (this should only ever be a single space ...)
-[ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME] = restrictToSensor(user_data, 'RoX', selectedIds);
-[ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro] = restrictToSensor(user_data, 'FloX', selectedIds);
+[ids_FULL, space_FULL, spectra_FULL, filenames_FULL] = restrictToSensor(user_data, 'RoX', selectedIds);
+[ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO] = restrictToSensor(user_data, 'FloX', selectedIds);
 
 
 %% PROCESSING
 % Process FULL
-[R_FULL, provenance_FLAME_ids] = processFULL(user_data, ids_FLAME, space_FLAME, spectra_FLAME, filenames_FLAME);
+[R_FULL, provenance_FLAME_ids] = processFULL(user_data, ids_FULL, space_FULL, spectra_FULL, filenames_FULL);
 
 
 % Process FLUO
 [out_table, outF_SFM, outR_SFM, outF_SpecFit, outR_SpecFit, R_FLUO, provenance_QEpro_ids] =  ...
-         processFLUO(user_data, ids_QEpro, space_QEpro, spectra_QEpro, filenames_QEpro);
+         processFLUO(user_data, ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO);
 
 user_data.out_table = out_table;
      

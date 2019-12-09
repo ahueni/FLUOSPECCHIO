@@ -10,7 +10,7 @@ for i=1:length(sv)
     
     e = MetaParameter.newInstance(attribute);
     e.setValue(sv(i));
-    user_data.specchio_client.updateOrInsertEavMetadata(e, ids);
+    user_data.specchio_client.updateOrInsertEavMetadata(e, ids); % <-- BUG?
 end
 
 % Stability:
@@ -21,6 +21,25 @@ ids.add(java.lang.Integer(provenance_spectrum_ids.get(1)));
 e = MetaParameter.newInstance(attribute);
 e.setValue(E_stability);
 user_data.specchio_client.updateOrInsertEavMetadata(e, ids);
+
+% Target Property:
+attribute = user_data.specchio_client.getAttributesNameHash().get('Target/Reference Designator');
+fnames = user_data.specchio_client.getMetaparameterValues(provenance_spectrum_ids, 'File Name');
+
+for i=0:size(fnames)-1
+    ids = java.util.ArrayList();
+    ids.add(java.lang.Integer(provenance_spectrum_ids.get(i)));
+    
+    if(contains(fnames.get(i), "WR"))
+       tr_rf = MetaParameter.newInstance(attribute);
+       tr_rf.setValue(93);
+       user_data.specchio_client.updateOrInsertEavMetadata(tr_rf, ids);
+    else
+       tr_rf = MetaParameter.newInstance(attribute);
+       tr_rf.setValue(92);
+       user_data.specchio_client.updateOrInsertEavMetadata(tr_rf, ids);
+    end
+end
 
 %% Radiance:
 new_spectrum_ids = java.util.ArrayList();

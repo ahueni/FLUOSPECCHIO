@@ -31,12 +31,12 @@ import ch.specchio.gui.*;
 
 %% JDBC MYSQL 
 % configureJDBCDataSource
-datasource = "SpecchioDB";
-username = "sdb_admin";
-password = "specchio";
-conn = database(datasource,username,password);
-tablename = "unprocessed_hierarchies";
-data = sqlread(conn,tablename);
+% datasource = "SpecchioDB";
+% username = "sdb_admin";
+% password = "specchio";
+% conn = database(datasource,username,password);
+% tablename = "unprocessed_hierarchies";
+% data = sqlread(conn,tablename);
 % head(data);
 % size(data)
 
@@ -54,13 +54,14 @@ user_data.campaign        = user_data.specchio_client.getCampaign(campaignID);
 % Channel switching (true if up and downwelling was switched)
 user_data.switch_channels_for_flox = false;
 user_data.switch_channels_for_rox  = false;
+unpr_hierarchies          = user_data.specchio_client.getUnprocessedHierarchies(num2str(campaignID));
 for i=1:1
 %% Processing L0 -> L1
 % Get Hierarchy of the newly loaded file
 % rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 1);
 tic
-parent_id   = user_data.specchio_client.getHierarchyParentId(data{i,1});
-node        = hierarchy_node(data{i,1}, "", "");
+parent_id   = user_data.specchio_client.getHierarchyParentId(unpr_hierarchies.get(i-1));
+node        = hierarchy_node(unpr_hierarchies.get(i-1), "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Visualize Raw
 % visualizeLevel(user_data, DN_ids, 0);
@@ -120,3 +121,11 @@ toc
 % Calculate QIs-2
 
 % Write QIs-2 to DB
+
+irradiance = "irradiance_all";
+irradIds = sqlread(conn, irradiance);
+idList = java.util.ArrayList();
+for i=1:size(irradIds)
+    idList.add(java.lang.Integer(irradIds{i,1}));
+end
+bandTimeVis(user_data, idList, 760);

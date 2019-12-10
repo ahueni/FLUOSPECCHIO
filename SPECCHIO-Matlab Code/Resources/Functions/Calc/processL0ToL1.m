@@ -204,8 +204,7 @@ function [sv_E, sv_L, sv_E2, E_stability, WR_L, WR2_L, VEG_L,...
         
     % QC 3: Irradiance stability
     E_stability = illumination_QC(WR, WR2, user_data.space);
-    
-    
+        
     % get integration time of the group
     IT = user_data.specchio_client.getMetaparameterValues(ordered_ids, 'Integration Time');
 

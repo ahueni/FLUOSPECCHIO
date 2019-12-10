@@ -29,17 +29,6 @@ import ch.specchio.queries.*;
 import ch.specchio.types.*;
 import ch.specchio.gui.*;
 
-%% JDBC MYSQL 
-% configureJDBCDataSource
-% datasource = "SpecchioDB";
-% username = "sdb_admin";
-% password = "specchio";
-% conn = database(datasource,username,password);
-% tablename = "unprocessed_hierarchies";
-% data = sqlread(conn,tablename);
-% head(data);
-% size(data)
-
 %% Transfer raw data to DB
 % Define connection
 connectionID    = 3;
@@ -81,6 +70,8 @@ Rad_ids             = user_data.specchio_client.getSpectrumIdsForNode(node);
 % visualizeLevel(user_data, radianceDataID, 1);
 %% Process L1 --> L2
 
+% Calculate the angles Zenit and Azimuth
+user_data.specchio_client.calculateSunAngle(Rad_ids);
 % Calculate QIs-1
 % E
 % Write QIs-1 to DB
@@ -121,11 +112,4 @@ toc
 % Calculate QIs-2
 
 % Write QIs-2 to DB
-
-irradiance = "irradiance_all";
-irradIds = sqlread(conn, irradiance);
-idList = java.util.ArrayList();
-for i=1:size(irradIds)
-    idList.add(java.lang.Integer(irradIds{i,1}));
-end
-bandTimeVis(user_data, idList, 760);
+% bandTimeVis(user_data, 760);

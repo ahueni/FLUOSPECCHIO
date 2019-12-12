@@ -48,7 +48,7 @@ for i=1:1
 %% Processing L0 -> L1
 % Get Hierarchy of the newly loaded file
 % rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 1);
-tic
+% tic
 parent_id   = user_data.specchio_client.getHierarchyParentId(unpr_hierarchies.get(i-1));
 node        = hierarchy_node(unpr_hierarchies.get(i-1), "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
@@ -106,7 +106,7 @@ specfit_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_spec
 % visualizeLevel(user_data, specfit_ids, 2, true);
 % Calculate VIs and SIF metrics:
 processProperties(user_data, app_ref_ids, specfit_ids);
-toc
+% toc
 end
 toc
 % Calculate QIs-2

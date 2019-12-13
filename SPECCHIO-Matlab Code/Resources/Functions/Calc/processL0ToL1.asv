@@ -30,13 +30,8 @@ spaces = user_data.specchio_client.getSpaces(selectedIds, 'Acquisition Time');
 
 % calibrate each space
 for i=1:length(spaces)
-    [ids, vectors] = calibrate_space(user_data, spaces(i));
-    ids(:,i) = ids;
-    vectors(:,i) = vectors;
+    calibrate_space(user_data, spaces(i));
 end
-user_data.ids = ids;
-user_data.vectors = vectors;
-user_data.spaces = spaces;
 end
 
 %% Function Calibrate_space()
@@ -51,7 +46,7 @@ end
 %   space       :   sensor and instrument space (specchio)
 %
 
-function [ids, vectors] = calibrate_space(user_data, space)
+function [ids, vector] = calibrate_space(user_data, space)
 
 
 user_data.up_coef = [];
@@ -174,7 +169,7 @@ for i=1:groups.size % was i=1:size-1, check and see
 %         E_stability, [WR_L, VEG_L, WR2_L])
     
 end
-[ids, vectors] = insertL1(user_data, batchUpdate, [sv_E_all, sv_L_all, sv_E2_all], ...
+[ids, user_datavectors] = insertL1(user_data, batchUpdate, [sv_E_all, sv_L_all, sv_E2_all], ...
     E_stab_all, [WR_L_all, VEG_L_all, WR2_L_all]);
 waitbar(1, f, 'Processing finished', 'Name', 'L0 Processor');
 close(f);

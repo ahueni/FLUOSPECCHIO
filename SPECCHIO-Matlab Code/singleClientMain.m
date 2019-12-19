@@ -19,7 +19,6 @@
 %   DATE:
 %   12-Sep-2019 V1
 %   23-Oct-2019 V2
-tic
 %% Add Path
 addpath(genpath('Resources'));
 
@@ -49,8 +48,9 @@ for i=1:1
 % Get Hierarchy of the newly loaded file
 % rawDataID   = user_data.specchio_client.getSubHierarchyId(fileName, 1);
 % tic
-parent_id   = user_data.specchio_client.getHierarchyParentId(243);
-node        = hierarchy_node(243, "", "");
+user_data.current_id  = unpr_hierarchies.get(i-1);
+user_data.parent_id   = user_data.specchio_client.getHierarchyParentId(unpr_hierarchies.get(i-1));
+node        = hierarchy_node(unpr_hierarchies.get(i-1), "", "");
 DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 % Visualize Raw
 % visualizeLevel(user_data, DN_ids, 0);
@@ -64,20 +64,20 @@ DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 user_data = processL0ToL1(user_data, DN_ids);
 % Visualize Radiance
 % Get Hierarchy of the Radiance
-radianceHierarchy   = user_data.specchio_client.getSubHierarchyId('Radiance', parent_id);
+radianceHierarchy   = user_data.specchio_client.getSubHierarchyId('Radiance', user_data.parent_id);
 node                = hierarchy_node(radianceHierarchy, "", "");
 Rad_ids             = user_data.specchio_client.getSpectrumIdsForNode(node);
 % visualizeLevel(user_data, radianceDataID, 1);
 %% Process L1 --> L2
 
 % Calculate the angles Zenit and Azimuth
-user_data.specchio_client.calculateSunAngle(Rad_ids);
+% user_data.specchio_client.calculateSunAngle(Rad_ids);
 % Calculate QIs-1
 % E
 % Write QIs-1 to DB
 
 % Get Reflection
-user_data = processL1ToL2(user_data, Rad_ids);
+user_data = processL1ToL2New(user_data);
 %     toc
 % Visualize L2
 % Reflectance
@@ -108,7 +108,7 @@ specfit_ids          = user_data.specchio_client.getSpectrumIdsForNode(node_spec
 processProperties(user_data, app_ref_ids, specfit_ids);
 % toc
 end
-toc
+
 % Calculate QIs-2
 
 % Write QIs-2 to DB

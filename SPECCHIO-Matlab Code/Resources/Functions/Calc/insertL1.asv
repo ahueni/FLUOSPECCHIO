@@ -97,8 +97,7 @@ function [ids, vectors] = updateSpectra(user_data, prov_ids, spectra)
 % ids = java.util.ArrayList();
 map = java.util.HashMap();
 f = waitbar(0, 'Updating Spectra', 'Name', 'Updating Spectra');
-ids = user_data.specchio_client.copySpectra(prov_ids,...
-    user_data.processed_hierarchy_id, user_data.current_id);
+ids = user_data.specchio_client.copySpectra(prov_ids, user_data.processed_hierarchy_id, 106);
 for i=0:prov_ids.size()-1
     waitbar(((i+1)/prov_ids.size()), f, 'Updating Spectra');
     % copy the spectrum to new hierarchy
@@ -112,7 +111,7 @@ end
 close(f);
 % Update the vectors:
 user_data.specchio_client.updateSpectrumVectors(map);
-vectors = spectra;
+vectors = L;
 end
 
 
@@ -121,7 +120,6 @@ end
 % @param the processing level 
 % @param the measurement unit (Radiance, Reflectance)
 function updateNewSpectraMetaData(user_data, new_ids, level, unit)
-import ch.specchio.types.*
 % ################ 
 % Other attributes
 % ################

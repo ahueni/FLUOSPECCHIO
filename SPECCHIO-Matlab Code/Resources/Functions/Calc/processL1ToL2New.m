@@ -1,4 +1,4 @@
-function user_data = processL1ToL2New(user_data, selectedIds)
+function user_data = processL1ToL2New(user_data)
 %% Function Process Level 1 (Radiance) to Level 2 (Reflectance)
 %   INPUT:
 %   user_data           : variable containing connection, client, etc.
@@ -25,8 +25,12 @@ user_data.settings.reflectance_hierarchy_level = 1;
 
 % spaces = user_data.specchio_client.getSpaces(user_data.ids, true, false, 'File Name');
 
-for i=1:length(user_data.ids)
-    processSpace(user_data.ids(:,i), user_data.vectors(:,i), user_data.spaces(i));
+for i=1:length(user_data.spaces)
+    ids = user_data.postIds{i};
+    vectors = user_data.postVectors{i};
+    space = user_data.spaces{i};
+    fnames = user_data.fileNames{i};
+    [R, specFit] = processSpace(user_data, ids, vectors, space, fnames);
 end
 
 %% PROCESSING
@@ -101,7 +105,7 @@ insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.p
 end
 
 %% processSpace()
-function processSpace(ids, vectors, space)
+function [R, specFit] =  processSpace(user_data, ids, vectors, space, fnames)
 
 instrName = convertCharsToStrings(space.getInstrument.getInstrumentName.get_value);
 isFLUO = false;
@@ -109,53 +113,44 @@ if(contains(instrName, "Fluo"))
    isFLUO = true; 
 end
 
+R = zeros(double(space.getDimensionality()), size(ids)/3);
+provenanceIds = java.util.ArrayList();
 
-%% Calculation
-for i=0:groups.size-1
-   
-    WR_indices = false(ids.size, 1);
-    TGT_indices = WR_indices;
-    WR_indices(group_start+1:group_start+1+2) = WR_pos;
-    TGT_indices(group_start+1:group_start+1+2) = ~WR_pos;
-    
-    % calculate average WR and TGT, but only if there is more than 1
-    % spectrum
-    WR_arr = spectra(WR_indices, :);
-%     WR_avg = WR_arr(1,:);
-    
-    if(sum(WR_indices) > 1)
-        WR_avg = mean(WR_arr);
-    else
-        WR_avg = WR_arr;
+L0 = zeros(double(space.getDimensionality()), size(ids)/3);
+L  = zeros(double(space.getDimensionality()), size(ids)/3);
+
+% filenames = user_data.specchio_client.getMetaparameterValues(ids, 'File Name');
+count = 1;
+%% Calculation initVal:step:endVal
+for i=1:3:size(ids)
+    VEG  = vectors(:,i+1);
+    WR_mean = mean(vectors(:, [i,i+2]),2);
+    if(isFLUO)
+       L0(:,count) = WR_mean;
+       L(:,count)  = VEG;
     end
+    R(:,count) = (VEG ./ WR_mean);
     
-    % calculate average TGT (just in case the channels were switched)
-    TGT_arr = spectra(TGT_indices, :);
+    provenanceIds.add(java.lang.Integer(ids.get(i+1)));
     
-    if(sum(TGT_indices) > 1)
-        TGT_avg = mean(TGT_arr);
-    else
-        TGT_avg = TGT_arr;
-    end
-   
-    
-    % calculate R
-    
-    if user_data.switch_channels_for_rox == false
-        R(:,i+1) = (TGT_avg ./ WR_avg);
-    else
-        R(:,i+1) = (WR_avg ./ TGT_avg);
-    end
-    
-    if 1==0
-        figure
-        plot(space.getAverageWavelengths(), R, 'b')
-    end
-    
-    
-    % compile provenance_spectrum_ids: get target id by using
-    % TGT_indices logical vector
-    provenance_spectrum_ids.add(java.lang.Integer(ids.get(find(TGT_indices, 1) - 1)));
-    
+    count = count + 1;
+
+%     WR_1 = vectors(i);
+%     WR_2 = vectors(i+2);
+
 end
+wvl = space.getAverageWavelengths();
+if(isFLUO)
+    specFit = ...
+    FLOX_SpecFit_master_FLUOSPECCHIO(wvl,L0,L); 
+    out_table = specFit.out_table;
+    qualityOrVeg = table(out_table.f_int, out_table.f_max_R, out_table.f_max_FR) ;
+    qualityOrVeg.Properties.VariableNames = {'Total_SIF', 'SIF_R_max','SIF_FR_max'};
+else
+    specFit = 'Broadrange';
+    qualityOrVeg = computeVIs(wvl, R);
+end
+
+insertL2(user_data);
+insertVI(provenanceIds, ids, qualityOrVeg);
 end

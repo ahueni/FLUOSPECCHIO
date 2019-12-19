@@ -37,7 +37,7 @@ for i=1:length(spaces)
 %     calibrate_space(user_data, spaces(i));
     space = user_data.specchio_client.loadSpace(spaces(i));
     [ids, vectors, fnames] = calibrate_space(user_data, space);
-    user_data.spaces(i) = {spaces(i)};
+    user_data.spaces(i) = {space};
     user_data.fileNames(i) = {fnames};
 %     user_data.tables(i) = table(postIds', postVectors', filenames');
     user_data.postIds(i) = {ids};

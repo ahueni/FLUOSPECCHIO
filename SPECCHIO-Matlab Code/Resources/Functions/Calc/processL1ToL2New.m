@@ -20,11 +20,27 @@ function user_data = processL1ToL2New(user_data)
 %   DATE:
 %   16-Sep-2019 V1.0
 %   24-Oct-2019 V1.1
-%%
-user_data.settings.reflectance_hierarchy_level = 1;
+%% PREPARING HIERARCHIES:
 
-% spaces = user_data.specchio_client.getSpaces(user_data.ids, true, false, 'File Name');
+% Reflectance
+user_data.ref_id =  createHierarchy(user_data, 'Reflectance');
 
+% SIF
+user_data.SIF_id = createHierarchy(user_data, 'SIF');
+
+% Apparent Reflectance
+user_data.refApp_id = createHierarchy(user_data, 'Apparent Reflectance');
+
+% True Reflectance
+user_data.refTru_id = createHierarchy(user_data, 'True Reflectance');
+
+% SpecFit
+user_data.SpecFit_id = createHierarchy(user_data, 'SpecFit');
+
+% SFM
+user_data.SFM_id = createHierarchy(user_data, 'SFM');
+
+%% PROCESSING
 for i=1:length(user_data.spaces)
     ids = user_data.postIds{i};
     vectors = user_data.postVectors{i};
@@ -43,45 +59,6 @@ end
          processFLUO(user_data, ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO);
 
 user_data.out_table = out_table;
-     
-% prepare target sub hierarchy
-% get directory of first spectrum
-s  = user_data.specchio_client.getSpectrum(provenance_FLAME_ids.get(0), false);  % load first spectrum to get the hierarchy
-current_hierarchy_id = s.getHierarchyLevelId();
-
-% move within the hierarchy according to user_data.settings.reflectance_hierarchy_level
-for i=1:user_data.settings.reflectance_hierarchy_level
-    parent_id = user_data.specchio_client.getHierarchyParentId(current_hierarchy_id);
-    current_hierarchy_id = parent_id;
-end
-
-% Prepare Reflectance Hierarchy:
-user_data.processed_hierarchy_id_Reflectance = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'Reflectance', parent_id);
-
-% Prepare SIF Hierarchy:
-user_data.processed_hierarchy_id_SIF = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign, 'SIF', parent_id);
-
-% Prepare Reflectance Subhierarchies:
-user_data.processed_hierarchy_id_AppRef = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
-    'Apparent Reflectance', user_data.processed_hierarchy_id_Reflectance);
-user_data.processed_hierarchy_id_TruRef = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
-    'True Reflectance', user_data.processed_hierarchy_id_Reflectance);
-
-% Prepare SIF Subhierarchies:
-user_data.processed_hierarchy_id_SpecFit = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
-    'SpecFit', user_data.processed_hierarchy_id_SIF);
-
-user_data.processed_hierarchy_id_SFM = ...
-    user_data.specchio_client.getSubHierarchyId(user_data.campaign,...
-    'SFM', user_data.processed_hierarchy_id_SIF);
-
-
-%% TESTING NEW FUNCTIONALITY 
 
 %% INSERT INTO DB
 % Insert R_app
@@ -93,14 +70,6 @@ insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance',
 insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SpecFit);
 % Insert SIF_SFM
 insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SFM);
-
-% Insert SIF metrics
-% TBD
-
-
-%% Visual Analysis
-% wvl_QEpro                                                   = space_QEpro.getAverageWavelengths();
-% wvl_FLAME                                                   = space_FLAME.getAverageWavelengths();
 
 end
 
@@ -119,6 +88,7 @@ prov_ids = java.util.ArrayList();
 L0 = zeros(double(space.getDimensionality()), size(ids)/3);
 L  = zeros(double(space.getDimensionality()), size(ids)/3);
 
+wvl = space.getAverageWavelengths();
 % filenames = user_data.specchio_client.getMetaparameterValues(ids, 'File Name');
 count = 1;
 %% Calculation initVal:step:endVal
@@ -137,17 +107,19 @@ for i=1:3:size(ids)
 
 end
 
-wvl = space.getAverageWavelengths();
 
 if(isFLUO)
-    specFit = ...
-    FLOX_SpecFit_master_FLUOSPECCHIO(wvl,L0,L); 
-    out_table = specFit.out_table;
-    qualityOrVeg = table(out_table.f_int, out_table.f_max_R, out_table.f_max_FR) ;
-    qualityOrVeg.Properties.VariableNames = {'Total_SIF', 'SIF_R_max','SIF_FR_max'};
+    specFit = 'Fluorescence';
+%     [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
+%     FLOX_SpecFit_master_FLUOSPECCHIO(wvl,L0,L); 
+%     metaData = table(out_table.f_int, out_table.f_max_R, out_table.f_max_FR) ;
+%     metaData.Properties.VariableNames = {'Total_SIF', 'SIF_R_max','SIF_FR_max'};
+    
+
 else
     specFit = 'Broadrange';
     metaData = computeVIs(wvl, R);
+    user_data.processed_hierarchy_id = user_data.refApp_id;
     insertL1(user_data, prov_ids, metaData, R, 2.0, 'Reflectance');
 end
 % insertL1(user_data, prov_ids, metaData, spectra, level, unit)

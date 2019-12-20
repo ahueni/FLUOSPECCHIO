@@ -34,16 +34,13 @@ user_data.postVectors = {};
 user_data.fileNames = {};
 % calibrate each space
 for i=1:length(spaces)
-%     calibrate_space(user_data, spaces(i));
     space = user_data.specchio_client.loadSpace(spaces(i));
     [ids, vectors, fnames] = calibrate_space(user_data, space);
     user_data.spaces(i) = {space};
     user_data.fileNames(i) = {fnames};
-%     user_data.tables(i) = table(postIds', postVectors', filenames');
     user_data.postIds(i) = {ids};
     user_data.postVectors(i) = {vectors};
 end
-
 end
 
 %% Function Calibrate_space()
@@ -79,7 +76,7 @@ user_data.processed_hierarchy_id = user_data.specchio_client.getSubHierarchyId..
     (user_data.campaign, 'Radiance', user_data.parent_id);
 
 
-f = waitbar(0, 'L0 to L1', 'Name', 'L0 Processor'); % progress or waitbar
+f = waitbar(0, 'Calibration', 'Name', 'Please wait...'); % progress or waitbar
 % wvl = space.getAverageWavelengths;
 batchUpdate = java.util.ArrayList();
 [WR_L_all, VEG_L_all, WR2_L_all] = deal(zeros(double(space.getDimensionality()),groups.size)); 

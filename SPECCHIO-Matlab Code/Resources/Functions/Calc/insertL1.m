@@ -1,3 +1,11 @@
+%% @ FUNCTION = insertL1()
+% @param 
+% @param
+% @param
+% @param 
+% @param
+% @param
+
 function [ids, vectors, fnames] = insertL1(user_data, prov_ids, metaData, spectra, level, unit)
 
 fnames = updateMetaData(user_data, prov_ids, metaData, level);
@@ -6,7 +14,6 @@ fnames = updateMetaData(user_data, prov_ids, metaData, level);
 
 updateNewSpectraMetaData(user_data, ids, level, unit);
 end
-
 %% FUNCTION insertMetaData
 % @param prov_ids ids of the the spectra to be updated
 % @param metaData matlab table, header = attribute name, value 
@@ -17,74 +24,15 @@ import ch.specchio.types.*
 % ################
 % Main attributes
 % ################
-id = java.util.ArrayList();
+
 % file names
 fnames = user_data.specchio_client.getMetaparameterValues(prov_ids, 'File Name');
 
 if(level < 2)
-    targRef = true;
-    % illumination stability (only every third spectrum)
-    E_stability = metaData.Irradiance_Instability;
-    stab = user_data.specchio_client.getAttributesNameHash().get('Irradiance Instability');
-    stab = MetaParameter.newInstance(stab);
-    attributeNr = width(metaData)-1;
+    handleMetaData(user_data, prov_ids, metaData, fnames)
 else
-    targRef = false;
-    attributeNr = width(metaData);
-end  
-
-
-for k=1:attributeNr % iterate over columns (i.e. attributes)
-    data = metaData{1,k};
-    
-    % clean attribute names
-    attrName = metaData.Properties.VariableNames{k};
-    newStr = strrep(attrName,'_',' ');
-    
-    % waitbar
-    f = waitbar(0, 'Updating Metadata', 'Name', newStr);
-   
-    % metaparameters (actual = mp, if not finite = garb = garbage)
-    mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(newStr));
-    garb = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get('Garbage Flag'));
-    count = 1;
-    for j=1:length(data) % iterate over rows (i.e. spectrum ids)
-        % update the waitbar
-        waitbar((j/length(data)), f, 'Updating Metadata');
-        
-        % clear the arraylist
-        id.clear();
-        
-        % add the current id to the list
-        id.add(java.lang.Integer(prov_ids.get(j-1)));
-        
-        % differentiate between target and reference
-        if(targRef)
-            mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get('Target/Reference Designator'));
-            if(contains(fnames.get(j-1), "WR"))
-                mp.setValue(93);
-            else
-                mp.setValue(92);
-                stab.setValue(E_stability(:,count));
-                user_data.specchio_client.updateOrInsertEavMetadata(stab, id);
-                count = count + 1;
-            end
-        else % paramaters with a value            
-            if(isfinite(metaData{j,k}))
-                val = metaData{k,j};
-                mp.setValue(val);
-            else
-                val = 1;
-                garb.setValue(val);
-            end
-        end
-        
-        % update the metadata
-        user_data.specchio_client.updateOrInsertEavMetadata(mp, id);
-    end
-    close(f);
+    insertMetaData(user_data, prov_ids, metaDat);
 end
-
 
 end
 
@@ -125,7 +73,7 @@ import ch.specchio.types.*
 % ################ 
 % Other attributes
 % ################
-disp('other attributes');
+f = waitbar(0, 'Updating Metadata for all Spectra', 'Name', 'Updating Metadata for all Spectra');
 % processing level
 attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Level');
 
@@ -134,10 +82,14 @@ e = MetaParameter.newInstance(attribute);
 e.setValue(level);
 user_data.specchio_client.updateEavMetadata(e, new_ids);
 
+waitbar(1/3, f, 'Updating Metadata for all Spectra');
+
 % set unit
 category_values = user_data.specchio_client.getMetadataCategoriesForNameAccess(Spectrum.MEASUREMENT_UNIT);
 L_id = category_values.get(unit);
 user_data.specchio_client.updateSpectraMetadata(new_ids, 'measurement_unit', L_id);
+
+waitbar(2/3, f, 'Updating Metadata for all Spectra');
 
 % processing algorithm
 processing_attribute = user_data.specchio_client.getAttributesNameHash().get('Processing Algorithm');
@@ -145,6 +97,8 @@ e = MetaParameter.newInstance(processing_attribute);
 e.setValue(['FluoSpecchio Matlab ' datestr(datetime)]);
 user_data.specchio_client.updateEavMetadata(e, new_ids);
 
+waitbar(1, f, 'Updating Metadata for all Spectra');
+close(f);
 end
 
 

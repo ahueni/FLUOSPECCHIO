@@ -69,7 +69,8 @@ node                = hierarchy_node(radianceHierarchy, "", "");
 Rad_ids             = user_data.specchio_client.getSpectrumIdsForNode(node);
 % visualizeLevel(user_data, radianceDataID, 1);
 %% Process L1 --> L2
-
+user_data.current_id = user_data.specchio_client.getSubHierarchyId...
+    (user_data.campaign, 'Radiance', user_data.parent_id);
 % Calculate the angles Zenit and Azimuth
 % user_data.specchio_client.calculateSunAngle(Rad_ids);
 % Calculate QIs-1
@@ -78,6 +79,7 @@ Rad_ids             = user_data.specchio_client.getSpectrumIdsForNode(node);
 
 % Get Reflection
 user_data = processL1ToL2New(user_data);
+user_data = processL1ToL2(user_data, Rad_ids);
 %     toc
 % Visualize L2
 % Reflectance

@@ -23,22 +23,17 @@ function user_data = processL1ToL2New(user_data)
 %% PREPARING HIERARCHIES:
 
 % Reflectance
-user_data.ref_id =  createHierarchy(user_data, 'Reflectance');
-
+user_data.ref_id =  createHierarchy(user_data, 'Reflectance', user_data.parent_id);
 % SIF
-user_data.SIF_id = createHierarchy(user_data, 'SIF');
-
+user_data.SIF_id = createHierarchy(user_data, 'SIF', user_data.parent_id);
 % Apparent Reflectance
-user_data.refApp_id = createHierarchy(user_data, 'Apparent Reflectance');
-
+user_data.refApp_id = createHierarchy(user_data, 'Apparent Reflectance', user_data.ref_id);
 % True Reflectance
-user_data.refTru_id = createHierarchy(user_data, 'True Reflectance');
-
+user_data.refTru_id = createHierarchy(user_data, 'True Reflectance', user_data.ref_id);
 % SpecFit
-user_data.SpecFit_id = createHierarchy(user_data, 'SpecFit');
-
+user_data.SpecFit_id = createHierarchy(user_data, 'SpecFit', user_data.SIF_id);
 % SFM
-user_data.SFM_id = createHierarchy(user_data, 'SFM');
+user_data.SFM_id = createHierarchy(user_data, 'SFM', user_data.SIF_id);
 
 %% PROCESSING
 for i=1:length(user_data.spaces)
@@ -48,28 +43,6 @@ for i=1:length(user_data.spaces)
     fnames = user_data.fileNames{i};
     [R, specFit] = processSpace(user_data, ids, vectors, space, fnames);
 end
-
-%% PROCESSING
-% Process FULL
-[R_FULL, provenance_FLAME_ids] = processFULL(user_data, ids_FULL, space_FULL, spectra_FULL, filenames_FULL);
-
-
-% Process FLUO
-[out_table, outF_SFM, outR_SFM, outF_SpecFit, outR_SpecFit, R_FLUO, provenance_QEpro_ids] =  ...
-         processFLUO(user_data, ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO);
-
-user_data.out_table = out_table;
-
-%% INSERT INTO DB
-% Insert R_app
-insertReflectances(R_FULL, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
-insertReflectances(R_FLUO, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
-% Insert R_true
-insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_TruRef);
-% Insert SIF_SpecFit
-insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SpecFit);
-% Insert SIF_SFM
-insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SFM);
 
 end
 
@@ -110,12 +83,20 @@ end
 
 if(isFLUO)
     specFit = 'Fluorescence';
-%     [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
-%     FLOX_SpecFit_master_FLUOSPECCHIO(wvl,L0,L); 
-%     metaData = table(out_table.f_int, out_table.f_max_R, out_table.f_max_FR) ;
-%     metaData.Properties.VariableNames = {'Total_SIF', 'SIF_R_max','SIF_FR_max'};
-    
-
+    [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
+    FLOX_SpecFit_master_FLUOSPECCHIO(wvl,L0,L); 
+    % SpecFit
+    metaData = [out_table{:,15:26}];
+    metaData = array2table(metaData);
+    metaData.Properties.VariableNames = {out_table.Properties.VariableNames{1,15:26}};
+    user_data.processed_hierarchy_id = user_data.SpecFit_id;
+    insertL1(user_data, prov_ids, metaData, outR_SpecFit, 2.0, 'Reflectance');
+%     SFM
+    metaData = out_table{:,[3:7, 10:14]};
+    metaData = array2table(metaData);
+    metaData.Properties.VariableNames = {out_table.Properties.VariableNames{1,[3:7 10:14]}};
+    user_data.processed_hierarchy_id = user_data.SFM_id;
+    insertL1(user_data, prov_ids, metaData);
 else
     specFit = 'Broadrange';
     metaData = computeVIs(wvl, R);
@@ -126,3 +107,26 @@ end
 
 % insertVI(provenanceIds, ids, qualityOrVeg);
 end
+
+
+% %% PROCESSING
+% % Process FULL
+% [R_FULL, provenance_FLAME_ids] = processFULL(user_data, ids_FULL, space_FULL, spectra_FULL, filenames_FULL);
+% 
+% 
+% % Process FLUO
+% [out_table, outF_SFM, outR_SFM, outF_SpecFit, outR_SpecFit, R_FLUO, provenance_QEpro_ids] =  ...
+%          processFLUO(user_data, ids_FLUO, space_FLUO, spectra_FLUO, filenames_FLUO);
+% 
+% user_data.out_table = out_table;
+
+%% INSERT INTO DB
+% Insert R_app
+% insertReflectances(R_FULL, provenance_FLAME_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
+% insertReflectances(R_FLUO, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_AppRef);
+% % Insert R_true
+% insertReflectances(outR_SpecFit, provenance_QEpro_ids, user_data, 'Reflectance', user_data.processed_hierarchy_id_TruRef);
+% % Insert SIF_SpecFit
+% insertReflectances(outF_SpecFit, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SpecFit);
+% % Insert SIF_SFM
+% insertReflectances(outF_SFM, provenance_QEpro_ids, user_data, 'SIF', user_data.processed_hierarchy_id_SFM);

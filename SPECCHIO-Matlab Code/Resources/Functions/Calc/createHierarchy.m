@@ -1,4 +1,4 @@
-function hierarchyId = createHierarchy(user_data, name)
+function hierarchyId = createHierarchy(user_data, name, parent_id)
 hierarchyId = user_data.specchio_client.getSubHierarchyId(user_data.campaign, ...
-    name, user_data.parent_id);
+    name, parent_id);
 end

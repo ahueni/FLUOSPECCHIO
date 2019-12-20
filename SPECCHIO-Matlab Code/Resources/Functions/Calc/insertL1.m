@@ -31,7 +31,7 @@ fnames = user_data.specchio_client.getMetaparameterValues(prov_ids, 'File Name')
 if(level < 2)
     handleMetaData(user_data, prov_ids, metaData, fnames)
 else
-    insertMetaData(user_data, prov_ids, metaDat);
+    insertMetaData(user_data, prov_ids, metaData);
 end
 
 end

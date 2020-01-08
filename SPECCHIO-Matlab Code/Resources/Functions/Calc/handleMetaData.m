@@ -3,17 +3,16 @@ import ch.specchio.types.*;
 % Attributes:
 saturation = metaData.Saturation_Count;
 E_stability = metaData.Irradiance_Instability;
-satu = user_data.specchio_client.getAttributesNameHash().get('Saturation Count');
-satu = MetaParameter.newInstance(satu);
-stab = user_data.specchio_client.getAttributesNameHash().get('Irradiance Instability');
-stab = MetaParameter.newInstance(stab);
-targ = user_data.specchio_client.getAttributesNameHash().get('Target/Reference Designator');
-targ = MetaParameter.newInstance(targ);
-
 f = waitbar(0, 'Updating Metadata', 'Name', 'Please wait...');
 count = 1;
 for i=0:prov_ids.size()-1
     waitbar(((i+1)/prov_ids.size()), f, 'Please wait...');
+    satu = user_data.specchio_client.getAttributesNameHash().get('Saturation Count');
+    satu = MetaParameter.newInstance(satu);
+    stab = user_data.specchio_client.getAttributesNameHash().get('Irradiance Instability');
+    stab = MetaParameter.newInstance(stab);
+    targ = user_data.specchio_client.getAttributesNameHash().get('Target/Reference Designator');
+    targ = MetaParameter.newInstance(targ);
     specId = prov_ids.get(i);
     % Target and Stability:
     if(contains(fnames.get(i), "WR"))
@@ -22,8 +21,8 @@ for i=0:prov_ids.size()-1
     else
        targ.setValue(92);
        stab.setValue(E_stability(:,count));
-       user_data.specchio_client.updateOrInsertEavMetadata(targ, specId);
-       user_data.specchio_client.updateOrInsertEavMetadata(stab, specId);
+       user_data.specchio_client.updateOrInsertEavMetadata(targ, specId)
+       user_data.specchio_client.updateOrInsertEavMetadata(stab, specId)
        count = count + 1;
     end
     

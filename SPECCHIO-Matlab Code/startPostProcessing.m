@@ -6,11 +6,12 @@
 % This will start the whole post processing by invoking the
 % main method on the Starter object
 
-function log = startPostProcessing(campaignId)
+function log = startPostProcessing(campaignId, connectionId)
+    addpath(genpath('Resources'));
     fprintf('Process started at: %s\n', datestr(now,'HH:MM'))
     global log
     % Create a starter object
-    start= Starter(uint32(campaignId));
+    start= Starter(uint32(campaignId), uint32(connectionId));
     % call main method to start the processing
     start.main();
     log = log;

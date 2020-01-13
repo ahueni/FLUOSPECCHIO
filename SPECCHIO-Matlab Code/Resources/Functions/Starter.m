@@ -12,16 +12,17 @@ classdef Starter
     % Public Properties
     % ==================================================
     properties (Access = public)
-        campaignId;  % campaign Id to be processed as 64 bit unsigned Integer
-        campaign; % campaign object
-        specchioClient;     % SPECCHIO-client instance to be used
-        hierarchyIdMap;     % Key = (String) Name of Hierarchy, Value = (uint) Id of Hierarchy
-        newHierarchyId;     % new hierarchy id
-        currentHierarchyId; % current hierarchy id
-        currentSpace;       % space that is currently processed
-        currentDNIds;       % current Hierarchy DNIds
+        campaignId;             % campaign Id to be processed as 64 bit unsigned Integer
+        campaign;               % campaign object
+        connectionId;           % the id to be used to connect to the server
+        specchioClient;         % SPECCHIO-client instance to be used
+        hierarchyIdMap;         % Key = (String) Name of Hierarchy, Value = (uint) Id of Hierarchy
+        newHierarchyId;         % new hierarchy id
+        currentHierarchyId;     % current hierarchy id
+        currentSpace;           % space that is currently processed
+        currentDNIds;           % current Hierarchy DNIds
         allGroupsSpectrumIds;   % AVMatchingList of Groups containing AVMatchingList of Spectra Ids
-        currentInstrumentType;   % Defines the current instrument type
+        currentInstrumentType;  % Defines the current instrument type
         currentInstrumentId;    % current Instrument ID
         calUpCoef;              % calibration up coefficient of current instrument
         calDownCoef;            % calibration down coefficient of current instrument
@@ -41,14 +42,14 @@ classdef Starter
             % javaaddpath(this.specchioClientPath); does not work currently
                         
             % connect to server
-            specchioClientFactory = ch.specchio.client.SPECCHIOClientFactory.getInstance();
-            serverDescriptors = specchioClientFactory.getAllServerDescriptors();
+            specchioClientFactory   = ch.specchio.client.SPECCHIOClientFactory.getInstance();
+            serverDescriptors       = specchioClientFactory.getAllServerDescriptors();
 
-            this.specchioClient = specchioClientFactory.createClient(serverDescriptors.get(3));
-            this.campaign = this.specchioClient.getCampaign(this.campaignId);
+            this.specchioClient     = specchioClientFactory.createClient(serverDescriptors.get(this.connectionId));
+            this.campaign           = this.specchioClient.getCampaign(this.campaignId);
         end
         
-        function this = calibrateSpace(this, space)
+        function this = getCalibrationCoeffs(this, space)
             % CALIBRATESPACE sets the calibration coefficients as well as 
             % instrumentType, instrumentId and calibrationMetadata
             
@@ -115,6 +116,7 @@ classdef Starter
             % SPECCHIO client in specchioClientPath
             
             unpr_hierarchies = this.specchioClient.getUnprocessedHierarchies(num2str(this.campaignId));
+            
             for i = 0 :(length(unpr_hierarchies) - 1) % -1 : because matlab starts at 1, but java starts at 0
                 try
                     this.currentHierarchyId = unpr_hierarchies.get(i);
@@ -123,18 +125,17 @@ classdef Starter
                     log = "No unprocessed hierarchy available";
                     return
                 end
-                % for testing purposes uncomment following line
-                %this.currentHierarchyId = 43;
+                
                 % Go trough current hierarchy
-                % unpr_hierarchies
-                currentParentId = this.specchioClient.getHierarchyParentId(this.currentHierarchyId);
-                node = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
-                this.currentDNIds = this.specchioClient.getSpectrumIdsForNode(node);
+                currentParentId     = this.specchioClient.getHierarchyParentId(this.currentHierarchyId);
+                node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
+                this.currentDNIds   = this.specchioClient.getSpectrumIdsForNode(node);
+                    
                 % Create folder structure in Hierarchy
-                this = this.createHierarchy(currentParentId);
+                this    = this.createHierarchy(currentParentId);
 
-                % get spaces for DNIds
-                spaces =  this.specchioClient.getSpaces(this.currentDNIds, 'File Name'); % Array of spaces
+                % get spaces for selected spectra
+                spaces  =  this.specchioClient.getSpaces(this.currentDNIds, 'File Name'); % Array of spaces
 
                 % for each space process all levels
                 for j = 1 : length(spaces)
@@ -152,7 +153,7 @@ classdef Starter
                     end
 
                     % Get calibration data
-                    this = calibrateSpace(this, this.currentSpace);
+                    this = getCalibrationCoeffs(this, this.currentSpace);
 
                     % Get Spectrum ids of all Groups in current Space
                     this.allGroupsSpectrumIds = this.specchioClient.sortByAttributes(...
@@ -200,11 +201,12 @@ classdef Starter
     % Public Methods
     % ==================================================
     methods (Access = public)
-        function this = Starter(campaignId)
+        function this = Starter(campaignId, connectionId)
             % STARTER Constructor for Starter class
             % campaignId is a 64bit unsigned integer refering to
             % an existing SPECCHIO campaignId
             this.campaignId = campaignId;  
+            this.connectionId = connectionId;
             this.channelSwitched = false;
         end
                

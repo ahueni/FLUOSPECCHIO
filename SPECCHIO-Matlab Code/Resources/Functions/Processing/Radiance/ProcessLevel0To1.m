@@ -3,7 +3,7 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
     % Public Properties
     % ==================================================
     properties (Access = public) 
-        level = 0;
+        level = 1;
         starterContext; % Containing the information needed from Starter to do all calculations, qi and db-updates
         spectrumIds; % Spectrum Ids of current Group
         vectors;    %vectors of current Group

@@ -95,6 +95,7 @@ for i=0:prov_ids.size()-1
     end
 
 %     for j=0:metaData.size()-1
+        for
 %         meta = metaData.keySet().toArray;
 %         meta = meta(i+1);
 %         attr = MetaParameter.newInstance(user_data.specchioClient.getAttributesNameHash().get(meta));

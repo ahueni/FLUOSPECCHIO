@@ -1,4 +1,4 @@
-classdef SignalDifference < SpecchioQualityIndicesInterface
+classdef Target < SpecchioQualityIndicesInterface
     % ==================================================
     % Public Properties
     % ==================================================
@@ -7,32 +7,36 @@ classdef SignalDifference < SpecchioQualityIndicesInterface
     end
     
     % ==================================================
+    % Private Methods
+    % ==================================================
+    methods (Access = private)
+        
+    end
+    
+    % ==================================================
     % Public Methods
     % ==================================================
     methods (Access = public)
-        function this = SignalDifference(context)
+        function this = Target(context)
            this.levelContext = context; 
         end
         
         function execute(this)
             import ch.specchio.types.*;
-            attribute = this.levelContext.starterContext.specchioClient.getAttributesNameHash().get('SNR');
-            % calculates the signal qi's 
-            % WR
-            mp = MetaParameter.newInstance(attribute);
-            mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_WR_idx)./(this.levelContext.vectors.get(this.levelContext.WR_idx)+ this.levelContext.vectors.get(this.levelContext.DC_WR_idx))));
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
-
-            % VEG
-            mp = MetaParameter.newInstance(attribute);
-            mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_VEG_idx)./(this.levelContext.vectors.get(this.levelContext.VEG_idx)+ this.levelContext.vectors.get(this.levelContext.DC_VEG_idx))));
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
-
-            % WR2
-            mp = MetaParameter.newInstance(attribute);
-            mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_WR_idx)./(this.levelContext.vectors.get(this.levelContext.WR2_idx)+ this.levelContext.vectors.get(this.levelContext.DC_WR_idx))));
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
+            attribute = this.levelContext.starterContext.specchioClient.getAttributesNameHash().get('Target/Reference Designator');
             
+            %sv_WR
+            mp = MetaParameter.newInstance(attribute);
+            mp.setValue(93);
+            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
+            %sv_VEG
+            mp = MetaParameter.newInstance(attribute);
+            mp.setValue(92);
+            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
+            %sv_WR2
+            mp = MetaParameter.newInstance(attribute);
+            mp.setValue(93);
+            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
         end
     end
 end

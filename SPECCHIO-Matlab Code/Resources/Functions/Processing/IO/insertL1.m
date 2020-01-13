@@ -1,5 +1,5 @@
-function [ids, vectors, fnames] = insertL1(user_data, prov_ids, metaData, spectra, level, unit)
-    updateMetaData(user_data, prov_ids, metaData, level);
+function [ids, vectors] = insertL1(user_data, prov_ids, metaData, spectra, level, unit)
+    updateOrInsertMetaData(user_data, prov_ids, metaData);
     [ids, vectors] = updateSpectra(user_data, prov_ids, spectra, unit);
     updateNewSpectraMetaData(user_data, ids, level, unit);
 end
@@ -7,16 +7,18 @@ end
 % @param prov_ids ids of the the spectra to be updated
 % @param metaData matlab table, header = attribute name, value 
 % @param level the processing level
-function fnames = updateMetaData(user_data, prov_ids, metaData, level)
-    import ch.specchio.types.*
-    % file names
-    fnames = user_data.specchioClient.getMetaparameterValues(prov_ids, 'File Name');
-    
-    if(level < 2)
-        handleMetaData(user_data, prov_ids, metaData, fnames)
-    else
-        insertMetaData(user_data, prov_ids, metaData);
-    end
+function updateOrInsertMetaData(user_data, prov_ids, metaData)
+import ch.specchio.types.*;
+metaDataList = java.util.ArrayList;
+
+for i=0:prov_ids.size()-1
+    md = Metadata(); % Metadata object, stores several MPs and respective spectrum id
+    md.setEntries(metaData.get(java.lang.Integer(prov_ids.get(i))));
+    metaDataList.add(md);
+end
+
+user_data.specchioClient.updateOrInsertEavMetadata(metaDataList, prov_ids, user_data.campaignId);
+
 end
 
 %% FUNCTION updateSpectra
@@ -67,82 +69,3 @@ function updateNewSpectraMetaData(user_data, new_ids, level, unit)
 
 end
 
-function handleMetaData(user_data, prov_ids, metaData, fnames, campaignId)
-import ch.specchio.types.*;
-
-metaDataList = java.util.ArrayList;
-% count = 1;
-
-for i=0:prov_ids.size()-1
-    md = Metadata(); % Metadata object, stores several MPs and respective spectrum ids
-    mps = java.util.ArrayList;
-    
-    % MANUAL PARAMETERS DUE TO DIFFERENT NATURE:
-%     stab = user_data.specchio_client.getAttributesNameHash().get('Irradiance Instability');
-%     stab = MetaParameter.newInstance(stab);
-    targ = user_data.specchioClient.getAttributesNameHash().get('Target/Reference Designator');
-    targ = MetaParameter.newInstance(targ);
-
-    if(contains(fnames.get(i), "WR"))
-       targ.setValue(93);
-       mps.add(targ);
-    else
-       targ.setValue(92);
-%        stab.setValue(E_stability(:,count));
-       mps.add(targ);
-%        mps.add(stab);
-%        count = count + 1;
-    end
-
-%     for j=0:metaData.size()-1
-%         meta = metaData.keySet().toArray;
-%         meta = meta(i+1);
-%         attr = MetaParameter.newInstance(user_data.specchioClient.getAttributesNameHash().get(meta));
-%         attr.setValue(metaData.get(meta).get(j));
-%         mps.add(attr);
-%     end
-
-    md.setEntries(mps);
-    metaDataList.add(md);
-end
-user_data.specchioClient.updateOrInsertEavMetadata(metaDataList, prov_ids, user_data.campaignId);
-
-
-% for i=0:metaData.size()-1
-%     meta = metaData.keySet().toArray;
-%     meta = meta(i+1);
-%     for j=0:size(prov_ids)-1
-%         attr = MetaParameter.newInstance(user_data.specchioClient.getAttributesNameHash().get(meta));
-%         attr.setValue(metaData.get(meta).get(j));
-%         user_data.specchioClient.updateOrInsertEavMetadata(attr, prov_ids.get(j));
-%     end
-% end
-
-end
-
-function insertMetaData(user_data, ids, metaData)
-import ch.specchio.types.*;
-    spectrum_ids = java.util.ArrayList();
-    f = waitbar(0, 'Insert Index', 'Name', 'VI/QI/TI insert');
-    for k=1:height(metaData)
-        waitbar((k/height(metaData)), f, 'Please wait...');
-        
-        spectrum_ids.clear();
-        spectrum_ids.add(java.lang.Integer(ids.get(k-1)));
-                
-        for j=1:width(metaData)
-            
-            if(isfinite(metaData{k,j}))
-                mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get(metaData.Properties.VariableNames{j}));
-                val = metaData{k,j};
-                mp.setValue(val);
-            else
-                mp = MetaParameter.newInstance(user_data.specchio_client.getAttributesNameHash().get('Garbage Flag'));
-                val = 1;
-                mp.setValue(val);
-            end
-            user_data.specchio_client.updateOrInsertEavMetadata(mp, spectrum_ids); 
-        end
-    end
-    close(f);
-end

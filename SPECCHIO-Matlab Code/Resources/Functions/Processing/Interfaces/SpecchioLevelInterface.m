@@ -16,6 +16,7 @@ classdef (Abstract) SpecchioLevelInterface
         provenance_spectrum_ids; % extracted spectrum id's for radiance (level one)                                            
         qiValuesToUpdate; % = java.util.HashMap;    % A hashmap with: String key = db-Column identifier for this attribute, 
                                                     % ArrayList Value = values to insert ordered by processing Order (eq. SpectrumID order)
+        metaParameters;  % java.util.HashMap; % A hashmap with: int key = spectrum id, ArrayList<MetaParameter> vaue = metaparams to update
     end
     
     % ==================================================
@@ -32,7 +33,7 @@ classdef (Abstract) SpecchioLevelInterface
             % to start processing of one space
             calculations(this);
             qualityIndices(this);
-            newIds = insertL1(this.starterContext, this.provenance_spectrum_ids, this.qiValuesToUpdate, this.calcValuesToUpdate, this.level, "Radiance");
+            newIds = insertL1(this.starterContext, this.provenance_spectrum_ids, this.metaParameters, this.calcValuesToUpdate, this.level, "Radiance");
         end
     end
 end

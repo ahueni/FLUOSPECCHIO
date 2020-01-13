@@ -17,9 +17,8 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
         VEG_idx =       1;
         WR_idx =        0;
         WR2_idx =       2;
-       
         provenance_spectrum_ids;
-    
+        metaParameters;
     end
     
     % ==================================================
@@ -34,14 +33,24 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
             this.provenance_spectrum_ids = provenance_spectrum_ids;
         end
         
+        function this = prepareMetaParams(this)
+            metaParameters = java.util.HashMap;
+            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.WR_idx)), java.util.ArrayList);
+            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.WR2_idx)), java.util.ArrayList);
+            this.metaParameters = metaParameters;
+        end
+        
         function this = ProcessLevel0To1(context, spectrumIds, vectors)
             % PROCESSLEVEL0TO1 constructor for ProcessLevel0To1 class
             % context refers to a Starter object and is needed to use
             % SPECCHIO-Client and its functions
+            import ch.specchio.types.*;
             this.starterContext = context;
             this.spectrumIds = spectrumIds;
             this.vectors = vectors; 
             this = this.toProvenanceId();
+            this = this.prepareMetaParams();
         end
         
         function this = calculations(this)
@@ -56,9 +65,14 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
             % add QI-functions here each function should return
             % this containing the changed space
             saturation = Saturation(this);
-            signal = SignalDifference(this);
-            this.qiValuesToUpdate.put('Saturation Count', saturation.execute());
-            this.qiValuesToUpdate.put('SNR', signal.execute());
+            snr = SignalDifference(this);
+            illumination = Illumination(this);
+            target = Target(this);
+            saturation.execute();
+            snr.execute();
+            illumination.execute();
+            target.execute();
+            this.metaParameters;
         end 
     end
 end

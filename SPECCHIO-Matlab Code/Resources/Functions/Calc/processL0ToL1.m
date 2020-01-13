@@ -34,12 +34,14 @@ user_data.postVectors = {};
 user_data.fileNames = {};
 % calibrate each space
 for i=1:length(spaces)
+    tic;
     space = user_data.specchio_client.loadSpace(spaces(i));
     [ids, vectors, fnames] = calibrate_space(user_data, space);
     user_data.spaces(i) = {space};
     user_data.fileNames(i) = {fnames};
     user_data.postIds(i) = {ids};
     user_data.postVectors(i) = {vectors};
+    toc;
 end
 end
 

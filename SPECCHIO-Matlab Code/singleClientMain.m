@@ -1,4 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   FLUOSPECCHIO - MAIN PROCESSING SCRIPT
 %
 %
@@ -31,7 +31,7 @@ import ch.specchio.gui.*;
 %% Transfer raw data to DB
 % Define connection
 connectionID    = 3;
-campaignID      = 14;
+campaignID      = 16;
 
 % Connect
 user_data.cf              = SPECCHIOClientFactory.getInstance();
@@ -62,6 +62,7 @@ DN_ids      = user_data.specchio_client.getSpectrumIdsForNode(node);
 
 % Get Radiance
 user_data = processL0ToL1(user_data, DN_ids);
+
 % Visualize Radiance
 % Get Hierarchy of the Radiance
 radianceHierarchy   = user_data.specchio_client.getSubHierarchyId('Radiance', user_data.parent_id);

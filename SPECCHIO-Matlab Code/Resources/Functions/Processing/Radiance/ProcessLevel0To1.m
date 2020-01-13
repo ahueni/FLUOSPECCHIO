@@ -18,7 +18,6 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
         WR_idx =        0;
         WR2_idx =       2;
         provenance_spectrum_ids;
-        metaParameters;
     end
     
     % ==================================================
@@ -34,11 +33,9 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
         end
         
         function this = prepareMetaParams(this)
-            metaParameters = java.util.HashMap;
-            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.WR_idx)), java.util.ArrayList);
-            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
-            metaParameters.put(java.lang.Integer(this.spectrumIds.get(this.WR2_idx)), java.util.ArrayList);
-            this.metaParameters = metaParameters;
+            this.starterContext.currentMetaData.put(java.lang.Integer(this.spectrumIds.get(this.WR_idx)), java.util.ArrayList);
+            this.starterContext.currentMetaData.put(java.lang.Integer(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+            this.starterContext.currentMetaData.put(java.lang.Integer(this.spectrumIds.get(this.WR2_idx)), java.util.ArrayList);
         end
         
         function this = ProcessLevel0To1(context, spectrumIds, vectors)
@@ -58,7 +55,10 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
             % an java.util.ArrayList containing the changed values in
             % processing order (ordered by spectrumIds)
             radCalc = RadCalc(this);
-            this.calcValuesToUpdate.put('Radiance', radCalc.execute());
+            newSpectra = radCalc.execute();
+            this.starterContext.currentValuesToUpdate.put(java.lang.Integer(this.spectrumIds.get(this.VEG_idx)), newSpectra.get(0));
+            this.starterContext.currentValuesToUpdate.put(java.lang.Integer(this.spectrumIds.get(this.WR_idx)),  newSpectra.get(1));
+            this.starterContext.currentValuesToUpdate.put(java.lang.Integer(this.spectrumIds.get(this.WR2_idx)), newSpectra.get(2));
         end
         
         function this = qualityIndices(this)
@@ -72,7 +72,6 @@ classdef ProcessLevel0To1 < SpecchioLevelInterface
             snr.execute();
             illumination.execute();
             target.execute();
-            this.metaParameters;
         end 
     end
 end

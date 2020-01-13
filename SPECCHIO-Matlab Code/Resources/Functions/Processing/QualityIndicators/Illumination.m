@@ -44,15 +44,15 @@ classdef Illumination < SpecchioQualityIndicesInterface
             %sv_WR
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(0);
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
+            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
             %sv_VEG
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(100*E_stability);
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
+            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
             %sv_WR2
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(0);
-            this.levelContext.metaParameters.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
+            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
         end
     end
 end

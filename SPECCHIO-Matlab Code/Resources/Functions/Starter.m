@@ -21,6 +21,8 @@ classdef Starter
         currentHierarchyId;     % current hierarchy id
         currentSpace;           % space that is currently processed
         currentDNIds;           % current Hierarchy DNIds
+        currentMetaData;        % HashMap
+        currentValuesToUpdate;  % HashMap
         allGroupsSpectrumIds;   % AVMatchingList of Groups containing AVMatchingList of Spectra Ids
         currentInstrumentType;  % Defines the current instrument type
         currentInstrumentId;    % current Instrument ID
@@ -42,11 +44,14 @@ classdef Starter
             % javaaddpath(this.specchioClientPath); does not work currently
                         
             % connect to server
-            specchioClientFactory   = ch.specchio.client.SPECCHIOClientFactory.getInstance();
-            serverDescriptors       = specchioClientFactory.getAllServerDescriptors();
+            specchioClientFactory       = ch.specchio.client.SPECCHIOClientFactory.getInstance();
+            serverDescriptors           = specchioClientFactory.getAllServerDescriptors();
 
-            this.specchioClient     = specchioClientFactory.createClient(serverDescriptors.get(this.connectionId));
-            this.campaign           = this.specchioClient.getCampaign(this.campaignId);
+            this.specchioClient         = specchioClientFactory.createClient(serverDescriptors.get(this.connectionId));
+            this.campaign               = this.specchioClient.getCampaign(this.campaignId);
+            
+            this.currentMetaData        = java.util.HashMap;
+            this.currentValuesToUpdate  = java.util.HashMap;
         end
         
         function this = getCalibrationCoeffs(this, space)
@@ -139,7 +144,8 @@ classdef Starter
 
                 % for each space process all levels
                 for j = 1 : length(spaces)
-
+                    this.currentMetaData.clear();       
+                    this.currentValuesToUpdate.clear();
                     % Load Space
                     try
                         this.currentSpace = this.specchioClient.loadSpace(spaces(j));
@@ -180,8 +186,9 @@ classdef Starter
                         % Level 0 -> 1
                         this.integrationTime = this.specchioClient.getMetaparameterValues(currentGroupSpectrumIds, 'Integration Time');
                         level1 = ProcessLevel0To1(this, currentGroupSpectrumIds, currentGroupVectors);
+                        level1.main();
                         % save the new spectra ids
-                        newSpectrumIds = level1.main();
+%                         newSpectrumIds = level1.main();
                        
                         % Level 1 -> 2
                         %level2 = ProcessLevel1To2(this, newSpectrumIds);
@@ -192,6 +199,7 @@ classdef Starter
                         %level3 = ProcessLevel2To3(this, space);
                         %level3.main();
                     end
+                    newIds = insertL1(this, 1.0, "Radiance");
                 end
             end
         end

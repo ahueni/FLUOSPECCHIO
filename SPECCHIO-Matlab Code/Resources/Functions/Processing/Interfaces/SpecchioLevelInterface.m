@@ -11,12 +11,12 @@ classdef (Abstract) SpecchioLevelInterface
         starterContext; % Containing the information needed from Starter to do all calculations, qi and db-updates
         spectrumIds; % Spectrum Ids of current Group
         vectors;    %vectors of current Group
-        calcValuesToUpdate; %  = java.util.HashMap; % A hashmap with: String key = db-Column identifier for this attribute, 
+%         calcValuesToUpdate; %  = java.util.HashMap; % A hashmap with: String key = db-Column identifier for this attribute, 
                                                     % ArrayList Value = values to insert ordered by processing Order (eq. SpectrumID order)     
         provenance_spectrum_ids; % extracted spectrum id's for radiance (level one)                                            
         qiValuesToUpdate; % = java.util.HashMap;    % A hashmap with: String key = db-Column identifier for this attribute, 
                                                     % ArrayList Value = values to insert ordered by processing Order (eq. SpectrumID order)
-        metaParameters;  % java.util.HashMap; % A hashmap with: int key = spectrum id, ArrayList<MetaParameter> vaue = metaparams to update
+%         metaParameters;  % java.util.HashMap; % A hashmap with: int key = spectrum id, ArrayList<MetaParameter> vaue = metaparams to update
     end
     
     % ==================================================
@@ -28,12 +28,12 @@ classdef (Abstract) SpecchioLevelInterface
     end
     
     methods (Access = public)
-        function newIds = main(this)
+        function main(this)
             % MAIN calls all needed methods in the correct order
             % to start processing of one space
             calculations(this);
             qualityIndices(this);
-            newIds = insertL1(this.starterContext, this.provenance_spectrum_ids, this.metaParameters, this.calcValuesToUpdate, this.level, "Radiance");
+%             newIds = insertL1(this.starterContext, this.provenance_spectrum_ids, this.metaParameters, this.calcValuesToUpdate, this.level, "Radiance");
         end
     end
 end

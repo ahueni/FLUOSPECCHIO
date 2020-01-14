@@ -91,7 +91,7 @@ classdef Starter
                 % ==================================================
                 
                 % get L0 spaces for selected spectra
-                spaces  =  this.specchioClient.getSpaces(this.currentIds, 'File Name'); % Array of spaces
+                spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
                 this.processedIds      = java.util.ArrayList;
                 for j = 1 : length(spaces)
                     try
@@ -114,7 +114,7 @@ classdef Starter
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
                 % get L1 spaces for selected spectra
-                spaces  =  this.specchioClient.getSpaces(this.processedIds, 'File Name'); % Array of spaces
+                spaces  =  this.specchioClient.getSpaces(this.processedIds, 'Spectrum Number'); % Array of spaces
                 
                 for j = 1 : length(spaces)
                     try

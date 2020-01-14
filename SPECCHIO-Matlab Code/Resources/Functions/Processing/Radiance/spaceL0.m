@@ -98,7 +98,7 @@ classdef spaceL0 < SpecchioSpaceInterface
                  % check if multiple versions of csv files available
                  if currentGroupSpectrumIds.size() ~= 5
                      global log
-                     log = "Attention, there are multiple versions of csv files available: Please fix by hand";
+                     log = "Attention, there are multiple versions of csv files available: Please fix.";
                      return
                  end
                  

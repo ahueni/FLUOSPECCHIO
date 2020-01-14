@@ -60,7 +60,7 @@ classdef spaceL1 < SpecchioSpaceInterface
             % GET GROUPS
             % ==================================================
              this.allGroupsSpectrumIds = this.starterContext.specchioClient.sortByAttributes(...
-                 this.space.getSpectrumIds, 'Acquisition Time')...
+                 this.space.getSpectrumIds, 'File Name')...
                  .getSpectrum_id_lists(); % AVMatchingListCollection-Object<AVMatchinLists> -> ArrayList<AVMatchingList>
              
              for k = 0 : (this.allGroupsSpectrumIds.size() - 1) % -1 : because matlab starts at 1, but java starts at 0
@@ -72,7 +72,7 @@ classdef spaceL1 < SpecchioSpaceInterface
                  % check if multiple versions of csv files available
                  if currentGroupSpectrumIds.size() ~= 3
                      global log
-                     log = "Attention, there are multiple versions of csv files available: Please fix by hand";
+                     log = "Attention, there are multiple versions of csv files available: Please fix.";
                      return
                  end
                  

@@ -16,22 +16,22 @@ classdef SignalDifference < SpecchioQualityIndicesInterface
         
         function execute(this)
             import ch.specchio.types.*;
-            attribute = this.levelContext.starterContext.specchioClient.getAttributesNameHash().get('SNR');
+            attribute = this.levelContext.spaceContext.starterContext.specchioClient.getAttributesNameHash().get('SNR');
             % calculates the signal qi's 
             % WR
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_WR_idx)./(this.levelContext.vectors.get(this.levelContext.WR_idx)+ this.levelContext.vectors.get(this.levelContext.DC_WR_idx))));
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
 
             % VEG
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_VEG_idx)./(this.levelContext.vectors.get(this.levelContext.VEG_idx)+ this.levelContext.vectors.get(this.levelContext.DC_VEG_idx))));
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
 
             % WR2
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(100*nanmean(this.levelContext.vectors.get(this.levelContext.DC_WR_idx)./(this.levelContext.vectors.get(this.levelContext.WR2_idx)+ this.levelContext.vectors.get(this.levelContext.DC_WR_idx))));
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
             
         end
     end

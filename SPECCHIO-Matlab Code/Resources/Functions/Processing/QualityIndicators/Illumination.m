@@ -23,7 +23,7 @@ classdef Illumination < SpecchioQualityIndicesInterface
         
         function execute(this)
             import ch.specchio.types.*;
-            attribute = this.levelContext.starterContext.specchioClient.getAttributesNameHash().get('Irradiance Instability');
+            attribute = this.levelContext.spaceContext.starterContext.specchioClient.getAttributesNameHash().get('Irradiance Instability');
 
             
             % QC3. Illumination condition stability. (E_stability)
@@ -34,8 +34,8 @@ classdef Illumination < SpecchioQualityIndicesInterface
             range   = 2;
             WR = this.levelContext.vectors.get(this.levelContext.WR_idx);
             WR2 = this.levelContext.vectors.get(this.levelContext.WR2_idx);
-            start_band_ind  = this.levelContext.starterContext.currentSpace.get_nearest_band(java.lang.Double(wl1));
-            end_band_ind    = this.levelContext.starterContext.currentSpace.get_nearest_band(java.lang.Double(wl1 + range));
+            start_band_ind  = this.levelContext.spaceContext.space.get_nearest_band(java.lang.Double(wl1));
+            end_band_ind    = this.levelContext.spaceContext.space.get_nearest_band(java.lang.Double(wl1 + range));
             E1 = mean(WR(start_band_ind:end_band_ind));
             E2 = mean(WR2(start_band_ind:end_band_ind));
     
@@ -44,15 +44,15 @@ classdef Illumination < SpecchioQualityIndicesInterface
             %sv_WR
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(0);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
             %sv_VEG
             mp = MetaParameter.newInstance(attribute);
-            mp.setValue(100*E_stability);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
+            mp.setValue(E_stability);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
             %sv_WR2
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(0);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
         end
     end
 end

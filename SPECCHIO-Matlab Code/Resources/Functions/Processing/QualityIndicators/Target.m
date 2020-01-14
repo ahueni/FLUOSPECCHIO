@@ -23,20 +23,20 @@ classdef Target < SpecchioQualityIndicesInterface
         
         function execute(this)
             import ch.specchio.types.*;
-            attribute = this.levelContext.starterContext.specchioClient.getAttributesNameHash().get('Target/Reference Designator');
+            attribute = this.levelContext.spaceContext.starterContext.specchioClient.getAttributesNameHash().get('Target/Reference Designator');
             
             %sv_WR
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(93);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR_idx))).add(mp);
             %sv_VEG
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(92);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.VEG_idx))).add(mp);
             %sv_WR2
             mp = MetaParameter.newInstance(attribute);
             mp.setValue(93);
-            this.levelContext.starterContext.currentMetaData.get(java.lang.Integer(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
+            this.levelContext.spaceContext.MetaData.get(uint32(this.levelContext.spectrumIds.get(this.levelContext.WR2_idx))).add(mp);
         end
     end
 end

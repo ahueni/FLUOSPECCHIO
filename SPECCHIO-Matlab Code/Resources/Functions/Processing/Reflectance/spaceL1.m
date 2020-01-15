@@ -5,7 +5,8 @@ classdef spaceL1 < SpecchioSpaceInterface
     properties (Access = public) 
         space;                   % Space object
         level = 2;               % uint varible which denotes the current processing level (0,1,2,..)
-        unit = 'Reflectance';       % String describing the data unit (e.g. 'Radiance');
+        unit = 'Reflectance';    % String describing the data unit (e.g. 'Radiance');
+        newFolderName = 'Apparent Reflectance'          %
         starterContext;          % Containing the information needed from Starter to do all calculations, qi and db-updates
         spaceSpectrumIds;        % Spectrum Ids of current Space
         provenance_spectrum_ids; % extracted spectrum id's for radiance (level one)                                            
@@ -60,7 +61,7 @@ classdef spaceL1 < SpecchioSpaceInterface
             % GET GROUPS
             % ==================================================
              this.allGroupsSpectrumIds = this.starterContext.specchioClient.sortByAttributes(...
-                 this.space.getSpectrumIds, 'File Name')...
+                 this.space.getSpectrumIds, 'Acquisition Time')...
                  .getSpectrum_id_lists(); % AVMatchingListCollection-Object<AVMatchinLists> -> ArrayList<AVMatchingList>
              
              for k = 0 : (this.allGroupsSpectrumIds.size() - 1) % -1 : because matlab starts at 1, but java starts at 0

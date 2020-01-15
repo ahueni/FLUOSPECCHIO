@@ -9,6 +9,7 @@ classdef (Abstract) SpecchioSpaceInterface
     properties (Abstract)
         level;                   % uint varible which denotes the current processing level (0,1,2,..)
         unit;                    % String describing the data unit (e.g. 'Radiance');
+        newFolderName;           % name of the folder in the hierarchy, required to get the hierarchy id 
         starterContext;          % Containing the information needed from Starter to do all calculations, qi and db-updates
         spaceSpectrumIds;        % Spectrum Ids of current Space
         provenance_spectrum_ids; % extracted spectrum id's for radiance (level one)                                            

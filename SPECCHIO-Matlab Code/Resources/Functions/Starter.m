@@ -21,7 +21,6 @@ classdef Starter
         currentHierarchyId;     % current hierarchy id
         currentIds;
         channelSwitched;
-        processedIds;           % ArrayList, each space all ids
      end
     
     % ==================================================
@@ -53,12 +52,12 @@ classdef Starter
             % SIF
             sifId = this.specchioClient.getSubHierarchyId(this.campaign, 'SIF', parentId);
             map('SIF') = sifId;
-%             % Subdirectories of Reflectance
-%             map('Apparent Reflectance') = this.specchioClient.getSubHierarchyId(this.campaign, 'Apparent Reflectance', reflectanceId);
-%             map('True Reflectance') = this.specchioClient.getSubHierarchyId(this.campaign, 'True Reflectance', reflectanceId);
-%             % Subdirectories of SIF
-%             map('SpecFit') = this.specchioClient.getSubHierarchyId(this.campaign, 'SpecFit', sifId);
-%             map('SFM') = this.specchioClient.getSubHierarchyId(this.campaign, 'SFM', sifId);
+            % Subdirectories of Reflectance
+            map('Apparent Reflectance') = this.specchioClient.getSubHierarchyId(this.campaign, 'Apparent Reflectance', reflectanceId);
+            map('True Reflectance') = this.specchioClient.getSubHierarchyId(this.campaign, 'True Reflectance', reflectanceId);
+            % Subdirectories of SIF
+            map('SpecFit') = this.specchioClient.getSubHierarchyId(this.campaign, 'SpecFit', sifId);
+            map('SFM') = this.specchioClient.getSubHierarchyId(this.campaign, 'SFM', sifId);
             this.hierarchyIdMap = map;
         end
         
@@ -92,7 +91,7 @@ classdef Starter
                 
                 % get L0 spaces for selected spectra
                 spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
-                this.processedIds      = java.util.ArrayList;
+                
                 for j = 1 : length(spaces)
                     try
                         space = spaceL0(this, this.specchioClient.loadSpace(spaces(j)));
@@ -113,8 +112,11 @@ classdef Starter
                 % ==================================================
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
+                node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
+                this.currentIds     = this.specchioClient.getSpectrumIdsForNode(node);
+                    
                 % get L1 spaces for selected spectra
-                spaces  =  this.specchioClient.getSpaces(this.processedIds, 'Spectrum Number'); % Array of spaces
+                spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
                 
                 for j = 1 : length(spaces)
                     try
@@ -130,6 +132,33 @@ classdef Starter
                     end
                 end
                 
+                % ==================================================
+                % PROCESS SIF
+                % ==================================================
+                % change the current hierarchy id
+                this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
+                node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
+                this.currentIds     = this.specchioClient.getSpectrumIdsForNode(node);
+                
+                                % get L1 spaces for selected spectra
+                spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
+                
+                for j = 1 : length(spaces)
+                    try
+                        tmpSpace = this.specchioClient.loadSpace(spaces(j));
+                        if (tmpSpace.get_wvl_of_band(0) > 500) % FLUO
+                            space = sif(this, tmpSpace);
+                            space.main();
+                        end
+                    catch e
+                        e.message
+                        if(isa(e,'matlab.exception.JavaException'))
+                            ex = e.ExceptionObject;
+                            assert(isjava(ex));
+                            ex.printStackTrace;
+                        end
+                    end
+                end
                 
             end
         end

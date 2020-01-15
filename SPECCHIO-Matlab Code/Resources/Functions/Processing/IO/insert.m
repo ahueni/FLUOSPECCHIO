@@ -29,7 +29,7 @@ function ids = updateSpectra(user_data, prov_ids)
 %% Radiance:
 map = java.util.HashMap();
 ids = user_data.starterContext.specchioClient.copySpectra(prov_ids,...
-    cell2mat(values(user_data.starterContext.hierarchyIdMap, {user_data.unit})), user_data.starterContext.currentHierarchyId);
+    cell2mat(values(user_data.starterContext.hierarchyIdMap, {user_data.newFolderName})), user_data.starterContext.currentHierarchyId);
 
 % Populate the hashmap
 for i=0:prov_ids.size()-1

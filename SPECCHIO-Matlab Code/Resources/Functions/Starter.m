@@ -140,7 +140,7 @@ classdef Starter
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
                 this.currentIds     = this.specchioClient.getSpectrumIdsForNode(node);
                 
-                                % get L1 spaces for selected spectra
+                % get L1 spaces for selected spectra
                 spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
                 
                 for j = 1 : length(spaces)

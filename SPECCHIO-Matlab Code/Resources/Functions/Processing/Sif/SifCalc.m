@@ -13,9 +13,16 @@ classdef SifCalc < SpecchioCalculationInterface
         % Add some small helper functions here
         function [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = sif_calc(this, veg, wr1, wr2)
             wr_mean = mean([wr1, wr2], 2);
-            [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
-                FLOX_SpecFit_master_FLUOSPECCHIO(...
-                this.levelContext.spaceContext.wavelength,wr_mean,veg);
+            if (this.levelContext.spaceContext.channelSwitched)
+                [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
+                    FLOX_SpecFit_master_FLUOSPECCHIO(...
+                    this.levelContext.spaceContext.wavelength, veg, wr_mean);
+            else
+                [out_table,outF_SFM,outR_SFM,outF_SpecFit,outR_SpecFit] = ...
+                    FLOX_SpecFit_master_FLUOSPECCHIO(...
+                    this.levelContext.spaceContext.wavelength, wr_mean, veg);
+            end
+
         end
     end
     

@@ -100,11 +100,21 @@ classdef Starter
                 
                 % get L0 spaces for selected spectra
                 spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
-                
+              
+
                 for j = 1 : length(spaces)
                     try
-                        space = spaceL0(this, this.specchioClient.loadSpace(spaces(j)));
+                        curSpace = this.specchioClient.loadSpace(spaces(j));
+                        
+                        % check if the tower is laegeren, which needs a
+                        % different processing
+                        if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
+                            this.channelSwitched = true;
+                        end
+                        
+                        space = spaceL0(this, curSpace);
                         space.main();
+                        
                     catch e
                         e.message
                         if(isa(e,'matlab.exception.JavaException'))

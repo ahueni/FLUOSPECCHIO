@@ -21,8 +21,8 @@ classdef (Abstract) SpecchioSpaceInterface
         calUpCoef;               % calibration up coefficient of current instrument
         calDownCoef;             % calibration down coefficient of current instrument
         calibrationMetadata;     % Metadata of calibration used in currentInstrument
-        integrationTime;         % Metadata integration time
-        channelSwitched;         % True if the instrument has switched channels; % = java.util.HashMap;    
+        integrationTime;         % Metadata integration time % = java.util.HashMap;    
+        channelSwitched;         % True if the instrument has switched channels; 
         processedIds;            % newly processed ids (from insert);
    end
     

@@ -1,4 +1,4 @@
-function bandTimeVis(user_data, band)
+function bandTimeVis(this, campaignId, band)
 % Function Visualize an x_eav_attribute gathered from the DB
 %   This is a wrapper around the sensor restriction, the attribute
 %   gathering and the plot functionality.
@@ -19,15 +19,15 @@ function bandTimeVis(user_data, band)
 %   22-Nov-2019 V1.5
 %   09-Dec-2019 V2.0
 tic
-ids = user_data.specchio_client.getIrradiance(num2str(14));
-spaces = user_data.specchio_client.getSpaces(ids, true, false, 'Acquisition Time');
+ids = this.specchioClient.getIrradiance(num2str(campaignId));
+spaces = this.specchioClient.getSpaces(ids, true, false, 'Acquisition Time');
 
-[b_tmp, t_tmp, n_tmp] = getTimeBand(user_data, spaces(1), band);
+[b_tmp, t_tmp, n_tmp] = getTimeBand(this, spaces(1), band);
 t_1 = t_tmp;
 b_1 = b_tmp;
 n_1 = n_tmp;
 
-[b_tmp, t_tmp, n_tmp] = getTimeBand(user_data, spaces(2), band);
+[b_tmp, t_tmp, n_tmp] = getTimeBand(this, spaces(2), band);
 t_2 = t_tmp;
 b_2 = b_tmp;
 n_2 = n_tmp;
@@ -49,13 +49,13 @@ toc
 end
 
 %% 
-function  [spec, t, instrName] = getTimeBand(user_data, space, band)
+function  [spec, t, instrName] = getTimeBand(this, space, band)
 
 ids = space.getSpectrumIds();
-space = user_data.specchio_client.loadSpace(space, band);
+space = this.specchioClient.loadSpace(space, band);
 spectra = space.getVectorsAsArray();
 instrName = convertCharsToStrings(space.getInstrument.getInstrumentName.get_value);
-time = user_data.specchio_client.getMetaparameterValues(ids, 'Acquisition Time (UTC)');
+time = this.specchioClient.getMetaparameterValues(ids, 'Acquisition Time (UTC)');
 
 % PARSE TIME
 t_tmp = NaT(size(time),1);

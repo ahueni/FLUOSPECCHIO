@@ -11,9 +11,9 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
         qiValuesToUpdate    = java.util.HashMap();   % A hashmap with: String key = db-Column identifier for this attribute, 
                                                 % ArrayList Value = values to insert ordered by processing Order (eq. SpectrumID order)
         % Define the indices as they are in vectors
-        VEG_idx     = 0;
-        WR_idx      = 1;
-        WR2_idx     = 2;
+        VEG_idx     = 1;
+        WR_idx      = 2;
+        WR2_idx     = 0;
         provenance_spectrum_ids;    
         out_table;
         outF_SFM;

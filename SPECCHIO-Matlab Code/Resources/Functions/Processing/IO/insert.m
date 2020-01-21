@@ -9,6 +9,7 @@ function prov_ids = updateOrInsertMetaData(user_data)
 import ch.specchio.types.*;
 metaDataList = java.util.ArrayList;
 prov_ids = java.util.ArrayList(java.util.Arrays.asList(user_data.MetaData.keySet().toArray()));
+java.util.Collections.sort(prov_ids);
 
 for i=0:prov_ids.size()-1
     if(user_data.MetaData.get(uint32(prov_ids.get(i))).isEmpty() == false)
@@ -63,9 +64,9 @@ L_id = category_values.get(user_data.unit);
 user_data.starterContext.specchioClient.updateSpectraMetadata(new_ids, 'measurement_unit', L_id);
 
 % processing algorithm
-processing_attribute = user_data.starterContext.specchioClient.getAttributesNameHash().get('Processing Algorithm');
-e = MetaParameter.newInstance(processing_attribute);
-e.setValue(['FluoSpecchio Matlab ' datestr(datetime)]);
-user_data.starterContext.specchioClient.updateEavMetadata(e, new_ids);
+% processing_attribute = user_data.starterContext.specchioClient.getAttributesNameHash().get('Processing Algorithm');
+% e = MetaParameter.newInstance(processing_attribute);
+% e.setValue(['FluoSpecchio Matlab ' datestr(datetime)]);
+% user_data.starterContext.specchioClient.updateEavMetadata(e, new_ids);
 end
 

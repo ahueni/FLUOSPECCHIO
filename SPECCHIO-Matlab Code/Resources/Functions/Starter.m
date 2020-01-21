@@ -1,4 +1,12 @@
 % needs adding specchio client jar to C:\Program Files\MATLAB\R2019b\toolbox\local\classpath.txt
+% 
+% Written by:
+% Alexander Rauber, email
+% Sacha Leemann, email
+% Edited and adapted by:
+% Bastian Buman, email
+% January, 2020
+
 classdef Starter
     % ==================================================
     % Constant Properties
@@ -67,8 +75,9 @@ classdef Starter
             % SPECCHIO client in specchioClientPath
             
             unpr_hierarchies = this.specchioClient.getUnprocessedHierarchies(num2str(this.campaignId));
+            count = 0;
             
-            for i = 0 :(length(unpr_hierarchies) - 1) % -1 : because matlab starts at 1, but java starts at 0
+            for i = 0 :(size(unpr_hierarchies) - 1) % -1 : because matlab starts at 1, but java starts at 0
                 try
                     this.currentHierarchyId = unpr_hierarchies.get(i);
                 catch e
@@ -159,7 +168,8 @@ classdef Starter
                         end
                     end
                 end
-                
+                count = count + 1;
+                disp(['One folder processed. ' num2str(size(unpr_hierarchies)-count) ' more to go.']);
             end
         end
     end
@@ -186,6 +196,7 @@ classdef Starter
             % to start processing all data
             this = setUp(this);
             this = process(this);
+%           bandTimeVis(this, this.campaignId, 760);
         end
     end
 end

@@ -108,8 +108,12 @@ classdef Starter
                         
                         % check if the tower is laegeren, which needs a
                         % different processing
-                        if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
+                        if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015') && ...
+                                contains(curSpace.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+%                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
                             this.channelSwitched = true;
+                        else
+                            this.channelSwitched = false;
                         end
                         
                         space = spaceL0(this, curSpace);

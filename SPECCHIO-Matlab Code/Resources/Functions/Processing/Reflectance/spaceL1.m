@@ -57,8 +57,7 @@ classdef spaceL1 < SpecchioSpaceInterface
           function this = checkChannelSwitching(this)
              % check if the tower is laegeren, which needs a
              % different processing
-             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
-                     contains(this.space.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015'))
                  this.channelSwitched = true;
              else
                  this.channelSwitched = false;

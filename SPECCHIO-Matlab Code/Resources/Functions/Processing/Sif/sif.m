@@ -57,14 +57,23 @@ classdef sif < SpecchioSpaceInterface
          end
          
          function this = helperFunctions(this)
+              this = instrumentType(this);
              this = checkChannelSwitching(this);
+         end
+         
+         function this = instrumentType(this)
+            % get instrument and calibration
+            if(this.space.get_wvl_of_band(0) < 500)
+                this.InstrumentType = 1; % Broadband
+            else
+                this.InstrumentType = 2; % Fluorescence
+            end
          end
          
          function this = checkChannelSwitching(this)
              % check if the tower is laegeren, which needs a
              % different processing
-             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
-                     contains(this.space.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015'))
                  this.channelSwitched = true;
              else
                  this.channelSwitched = false;

@@ -54,10 +54,21 @@ classdef sif < SpecchioSpaceInterface
              this.outF_SpecFit_Metadata         = java.util.HashMap;
              this.outR_SFM_Metadata             = java.util.HashMap;
              this.outR_SpecFit_Metadata         = java.util.HashMap;
-             this.channelSwitched               = this.starterContext.channelSwitched;
          end
          
          function this = helperFunctions(this)
+             this = checkChannelSwitching(this);
+         end
+         
+         function this = checkChannelSwitching(this)
+             % check if the tower is laegeren, which needs a
+             % different processing
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
+                     contains(this.space.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+                 this.channelSwitched = true;
+             else
+                 this.channelSwitched = false;
+             end
          end
 
          function this = calculations(this)

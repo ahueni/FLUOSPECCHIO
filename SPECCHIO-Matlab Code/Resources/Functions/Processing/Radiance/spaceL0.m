@@ -37,7 +37,6 @@ classdef spaceL0 < SpecchioSpaceInterface
              this.MetaData        = java.util.HashMap;
              this.ValuesToUpdate  = java.util.HashMap;
              this.newFolderName   = this.unit;
-             this.channelSwitched = this.starterContext.channelSwitched;
          end
          
          function this = helperFunctions(this)
@@ -56,10 +55,7 @@ classdef spaceL0 < SpecchioSpaceInterface
             end
             
             this.InstrumentId = this.space.getInstrumentId();
-            
-            if (this.channelSwitched == true)
-               this.switchCoefficients();
-            end
+
             
             this.calibrationMetadata = this.starterContext.specchioClient.getInstrumentCalibrationMetadata(this.InstrumentId);
 
@@ -72,14 +68,29 @@ classdef spaceL0 < SpecchioSpaceInterface
                     this.calDownCoef = cal.getFactors();
                 end
             end
+            this = checkChannelSwitching(this);
+            if (this.channelSwitched == true)
+               this = this.switchCoefficients();
+            end
+         end
+         
+         function this = checkChannelSwitching(this)
+             % check if the tower is laegeren, which needs a
+             % different processing
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
+                     contains(this.space.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+                 this.channelSwitched = true;
+             else
+                 this.channelSwitched = false;
+             end
          end
          
          function this = switchCoefficients(this)
-             if this.InstrumentType == 2
-                tmp = this.calDownCoef;
-                this.calDownCoef = this.calUpCoef;
-                this.calUpCoef = tmp;
-            end
+             
+             tmp = this.calDownCoef;
+             this.calDownCoef = this.calUpCoef;
+             this.calUpCoef = tmp;
+
          end
          
          function this = calculations(this)

@@ -38,11 +38,11 @@ classdef spaceL1 < SpecchioSpaceInterface
              this.spaceSpectrumIds = this.space.getSpectrumIds;
              this.MetaData         = java.util.HashMap;
              this.ValuesToUpdate   = java.util.HashMap;
-             this.channelSwitched  = this.starterContext.channelSwitched;
          end
          
          function this = helperFunctions(this)
              this = instrumentType(this);
+             this = checkChannelSwitching(this);
          end
          
          function this = instrumentType(this)
@@ -52,7 +52,17 @@ classdef spaceL1 < SpecchioSpaceInterface
             else
                 this.InstrumentType = 2; % Fluorescence
             end
-             
+         end
+         
+          function this = checkChannelSwitching(this)
+             % check if the tower is laegeren, which needs a
+             % different processing
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
+                     contains(this.space.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+                 this.channelSwitched = true;
+             else
+                 this.channelSwitched = false;
+             end
          end
          
          function this = calculations(this)

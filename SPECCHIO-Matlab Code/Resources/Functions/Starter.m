@@ -28,7 +28,6 @@ classdef Starter
         newHierarchyId;         % new hierarchy id
         currentHierarchyId;     % current hierarchy id
         currentIds;
-        channelSwitched;
      end
     
     % ==================================================
@@ -105,17 +104,6 @@ classdef Starter
                 for j = 1 : length(spaces)
                     try
                         curSpace = this.specchioClient.loadSpace(spaces(j));
-                        
-                        % check if the tower is laegeren, which needs a
-                        % different processing
-                        if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015') && ...
-                                contains(curSpace.getInstrument().getInstrumentName().get_value, 'Broadrange'))
-%                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
-                            this.channelSwitched = true;
-                        else
-                            this.channelSwitched = false;
-                        end
-                        
                         space = spaceL0(this, curSpace);
                         space.main();
                         
@@ -143,7 +131,19 @@ classdef Starter
                 
                 for j = 1 : length(spaces)
                     try
-                        space = spaceL1(this, this.specchioClient.loadSpace(spaces(j)));
+                        curSpace = this.specchioClient.loadSpace(spaces(j));
+                        
+%                         % check if the tower is laegeren, which needs a
+%                         % different processing
+%                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015') && ...
+%                                 contains(curSpace.getInstrument().getInstrumentName().get_value, 'Broadrange'))
+% %                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
+%                             this.channelSwitched = true;
+%                         else
+%                             this.channelSwitched = false;
+%                         end
+                        
+                        space = spaceL1(this, curSpace);
                         space.main();
                     catch e
                         e.message
@@ -168,9 +168,9 @@ classdef Starter
                 
                 for j = 1 : length(spaces)
                     try
-                        tmpSpace = this.specchioClient.loadSpace(spaces(j));
-                        if (tmpSpace.get_wvl_of_band(0) > 500) % FLUO
-                            space = sif(this, tmpSpace);
+                        curSpace = this.specchioClient.loadSpace(spaces(j));
+                        if (curSpace.get_wvl_of_band(0) > 500) % FLUO
+                            space = sif(this, curSpace);
                             space.main();
                         end
                     catch e
@@ -198,7 +198,6 @@ classdef Starter
             % an existing SPECCHIO campaignId
             this.campaignId = campaignId;  
             this.connectionId = connectionId;
-            this.channelSwitched = false;
         end
                
         function main(this)

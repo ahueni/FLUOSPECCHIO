@@ -94,7 +94,7 @@ classdef Starter
                 this    = this.createHierarchy(currentParentId);
                 
                 % ==================================================
-                % PROCESS SPACES FOR L0
+                % PROCESS SPACES L0 TO L1
                 % ==================================================
                 
                 % get L0 spaces for selected spectra
@@ -119,7 +119,7 @@ classdef Starter
                 
                 
                 % ==================================================
-                % PROCESS SPACES FOR L1
+                % PROCESS SPACES L1 TO L2
                 % ==================================================
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
@@ -131,18 +131,7 @@ classdef Starter
                 
                 for j = 1 : length(spaces)
                     try
-                        curSpace = this.specchioClient.loadSpace(spaces(j));
-                        
-%                         % check if the tower is laegeren, which needs a
-%                         % different processing
-%                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015') && ...
-%                                 contains(curSpace.getInstrument().getInstrumentName().get_value, 'Broadrange'))
-% %                         if(strcmp(curSpace.getInstrument().getInstrumentNumber(), '015'))
-%                             this.channelSwitched = true;
-%                         else
-%                             this.channelSwitched = false;
-%                         end
-                        
+                        curSpace = this.specchioClient.loadSpace(spaces(j));                     
                         space = spaceL1(this, curSpace);
                         space.main();
                     catch e
@@ -156,7 +145,7 @@ classdef Starter
                 end
                 
                 % ==================================================
-                % PROCESS SIF
+                % PROCESS SPACE(S) L2 TO L3 (SIF PRODUCT)
                 % ==================================================
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));

@@ -68,16 +68,19 @@ classdef spaceL0 < SpecchioSpaceInterface
                     this.calDownCoef = cal.getFactors();
                 end
             end
-            this = checkChannelSwitching(this);
-            if (this.channelSwitched == true)
-               this = this.switchCoefficients();
-            end
+            
+%             this = checkChannelSwitching(this);
+%             if (this.channelSwitched == true)
+%                this = this.switchCoefficients();
+%             end
+            
          end
          
          function this = checkChannelSwitching(this)
              % check if the tower is laegeren, which needs a
              % different processing
-             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015'))
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
+                      this.InstrumentType == 2)
                  this.channelSwitched = true;
              else
                  this.channelSwitched = false;

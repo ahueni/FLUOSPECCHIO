@@ -142,8 +142,9 @@ for i = 1:n_files
         outR_SFM_B(:,i) = r_wvl_B;
         outR_SpecFit(:,i) = r_wvl_F;
         
-        catch
-            
+        catch ME
+             warning('Problem using function.')
+             disp(ME)
         end
         
         %

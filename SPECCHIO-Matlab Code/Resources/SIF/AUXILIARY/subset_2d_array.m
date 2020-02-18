@@ -26,7 +26,7 @@ low_sub = find(wvl>=low_wvl,1);
 
 %subscript of the upper bound
 %[res, up_sub] = min(abs(wvl-up_wvl));
-up_sub = find(wvl<=up_wvl,1,'last');
+up_sub = find(wvl<=up_wvl,1,'last'); % Last Several Nonzero Elements (data, how many, where)
 
 wvl_sub = wvl(low_sub:up_sub);
 

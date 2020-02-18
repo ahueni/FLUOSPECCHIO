@@ -58,8 +58,8 @@ n_files = size(L0,2);
 %% Spectral subset of input spectra to min_wvl - max_wvl range
 % and convert to mW
 [wvlF,~,sub_ind_F] = subset_2d_array(wvl,wvl,wvlRet(1),wvlRet(2));
-Lin_F = L0(sub_ind_F(1):sub_ind_F(2),:)*1e3;
-Lup_F = L(sub_ind_F(1):sub_ind_F(2),:)*1e3;
+Lin_F = L0(sub_ind_F(1):sub_ind_F(2),:) * 1e3;
+Lup_F = L(sub_ind_F(1):sub_ind_F(2),:) * 1e3;
 
 [wvl_A,Lin_A,sub_ind_A] = subset_2d_array(wvl, L0, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
 [~,Lup_A] = subset_2d_array(wvlF, L, wvl_def.sfm_low_wl_A, wvl_def.sfm_up_wl_A);
@@ -122,8 +122,8 @@ for i = 1:n_files
         [~,f_wvl_B,r_wvl_B,resnorm_B,exitflag_B,output_B,f_FLD_B,r_FLD_B]=NBFret_VPSPLINE...
             (wvl_B,Lin_B(:,i),Lup_B(:,i),'B',0,w_B,opt_alg,stio);
         
-        [~,f_wvl_F,r_wvl_F,resnorm_F,exitflag_F,output_F]=FLOX_SpecFit_6C(...
-            wvlF,Lin_F(:,i),Lup_F(:,i),[1,1],w_F,opt_alg,stio,owvl);
+        [~, f_wvl_F, r_wvl_F, resnorm_F, exitflag_F, output_F]=FLOX_SpecFit_6C(...
+            wvlF, Lin_F(:,i), Lup_F(:,i), [1,1], w_F, opt_alg, stio, owvl);
         
         [f_R_max, f_R_wl, ~, f_FR_max, f_FR_wl, ~, fint] = sif_parms(owvl,f_wvl_F);
         

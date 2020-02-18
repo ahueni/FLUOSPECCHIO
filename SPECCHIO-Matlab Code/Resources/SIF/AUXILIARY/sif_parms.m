@@ -1,7 +1,7 @@
 
 function [SIF_R_max, SIF_R_wl, SIF_O2B, ...
     SIF_FR_max, SIF_FR_wl, SIF_O2A, SIFint] = sif_parms(wl, SIF)
-
+% Extracting relevant parameters from the SIF retrieval
 %   Sergio Cogliati, Ph.D
 %   Remote Sensing of Environmental Dynamics Lab.
 %   University of Milano-Bicocca

@@ -4,6 +4,25 @@ function ids = insert(user_data)
     updateNewSpectraMetaData(user_data, ids);
 end
 
+%% FUNCTION updateSpectra
+function [ids, prov_ids] = updateSpectra(user_data)
+%% Radiance:
+prov_ids = java.util.ArrayList(java.util.Arrays.asList(user_data.MetaData.keySet().toArray()));
+map = java.util.HashMap();
+ids = user_data.starterContext.specchioClient.copySpectra(prov_ids,...
+    cell2mat(values(user_data.starterContext.hierarchyIdMap, {user_data.newFolderName})), user_data.starterContext.currentHierarchyId);
+
+% Populate the hashmap
+for i=0:prov_ids.size()-1
+    % add to hashmap
+    map.put(uint32(ids.get(i)), user_data.ValuesToUpdate.get(uint32(prov_ids.get(i))));
+end
+
+% Update the vectors:
+user_data.starterContext.specchioClient.updateSpectrumVectors(map);
+% vectors = spectra;
+end
+
 %% FUNCTION insertMetaData
 function updateOrInsertMetaData(user_data, prov_ids, ids)
 import ch.specchio.types.*;
@@ -23,25 +42,6 @@ if(user_data.MetaData.get(uint32(prov_ids.get(i))).isEmpty() == false)
     user_data.starterContext.specchioClient.updateOrInsertEavMetadata(metaDataList, ids, user_data.starterContext.campaignId);
 end
 
-end
-
-%% FUNCTION updateSpectra
-function [ids, prov_ids] = updateSpectra(user_data)
-%% Radiance:
-prov_ids = java.util.ArrayList(java.util.Arrays.asList(user_data.MetaData.keySet().toArray()));
-map = java.util.HashMap();
-ids = user_data.starterContext.specchioClient.copySpectra(prov_ids,...
-    cell2mat(values(user_data.starterContext.hierarchyIdMap, {user_data.newFolderName})), user_data.starterContext.currentHierarchyId);
-
-% Populate the hashmap
-for i=0:prov_ids.size()-1
-    % add to hashmap
-    map.put(uint32(ids.get(i)), user_data.ValuesToUpdate.get(uint32(prov_ids.get(i))));
-end
-
-% Update the vectors:
-user_data.starterContext.specchioClient.updateSpectrumVectors(map);
-% vectors = spectra;
 end
 
 %% FUNCTION updateNewSpectraMetaData

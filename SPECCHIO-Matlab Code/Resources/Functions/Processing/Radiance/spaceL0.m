@@ -80,7 +80,7 @@ classdef spaceL0 < SpecchioSpaceInterface
              % check if the tower is laegeren, which needs a
              % different processing
              if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
-                      this.InstrumentType == 2)
+                      this.InstrumentType == 1)
                  this.channelSwitched = true;
              else
                  this.channelSwitched = false;

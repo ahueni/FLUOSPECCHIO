@@ -8,6 +8,7 @@ end
 function [ids, prov_ids] = updateSpectra(user_data)
 %% Radiance:
 prov_ids = java.util.ArrayList(java.util.Arrays.asList(user_data.MetaData.keySet().toArray()));
+java.util.Collections.sort(prov_ids);
 map = java.util.HashMap();
 ids = user_data.starterContext.specchioClient.copySpectra(prov_ids,...
     cell2mat(values(user_data.starterContext.hierarchyIdMap, {user_data.newFolderName})), user_data.starterContext.currentHierarchyId);

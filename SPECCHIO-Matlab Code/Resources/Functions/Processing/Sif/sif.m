@@ -73,7 +73,8 @@ classdef sif < SpecchioSpaceInterface
          function this = checkChannelSwitching(this)
              % check if the tower is laegeren, which needs a
              % different processing
-             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015'))
+             if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015')&& ...
+                      this.InstrumentType == 1)
                  this.channelSwitched = true;
              else
                  this.channelSwitched = false;

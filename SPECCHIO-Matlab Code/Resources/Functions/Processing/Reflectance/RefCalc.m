@@ -13,8 +13,7 @@ classdef RefCalc < SpecchioCalculationInterface
         % Add some small helper functions here
         function [R] = ref_calc(this, veg, wr1, wr2)
             wr_mean = mean([wr1, wr2], 2);
-            if (this.levelContext.spaceContext.channelSwitched == true && ... 
-                this.levelContext.spaceContext.InstrumentType == 1)
+            if (this.levelContext.spaceContext.channelSwitched == true)
                 R = wr_mean ./ veg;
             else
                 R = veg ./ wr_mean;

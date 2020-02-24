@@ -34,10 +34,12 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
         
         function this = prepareMetaParams(this)
             this.spaceContext.MetaData.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
-            this.spaceContext.outF_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
-            this.spaceContext.outR_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+%           SPECFIT:
             this.spaceContext.outF_SpecFit_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
             this.spaceContext.outR_SpecFit_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+%             SFM:
+%             this.spaceContext.outF_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+%             this.spaceContext.outR_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
         end
         
         function this = ProcessLevel2To3(context, spectrumIds, vectors)
@@ -58,10 +60,11 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
         end
         
         function this = splitOutputs(this)
-            this.spaceContext.outF_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outF_SFM);
             this.spaceContext.outF_SpecFit_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outF_SpecFit);
-            this.spaceContext.outR_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SFM);
             this.spaceContext.outR_SpecFit_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SpecFit);
+%             SFM
+%             this.spaceContext.outF_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outF_SFM);
+%             this.spaceContext.outR_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SFM);
         end
         
         function this = sifMetrics(this)
@@ -81,9 +84,9 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
                     end
 
                     if(contains(attributeName, 'f_SFM'))
-                        this.spaceContext.outF_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+%                         this.spaceContext.outF_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
                     elseif(contains(attributeName, 'r_SFM'))
-                        this.spaceContext.outR_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+%                         this.spaceContext.outR_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
                     elseif(contains(attributeName, 'f_SpecFit') || contains(attributeName, 'f_max_FR') ...
                             || contains(attributeName, 'f_max_FR_wvl') || contains(attributeName, 'f_max_R') ...
                             || contains(attributeName, 'f_max_R_wvl') || contains(attributeName, 'f_int'))

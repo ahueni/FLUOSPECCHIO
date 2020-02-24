@@ -64,7 +64,7 @@ classdef Starter
             map('True Reflectance') = this.specchioClient.getSubHierarchyId(this.campaign, 'True Reflectance', reflectanceId);
             % Subdirectories of SIF
             map('SpecFit') = this.specchioClient.getSubHierarchyId(this.campaign, 'SpecFit', sifId);
-            map('SFM') = this.specchioClient.getSubHierarchyId(this.campaign, 'SFM', sifId);
+%             map('SFM') = this.specchioClient.getSubHierarchyId(this.campaign, 'SFM', sifId);
             this.hierarchyIdMap = map;
         end
         

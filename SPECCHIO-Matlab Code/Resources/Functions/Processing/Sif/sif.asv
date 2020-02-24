@@ -145,6 +145,7 @@ classdef sif < SpecchioSpaceInterface
             % True reflectance from SFM
 %             this.ValuesToUpdate = this.outR_SFM_ValuesToUpdate;
 %             this.MetaData       = this.outR_SFM_Metadata;
+
 %             insert(this);
         end 
     end

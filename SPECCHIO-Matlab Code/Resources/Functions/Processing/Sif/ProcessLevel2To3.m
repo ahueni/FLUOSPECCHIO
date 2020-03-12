@@ -73,26 +73,31 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
             for k=1:width(this.out_table)
                 attributeName = this.out_table.Properties.VariableNames{k};
                 if(~(contains(attributeName, 'FLD')))
+                    
                     attribute = this.spaceContext.starterContext.specchioClient.getAttributesNameHash().get(attributeName);
-                    mp = MetaParameter.newInstance(attribute);
+                    try
+                        mp = MetaParameter.newInstance(attribute);
 
-                    % VIs have to be numeric:
-                    if(isfinite(this.out_table.(k)))
-                        mp.setValue(this.out_table.(k));
-                    else
-                        mp.setValue(-999);
-                    end
+                        % VIs have to be numeric:
+                        if(isfinite(this.out_table.(k)))
+                            mp.setValue(this.out_table.(k));
+                        else
+                            mp.setValue(-999);
+                        end
 
-                    if(contains(attributeName, 'f_SFM'))
-%                         this.spaceContext.outF_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
-                    elseif(contains(attributeName, 'r_SFM'))
-%                         this.spaceContext.outR_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
-                    elseif(contains(attributeName, 'f_SpecFit') || contains(attributeName, 'f_max_FR') ...
-                            || contains(attributeName, 'f_max_FR_wvl') || contains(attributeName, 'f_max_R') ...
-                            || contains(attributeName, 'f_max_R_wvl') || contains(attributeName, 'f_int'))
-                        this.spaceContext.outF_SpecFit_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
-                    elseif(contains(attributeName, 'r_SpecFit'))
-                        this.spaceContext.outR_SpecFit_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+                        if(contains(attributeName, 'f_SFM'))
+    %                         this.spaceContext.outF_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+                        elseif(contains(attributeName, 'r_SFM'))
+    %                         this.spaceContext.outR_SFM_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+                        elseif(contains(attributeName, 'f_SpecFit') || contains(attributeName, 'f_max_FR') ...
+                                || contains(attributeName, 'f_max_FR_wvl') || contains(attributeName, 'f_max_R') ...
+                                || contains(attributeName, 'f_max_R_wvl') || contains(attributeName, 'f_int'))
+                            this.spaceContext.outF_SpecFit_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+                        elseif(contains(attributeName, 'r_SpecFit'))
+                            this.spaceContext.outR_SpecFit_Metadata.get(uint32(this.spectrumIds.get(this.VEG_idx))).add(mp);
+                        end
+                    catch
+                        
                     end
                 end
             end 

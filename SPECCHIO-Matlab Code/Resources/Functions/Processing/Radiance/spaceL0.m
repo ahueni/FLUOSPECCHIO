@@ -69,10 +69,10 @@ classdef spaceL0 < SpecchioSpaceInterface
                 end
             end
             
-%             this = checkChannelSwitching(this);
-%             if (this.channelSwitched == true)
-%                this = this.switchCoefficients();
-%             end
+            this = checkChannelSwitching(this);
+            if (this.channelSwitched == true)
+               this = this.switchCoefficients();
+            end
             
          end
          

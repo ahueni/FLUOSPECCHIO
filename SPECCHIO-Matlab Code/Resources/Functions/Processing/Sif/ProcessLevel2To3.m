@@ -36,7 +36,7 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
             this.spaceContext.MetaData.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
 %           SPECFIT:
             this.spaceContext.outF_SpecFit_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
-            this.spaceContext.outR_SpecFit_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
+%             this.spaceContext.outR_SpecFit_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
 %             SFM:
 %             this.spaceContext.outF_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
 %             this.spaceContext.outR_SFM_Metadata.put(uint32(this.spectrumIds.get(this.VEG_idx)), java.util.ArrayList);
@@ -61,7 +61,7 @@ classdef ProcessLevel2To3 < SpecchioGroupInterface
         
         function this = splitOutputs(this)
             this.spaceContext.outF_SpecFit_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outF_SpecFit);
-            this.spaceContext.outR_SpecFit_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SpecFit);
+%             this.spaceContext.outR_SpecFit_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SpecFit);
 %             SFM
 %             this.spaceContext.outF_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outF_SFM);
 %             this.spaceContext.outR_SFM_ValuesToUpdate.put(uint32(this.spectrumIds.get(this.VEG_idx)), this.outR_SFM);

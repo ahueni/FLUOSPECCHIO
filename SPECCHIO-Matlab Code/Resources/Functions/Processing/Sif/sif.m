@@ -48,9 +48,9 @@ classdef sif < SpecchioSpaceInterface
              this.ValuesToUpdate                = java.util.HashMap;
 %            SPECFIT  
              this.outF_SpecFit_ValuesToUpdate   = java.util.HashMap;
-             this.outR_SpecFit_ValuesToUpdate   = java.util.HashMap;
+%              this.outR_SpecFit_ValuesToUpdate   = java.util.HashMap;
              this.outF_SpecFit_Metadata         = java.util.HashMap;
-             this.outR_SpecFit_Metadata         = java.util.HashMap;
+%              this.outR_SpecFit_Metadata         = java.util.HashMap;
 %            SFM
 %              this.outR_SFM_Metadata             = java.util.HashMap;
 %              this.outF_SFM_Metadata             = java.util.HashMap;
@@ -126,23 +126,24 @@ classdef sif < SpecchioSpaceInterface
             this = setUp(this);
             this = helperFunctions(this);
             this = calculations(this);
+            
             % SIF from SpecFit
             this.ValuesToUpdate = this.outF_SpecFit_ValuesToUpdate;
             this.MetaData       = this.outF_SpecFit_Metadata;
             this.newFolderName  = 'SpecFit';
             insert(this);
-%             % True reflectance from SpecFit
-            this.newFolderName  = 'True Reflectance';
-            this.ValuesToUpdate = this.outR_SpecFit_ValuesToUpdate;
-            this.MetaData       = this.outR_SpecFit_Metadata;
-            insert(this);
             
-            % SIF from SFM
+%             % True reflectance from SpecFit
+%             this.newFolderName  = 'True Reflectance';
+%             this.ValuesToUpdate = this.outR_SpecFit_ValuesToUpdate;
+%             this.MetaData       = this.outR_SpecFit_Metadata;
+%             insert(this);           
+%             % SIF from SFM
 %             this.ValuesToUpdate = this.outF_SFM_ValuesToUpdate;
 %             this.MetaData       = this.outF_SFM_Metadata;
 %             this.newFolderName  = 'SFM';
 %             insert(this);
-            % True reflectance from SFM
+%             % True reflectance from SFM
 %             this.ValuesToUpdate = this.outR_SFM_ValuesToUpdate;
 %             this.MetaData       = this.outR_SFM_Metadata;
 %             insert(this);

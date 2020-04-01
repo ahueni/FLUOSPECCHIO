@@ -67,10 +67,18 @@ classdef ProcessLevel0To1 < SpecchioGroupInterface
             snr = SignalDifference(this);
             illumination = Illumination(this);
             target = Target(this);
+                                    
+%             Spectral Shift evaluation only if broadrange (FULL) sensor
+            if(this.spaceContext.InstrumentType == 1)
+                spectral_shift = SpectralShift(this);
+                spectral_shift.execute();
+            end 
+            
             saturation.execute();
             snr.execute();
             illumination.execute();
             target.execute();
+            
         end 
     end
 end

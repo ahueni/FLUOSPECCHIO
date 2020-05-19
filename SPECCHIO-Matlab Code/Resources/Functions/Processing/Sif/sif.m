@@ -17,6 +17,8 @@ classdef sif < SpecchioSpaceInterface
         InstrumentId;            % current Instrument ID
         calUpCoef;               % calibration up coefficient of current instrument
         calDownCoef;             % calibration down coefficient of current instrument
+        nl_coefs;
+        auto_nulling;
         calibrationMetadata;     % Metadata of calibration used in currentInstrument
         integrationTime;         % Metadata integration time
         channelSwitched;         % True if the instrument has switched channels; % = java.util.HashMap;

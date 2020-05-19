@@ -17,6 +17,8 @@ classdef spaceL0 < SpecchioSpaceInterface
         InstrumentId;            % current Instrument ID
         calUpCoef;               % calibration up coefficient of current instrument
         calDownCoef;             % calibration down coefficient of current instrument
+        nl_coefs;                % non-linearity coefficients
+        auto_nulling;            % auto-nulling coefficient
         calibrationMetadata;     % Metadata of calibration used in currentInstrument
         integrationTime;         % Metadata integration time
         channelSwitched;         % True if the instrument has switched channels; % = java.util.HashMap;   
@@ -66,6 +68,12 @@ classdef spaceL0 < SpecchioSpaceInterface
                 end
                 if(strcmp(cal.getName(), 'dw_coef'))
                     this.calDownCoef = cal.getFactors();
+                end
+                if(strcmp(cal.getName(), 'nl_coefs'))
+                    this.nl_coefs = cal.getFactors();
+                end
+                if(strcmp(cal.getName(), 'autonulling_coefs'))
+                    this.auto_nulling = cal.getFactors();
                 end
             end
             

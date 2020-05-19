@@ -24,12 +24,10 @@ classdef RadCalc < SpecchioCalculationInterface
            % DC Subtraction
            DN_dc = DN - DC;
            % NL
-           nl_s = zeros(length(DN_dc),1);
-           for i=length(nl_coefs):-1:2
-              nl_s = nl_s + (nl_coefs(i) .* DN_dc .^ (i-1));
-           end
-           nl_s = nl_s + nl_coefs(1);
-           
+           nl_s = (nl_coefs(8) .* (DN_dc .^ 7)) + (nl_coefs(7) .* (DN_dc .^ 6)) + ...
+                  (nl_coefs(6) .* (DN_dc .^ 5)) + (nl_coefs(5) .* (DN_dc .^ 4)) + ...
+                  (nl_coefs(4) .* (DN_dc .^ 3)) + (nl_coefs(3) .* (DN_dc .^ 2)) + ...
+                  (nl_coefs(2) .* DN_dc) + nl_coefs(1);
            DN_dc_nl = DN_dc ./ nl_s;
            % CAL
            DN_dc_nl_it = DN_dc_nl / IT;

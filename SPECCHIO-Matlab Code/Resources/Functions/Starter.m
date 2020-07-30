@@ -28,6 +28,7 @@ classdef Starter
         newHierarchyId;         % new hierarchy id
         currentHierarchyId;     % current hierarchy id
         currentIds;
+        logWriter;              % Logger class
      end
     
     % ==================================================
@@ -47,7 +48,7 @@ classdef Starter
             this.specchioClient         = specchioClientFactory.createClient(serverDescriptors.get(this.connectionId));
             this.campaign               = this.specchioClient.getCampaign(this.campaignId);
         end
-                
+              
         function this = createHierarchy(this, parentId)
             map = containers.Map;
             map('Parent') = parentId;
@@ -74,6 +75,7 @@ classdef Starter
             % SPECCHIO client in specchioClientPath
             
             unpr_hierarchies = this.specchioClient.getUnprocessedHierarchies(num2str(this.campaignId));
+            logger.writeLog('INFO', ['Number of unprocessed hierarchies found = ', int2str(size(unpr_hierarchies)), '.']);
             count = 0;
             
             for i = 0 :(size(unpr_hierarchies) - 1) % -1 : because matlab starts at 1, but java starts at 0
@@ -87,9 +89,12 @@ classdef Starter
                 
                 % Go trough current hierarchy
                 currentParentId     = this.specchioClient.getHierarchyParentId(this.currentHierarchyId);
+                currentParentName   = this.specchioClient.getHierarchyName(currentParentId).toString();
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
+%                 disp(['Currently processing => ', char(this.specchioClient.getHierarchyName(currentParentId))]);
                 this.currentIds     = this.specchioClient.getSpectrumIdsForNode(node);
-                    
+                logger.writeLog('INFO', ['Handling node = ', char(currentParentName), '.']);  
+                log = ['Handling node = ', char(currentParentName), '.'];
                 % Create folder structure in Hierarchy
                 this    = this.createHierarchy(currentParentId);
                 
@@ -181,12 +186,13 @@ classdef Starter
     % Public Methods
     % ==================================================
     methods (Access = public)
-        function this = Starter(campaignId, connectionId)
+        function this = Starter(campaignId, connectionId, logger)
             % STARTER Constructor for Starter class
             % campaignId is a 64bit unsigned integer refering to
             % an existing SPECCHIO campaignId
             this.campaignId = campaignId;  
             this.connectionId = connectionId;
+            this.logWriter = logger;
         end
                
         function main(this)

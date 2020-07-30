@@ -75,7 +75,7 @@ classdef Starter
             % SPECCHIO client in specchioClientPath
             
             unpr_hierarchies = this.specchioClient.getUnprocessedHierarchies(num2str(this.campaignId));
-            logger.writeLog('INFO', ['Number of unprocessed hierarchies found = ', int2str(size(unpr_hierarchies)), '.']);
+            this.logWriter.writeLog('INFO', ['Number of unprocessed hierarchies found = ', int2str(size(unpr_hierarchies)), '.']);
             count = 0;
             
             for i = 0 :(size(unpr_hierarchies) - 1) % -1 : because matlab starts at 1, but java starts at 0
@@ -93,7 +93,7 @@ classdef Starter
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
 %                 disp(['Currently processing => ', char(this.specchioClient.getHierarchyName(currentParentId))]);
                 this.currentIds     = this.specchioClient.getSpectrumIdsForNode(node);
-                logger.writeLog('INFO', ['Handling node = ', char(currentParentName), '.']);  
+                this.logWriter.writeLog('INFO', ['Handling node = ', char(currentParentName), '.']);  
                 log = ['Handling node = ', char(currentParentName), '.'];
                 % Create folder structure in Hierarchy
                 this    = this.createHierarchy(currentParentId);
@@ -101,7 +101,7 @@ classdef Starter
                 % ==================================================
                 % PROCESS SPACES L0 TO L1
                 % ==================================================
-                
+                this.logWriter.writeLog('INFO', ['Calculating radiance for node = ', char(currentParentName), '.']);
                 % get L0 spaces for selected spectra
                 spaces  =  this.specchioClient.getSpaces(this.currentIds, 'Spectrum Number'); % Array of spaces
               
@@ -121,11 +121,12 @@ classdef Starter
                         end
                     end
                 end
-                
+                this.logWriter.writeLog('INFO', ['Radiance calculated for node = ', char(currentParentName), '.']);  
                 
                 % ==================================================
                 % PROCESS SPACES L1 TO L2
                 % ==================================================
+                this.logWriter.writeLog('INFO', ['Calculating reflectance for node = ', char(currentParentName), '.']);  
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");
@@ -148,6 +149,7 @@ classdef Starter
                         end
                     end
                 end
+                this.logWriter.writeLog('INFO', ['Reflectance calculated for node = ', char(currentParentName), '.']);  
                 
                 % ==================================================
                 % PROCESS SPACE(S) L2 TO L3 (SIF PRODUCT)
@@ -176,8 +178,9 @@ classdef Starter
                         end
                     end
                 end
-                count = count + 1;
-                disp(['One folder processed. ' num2str(size(unpr_hierarchies)-count) ' more to go.']);
+                this.logWriter.writeLog('INFO', ['SIF calculated for node = ', char(currentParentName), '.']);  
+%                 count = count + 1;
+%                 disp(['One folder processed. ' num2str(size(unpr_hierarchies)-count) ' more to go.']);
             end
         end
     end

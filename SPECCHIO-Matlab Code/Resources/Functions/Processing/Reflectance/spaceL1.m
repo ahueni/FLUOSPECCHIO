@@ -112,7 +112,9 @@ classdef spaceL1 < SpecchioSpaceInterface
             this = setUp(this);
             this = helperFunctions(this);
             this = calculations(this);
+            this.starterContext.logWriter.writeLog('INFO', ['Reflectance calculated for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);
             insert(this);
+            this.starterContext.logWriter.writeLog('INFO', ['Reflectance inserted to DB for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);
         end 
     end
 end

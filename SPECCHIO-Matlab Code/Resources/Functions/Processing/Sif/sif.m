@@ -128,12 +128,13 @@ classdef sif < SpecchioSpaceInterface
             this = setUp(this);
             this = helperFunctions(this);
             this = calculations(this);
-            
+            this.starterContext.logWriter.writeLog('INFO', ['SIF calculated for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);
             % SIF from SpecFit
             this.ValuesToUpdate = this.outF_SpecFit_ValuesToUpdate;
             this.MetaData       = this.outF_SpecFit_Metadata;
             this.newFolderName  = 'SpecFit';
             insert(this);
+            this.starterContext.logWriter.writeLog('INFO', ['SIF inserted to DB for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);
             
 %             % True reflectance from SpecFit
 %             this.newFolderName  = 'True Reflectance';

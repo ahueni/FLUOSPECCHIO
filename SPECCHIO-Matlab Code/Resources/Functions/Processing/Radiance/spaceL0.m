@@ -144,7 +144,9 @@ classdef spaceL0 < SpecchioSpaceInterface
             this = setUp(this);
             this = helperFunctions(this);
             this = calculations(this);
+            this.starterContext.logWriter.writeLog('INFO', ['Radiance calculated for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);  
             this.processedIds = insert(this);
+            this.starterContext.logWriter.writeLog('INFO', ['Radiance inserted to DB for space = ', char(this.space.getInstrument().getInstrumentName()), '.']);
         end 
     end
 end

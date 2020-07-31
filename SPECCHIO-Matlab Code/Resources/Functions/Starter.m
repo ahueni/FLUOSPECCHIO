@@ -154,6 +154,7 @@ classdef Starter
                 % ==================================================
                 % PROCESS SPACE(S) L2 TO L3 (SIF PRODUCT)
                 % ==================================================
+                this.logWriter.writeLog('INFO', ['Calculating SIF for node = ', char(currentParentName), '.']);
                 % change the current hierarchy id
                 this.currentHierarchyId = cell2mat(values(this.hierarchyIdMap, {'Radiance'}));
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");

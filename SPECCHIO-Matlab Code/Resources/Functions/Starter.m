@@ -87,7 +87,7 @@ classdef Starter
                     return
                 end
                 
-                % Go trough current hierarchy
+                % Go through current hierarchy
                 currentParentId     = this.specchioClient.getHierarchyParentId(this.currentHierarchyId);
                 currentParentName   = this.specchioClient.getHierarchyName(currentParentId).toString();
                 node                = ch.specchio.types.hierarchy_node(this.currentHierarchyId, "", "");

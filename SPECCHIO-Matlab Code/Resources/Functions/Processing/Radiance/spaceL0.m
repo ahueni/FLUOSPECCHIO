@@ -90,7 +90,7 @@ classdef spaceL0 < SpecchioSpaceInterface
              if(strcmp(this.space.getInstrument().getInstrumentNumber(), '015') && ...
                       this.InstrumentType == 1)
                  this.channelSwitched = true;
-                 this = switchCoefficients();
+                 this = this.switchCoefficients();
              else
                  this.channelSwitched = false;
              end
